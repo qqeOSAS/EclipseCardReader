@@ -5,11 +5,19 @@ This project is designed to read data from an SD card and display it on an ESP82
 
 ## Features
 - Reads and displays text files (`.txt`, `.log`, `.csv`, `.ini`).
+- ![0-02-05-d29b04aa1d99147aa4999640226d7b2c21c310e76e2e2fae6d00f9fa9fff6592_d1c26bf3d6b69a05](https://github.com/user-attachments/assets/e3a959da-ce05-483e-8483-9c32a80c7fba)
 - Supports binary files (`.bin`).
 - Supports image formats (`.xbm` and `.bin` for images in binary format).
+- ![0-02-05-b0772b1091d2bf9108df944e561c37386b4e36b3ba7a9b9846b4bb034653ab1f_48ca4d19e0e4e435](https://github.com/user-attachments/assets/08d6afa6-c2d9-4acf-96dd-6ab32423abb7)
 - Cyrillic text support for better language compatibility.
+
 - Open-source project — feel free to contribute with pull requests.
+
 - You can even play monocrome video in binary format on it
+
+https://github.com/user-attachments/assets/6ab3960a-5d0c-4b49-a16e-c42f48a2fc2a
+
+
 
 ## Requirements
 - ESP8266 platform
