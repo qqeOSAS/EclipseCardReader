@@ -11,7 +11,7 @@
 
 void browse_bin_image(char* directory) {
     
-    int page = 1;  // Починаємо з першої сторінки
+    int page = 1;  
     Draw_Image image = read_binary_image(directory, page);
     DrawChoise choise = {0,0};
     Choise_info select_info = {0,0};
@@ -33,7 +33,7 @@ void browse_bin_image(char* directory) {
             select_info = VievСhoise_image(page,image.image_pages);
             drawBin_image(image.image_buffer,0);
             ESP.wdtEnable(WDTO_8S);
-            //yield();
+            
         }
         yield();
         getParentDirectory(directory);

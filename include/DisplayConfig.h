@@ -1,3 +1,5 @@
+// display configuration file
+
 #ifndef DISPLAY_config
 #define DISPLAY_config
 
@@ -18,13 +20,13 @@ struct CommandData {
     int y;
 };
 struct SelectedFile {
-    bool isSelected;  // Чи був вибраний файл
-    char fileName[30];  // Назва вибраного файлу
+    bool isSelected;  
+    char fileName[30];  
 };
 struct DrawState {
-    int step = 0;         // Поточний крок
-    int fileCount = 0;    // Кількість файлів у каталозі
-    int pageNum = 0;      // Номер сторінки
+    int step = 0;         
+    int fileCount = 0;   
+    int pageNum = 0;      
     char availableFiles[100][30];
     bool reset_page = false;
     CommandData result;

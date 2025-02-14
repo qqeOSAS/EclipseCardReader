@@ -16,6 +16,7 @@ char global_derictory_files[MAX_GLOBAL_DERICTORY_FILES][30];
 
 #define MAX_FILES 100  // Максимальна кількість файлів
 // Функція для отримання списку файлів у заданому каталозі
+
 int Files_list(const char* directory, char files_arr[][30]);
 void copyToArray(char original[][30], int count, char destination[][30]);
 void getParentDirectory(char* currentDirectory);
@@ -68,7 +69,6 @@ int return_card_size(){
 bool isDirectory(const char* path) {
     SdFile file;
 
-    // Перевірка, чи існує шлях
     if (file.open(path)) {
         bool isDir = file.isDir();  // Перевіряємо, чи це директорія
         file.close();
@@ -132,32 +132,31 @@ int Files_list(const char* directory, char files_arr[][30]) {
         Serial.print("Знайдено файлів: ");
         Serial.println(file_count);
 	}
-    root.close(); // Закриваємо директорію
+    root.close(); 
 
-    // Якщо файлів немає
-    return file_count; // Повертаємо кількість файлів
+    return file_count; 
 }
 
 
 
 void copyToArray(char original[][30], int count, char destination[][30]) {
     for (int i = 0; i < count; i++) {
-        strcpy(destination[i], original[i]); // Копіюємо рядок
+        strcpy(destination[i], original[i]); 
     }
 }
 
 void getParentDirectory(char* currentDirectory) {
     char* lastSlash = strrchr(currentDirectory, '/');
     if (lastSlash != nullptr && lastSlash != currentDirectory) {
-        *lastSlash = '\0'; // Видаляємо останній сегмент шляху
+        *lastSlash = '\0'; 
     } else {
-        strcpy(currentDirectory, "/"); // Якщо це коренева директорія
+        strcpy(currentDirectory, "/"); 
     }
 }
 
 void normalizePath(char* path) {
-    char* writePtr = path; // Позиція для запису
-    char* readPtr = path;  // Позиція для читання
+    char* writePtr = path; 
+    char* readPtr = path;  
     bool lastWasSlash = false;
 
     while (*readPtr != '\0') {
@@ -172,7 +171,7 @@ void normalizePath(char* path) {
         }
         readPtr++;
     }
-    *writePtr = '\0'; // Завершуємо рядок
+    *writePtr = '\0'; 
 }
 
 bool isHEADER_File(const char* filepath){

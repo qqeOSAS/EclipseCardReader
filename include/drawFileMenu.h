@@ -41,7 +41,6 @@ CommandData draw_selecting_icon(bool draw_icon) {
     if(draw_icon)
         u8g2.drawFrame(x, y, 128, 10);
 
-    // Повертаємо структуру
     return {status,command,y};
 }
 
@@ -52,19 +51,19 @@ SelectedFile return_select_label(char files_arr[][30], int command, int y, int p
     #define PAGE_Y_3 42
     #define PAGE_Y_4 52
 
-    SelectedFile selectedFile;  // Структура для зберігання результатів
+    SelectedFile selectedFile;  
 
-    int corrector = (page_num - 1) * 5;  // Зміщення для сторінки
+    int corrector = (page_num - 1) * 5;  
     selectedFile.isSelected = false;
 
-    selectedFile.fileName[0] = '\0';  // Порожній рядок
-    // Перевіряємо, чи була вибрана команда "SELECT"
+    selectedFile.fileName[0] = '\0';  
+
     if (command == SELECT) {
-        selectedFile.isSelected = true;  // Файл вибраний
-        // Перевірка координат (y) для визначення вибраного файлу
+        selectedFile.isSelected = true; 
+        
         switch (y) {
             case PAGE_Y_0:
-                strcpy(selectedFile.fileName, files_arr[0 + corrector]);  // Копіюємо перший елемент
+                strcpy(selectedFile.fileName, files_arr[0 + corrector]);  
                 break;
             case PAGE_Y_1:
                 strcpy(selectedFile.fileName, files_arr[1 + corrector]);
@@ -81,9 +80,7 @@ SelectedFile return_select_label(char files_arr[][30], int command, int y, int p
         }
     }
 
-    // Виводимо інформацію
     Serial.println(selectedFile.fileName);
-    // Повертаємо структуру
     return selectedFile;
 }
 
@@ -94,10 +91,10 @@ SelectedFile return_select_label(char files_arr[][30], int command, int y, int p
 int draw_file_names(char files_arr[][30], int count, int status,bool reset_page) {
     u8g2.setFont(u8g2_font_5x8_t_cyrillic);
 
-    const byte lines_per_page = 5;  // Кількість рядків на сторінку
-    const byte page_count = (count + lines_per_page - 1) / lines_per_page; // Загальна кількість сторінок
+    const byte lines_per_page = 5;  
+    const byte page_count = (count + lines_per_page - 1) / lines_per_page; 
     static byte page_num = 1; 
-    int corrector = (page_num - 1) * lines_per_page; // Зміщення для відображення поточної сторінки
+    int corrector = (page_num - 1) * lines_per_page; 
 
     if(reset_page){
         Serial.println("RESET_PAGE");
@@ -105,13 +102,13 @@ int draw_file_names(char files_arr[][30], int count, int status,bool reset_page)
         corrector = 0;
     }
 
-    // Оновлення сторінки залежно від статусу
+    // updating page depending on the result
     if (status == 2 && page_num < page_count) {
         page_num++;
     } else if (status == 1 && page_num > 1) {
         page_num--;
     }
-    // Оновлення зміщення
+    // Updating corrector 
     byte x = 0;
     byte y = 20;
     Serial.print("Page: ");
@@ -119,15 +116,15 @@ int draw_file_names(char files_arr[][30], int count, int status,bool reset_page)
     Serial.print("Corrector: ");
     Serial.println(corrector);  
 
-    // Виведення елементів поточної сторінки
+    // Printing files names at current page on screen 
     for (int i = 0; i < lines_per_page; i++) {
         int file_index = corrector + i;
-        if (file_index >= count) break;  // Уникнення виходу за межі масиву
+        if (file_index >= count) break; 
 
         u8g2.setCursor(x, y);
-        u8g2.print(file_index + 1);  // Номер файлу
+        u8g2.print(file_index + 1);  // file num
         u8g2.print(") ");
-        u8g2.print(files_arr[file_index]);  // Назва файлу
+        u8g2.print(files_arr[file_index]);  // file name
         y += 10;
         Serial.print("File index: ");
         Serial.println(file_index);
@@ -136,6 +133,7 @@ int draw_file_names(char files_arr[][30], int count, int status,bool reset_page)
     return page_num;
 }
 
+//drawing information about SD size in root and current file path
 void draw_directory_info(const char* directory){
     unsigned long currentTime = millis();
     static unsigned long timer_1 = 0;
@@ -145,15 +143,14 @@ void draw_directory_info(const char* directory){
     u8g2.setColorIndex(0);
     u8g2.setFontMode(1);
     //u8g2.setFont(u8g2_font_NokiaSmallBold_tr);   u8g2_font_6x13B_t_cyrillic u8g2_font_6x13_t_cyrillic
-    u8g2.setFont(u8g2_font_6x13_t_cyrillic); // або інший вибраний шрифт
+    u8g2.setFont(u8g2_font_6x13_t_cyrillic); 
 
     int directory_widht = u8g2.getUTF8Width(directory);
-    //Serial.print("STR WIDHT");
-    //Serial.println(directory_widht);
-    static int x_pos = 0;
 
+    static int x_pos = 0;
     u8g2.setCursor(x_pos,9);
 
+    //sligting if path str longer then screen size
     if(directory_widht > 126){
         if(currentTime - timer_1 >= 10){
             x_pos -= 1;
@@ -169,7 +166,7 @@ void draw_directory_info(const char* directory){
     u8g2.print(directory);
 
 
-    if(strcmp(directory,"/") == 0){
+    if(strcmp(directory,"/") == 0){ // If root print sd details
         int SD_size = return_card_size();
         u8g2.print(" ");
         u8g2.print("SD Size:");

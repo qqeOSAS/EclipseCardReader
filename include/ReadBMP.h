@@ -1,3 +1,13 @@
+// This file contains functions for reading and processing BMP files on an SD card and displaying the image in a monochrome format. 
+//The `read_BMP()` function reads the BMP file header, validates the file format, and processes the pixel data into a 1-bit-per-pixel format suitable for display on a screen
+// displays a 24-bit BMP file as a monochrome image.
+
+
+// NOTE: The current implementation has some limitations and does not fully handle 
+// all BMP formats or display correctly in all cases. Improvements and bug fixes 
+// will be made to address these issues and ensure proper functionality in the future.
+
+
 #ifndef READ_BMP
 #define READ_BMP
 
@@ -25,7 +35,7 @@ struct __attribute__((packed)) BMPInfoHeader {
     uint32_t importantColors;
 };
 
-// 🟢 ФУНКЦІЯ КОНВЕРТАЦІЇ BMP У МОНОХРОМНИЙ ФОРМАТ
+
 uint8_t reverseByte(uint8_t byte) {
     byte = (byte & 0xF0) >> 4 | (byte & 0x0F) << 4;
     byte = (byte & 0xCC) >> 2 | (byte & 0x33) << 2;
@@ -38,7 +48,7 @@ void convertBMPto1BPP(uint8_t* bmpData, uint8_t* outputData, int width, int heig
     int bmpRowSize = (width * 3 + 3) & ~3;
     int outputIndex = 0;
 
-    for (int y = 0; y < height; y++) {  // Виправлений порядок читання
+    for (int y = 0; y < height; y++) {  
         for (int x = 0; x < width; x += 8) {
             uint8_t byte = 0;
             for (int bit = 0; bit < 8; bit++) {
@@ -49,8 +59,8 @@ void convertBMPto1BPP(uint8_t* bmpData, uint8_t* outputData, int width, int heig
                     uint8_t r = bmpData[bmpIndex + 2];
 
                     uint8_t gray = (r + g + b) / 3;
-                    if (gray < 128) {  // Чорний = 1, Білий = 0
-                        byte |= (1 << (7 - bit));  // Біти розміщуємо в правильному порядку
+                    if (gray < 128) {  
+                        byte |= (1 << (7 - bit));  
                     }
                 }
             }
@@ -60,7 +70,7 @@ void convertBMPto1BPP(uint8_t* bmpData, uint8_t* outputData, int width, int heig
 }
 
 
-// Перевірка, чи файл є BMP
+
 bool isBMPfile(const char* filepath) {
     const char* ext = strrchr(filepath, '.'); 
     if (ext && strcasecmp(ext, ".bmp") == 0)
@@ -68,7 +78,6 @@ bool isBMPfile(const char* filepath) {
     return false; 
 }
 
-// 🟢 ОСНОВНА ФУНКЦІЯ ЧИТАННЯ BMP-ФАЙЛУ
 void read_BMP(const char* filename) {
     SdFile bmpFile;
 
@@ -90,7 +99,7 @@ void read_BMP(const char* filename) {
         return;
     }
 
-    // 🟢 Виводимо інформацію про BMP-файл
+
     Serial.print("BMP Width: "); Serial.println(infoHeader.width);
     Serial.print("BMP Height: "); Serial.println(infoHeader.height);
     Serial.print("Bit Depth: "); Serial.println(infoHeader.bitDepth);
@@ -105,7 +114,7 @@ void read_BMP(const char* filename) {
     long pixelDataSize = fileHeader.fileSize - fileHeader.dataOffset;
 
     uint8_t* pixelData = (uint8_t*)malloc(pixelDataSize);
-    uint8_t* monoBitmap = (uint8_t*)malloc((128 * 64) / 8); // 1 біт на піксель
+    uint8_t* monoBitmap = (uint8_t*)malloc((128 * 64) / 8); 
 
     if (!pixelData || !monoBitmap) {
         Serial.println("Помилка виділення пам'яті!");
@@ -123,7 +132,6 @@ void read_BMP(const char* filename) {
     }
     Serial.println();
 
-    // 🟢 ВІДОБРАЖЕННЯ НА ДИСПЛЕЇ
     while(1){
         u8g2.clearBuffer();
         u8g2.drawXBM(0, 0, 128, 64, monoBitmap);

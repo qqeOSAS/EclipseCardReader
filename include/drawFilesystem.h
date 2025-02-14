@@ -1,3 +1,12 @@
+
+// This file contains functions and logic for navigating and displaying file system 
+// directories on a screen. It handles drawing directory contents, browsing files, 
+// and interacting with different types of files such as text, image, and binary files.
+// The primary function is DrawDirectoryStep(), which executes different steps for
+// file handling, like clearing the display buffer, listing files, displaying file names,
+// and processing user selection. The draw_directory() function periodically updates 
+// the screen based on a timer to ensure smooth user interaction.
+
 #ifndef DRAW_FILESYS
 #define DRAW_FILESYS
 
@@ -18,18 +27,17 @@ bool DrawDirectoryStep(char* directory){
             drawState.step++;
             break;
 
-        case 1:  // Отримання списку файлів
+        case 1:  // Getting files list
             drawState.fileCount = Files_list(directory, drawState.availableFiles);
             drawState.step++;
             break;
 
-        case 2:  // Відображення іконки вибору
+        case 2:  // Drawing selecting file icon
             drawState.result = draw_selecting_icon(1);
             drawState.step++;
             break;
 
-        case 3:  // Відображення імен файлів
-            
+        case 3:  // drawing file names      
             if(strcmp(directory,lastDirectory) != 0){
                 drawState.reset_page = true;
                 Serial.println("new DIR");
@@ -41,12 +49,12 @@ bool DrawDirectoryStep(char* directory){
             drawState.step++;
             break;
 
-        case 4:  // Інформація про директорію
+        case 4:  // Directory info
             draw_directory_info(directory);
             drawState.step++;
             break;
 
-        case 5:  // Обробка вибору файлу/каталогу
+        case 5:  // Processing file selecting
             drawState.selectedFileData = return_select_label(drawState.availableFiles, drawState.result.command, drawState.result.y, drawState.pageNum);
             if (drawState.selectedFileData.isSelected) {
                 char newDirectory[100];
@@ -60,6 +68,7 @@ bool DrawDirectoryStep(char* directory){
                     Serial.print("Entering directory: ");
                     Serial.println(directory);
                 }
+                
                 if(isTextFile(directory))
                     browse_txt_file(directory);
 
@@ -80,36 +89,34 @@ bool DrawDirectoryStep(char* directory){
 
             if (drawState.result.command == BACK) {
                 getParentDirectory(directory);
-                drawState.step = 0; // Скидаємо стан для виходу
-                return false;       // Вихід із функції
+                drawState.step = 0; 
+                return false;      
             }
 
             drawState.step++;
             break;
 
-        case 6:  // Надсилання буфера
+        case 6:  // Send draw buffer to display
             u8g2.sendBuffer();
-            drawState.step = 0; // Скидаємо стан після завершення
-            return false;       // Вихід із функції
+            drawState.step = 0; 
+            return false;     
     }
 
-    yield(); // Перерва для watchdog
-    return true; // Продовження виконання
+    yield(); 
+    return true; 
 }
 
 void draw_directory(){
-
     static unsigned long timer_1 = 0;
     unsigned long currentMillis = millis();
 
-    if (currentMillis - timer_1 >= 5) { // Частота оновлення
+    if (currentMillis - timer_1 >= 5) { 
         if (!DrawDirectoryStep(currentDirectory)) {
-            // Якщо всі кроки виконано, оновлення завершено
             timer_1 = currentMillis;
         }
     }
 
-    yield(); // Забезпечує переривання для WDT
+    yield(); 
 
 }
 

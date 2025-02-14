@@ -1,9 +1,11 @@
+// Button configurattion file
+
 #ifndef BUTTON_CON
 #define BUTTON_CON
 
 #include <Arduino.h>
 #include <GyverButton.h>
-
+//gpio definitions
 #define LIST_UP_BTN_PIN 16
 #define LIST_DOWN_BTN_PIN 2
 #define SELECT_BTN_PIN 0
@@ -36,16 +38,7 @@ void set_BTN_config(){
     Select_btn.setTickMode(MANUAL);
 
 
-
-
 }
-
-
-
-
-
-
-
 
 
 

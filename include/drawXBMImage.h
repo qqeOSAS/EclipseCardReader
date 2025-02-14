@@ -1,3 +1,9 @@
+// This file contains a function for displaying XBM (X Bitmap) images on the screen. 
+// !!!!!!!Max image resulution 128x64.!!!!!!
+// XBM images are typically used for simple monochrome bitmap graphics.
+// You can prepare image here   https://www.online-utility.org/image/convert/to/XBM
+
+
 #ifndef DRAW_XBM
 #define DRAW_XBM
 

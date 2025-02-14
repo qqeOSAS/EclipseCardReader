@@ -11,13 +11,13 @@ bool isXBMFile(const char* filepath);
 
 Draw_Image read_XBM_image(const char* filename) {
     SdFile XBM_file;
-    Draw_Image xbmImage = {0, 0, {0}}; // Ініціалізація структури
+    Draw_Image xbmImage = {0, 0, {0}}; 
     unsigned long startTime = micros();
 
     if (!XBM_file.open(filename, O_READ)) {
         Serial.print("Failed to open file: ");
         Serial.println(filename);
-        return xbmImage; // Повертаємо порожню структуру
+        return xbmImage; 
     }
       Serial.print("BIN READ START:");
     Serial.println(startTime);
@@ -26,13 +26,13 @@ Draw_Image read_XBM_image(const char* filename) {
     int byte_index = 0;
 
     while (XBM_file.available()) {
-        int len = XBM_file.fgets(line, sizeof(line)); // Читання рядка
+        int len = XBM_file.fgets(line, sizeof(line)); 
         if (len == 0) {
             Serial.println("Error reading line.");
             break;
         }
 
-        // Читання ширини та висоти
+       
         if (strncmp(line, "#define", 7) == 0) {
             if (strstr(line, "_width") != NULL) {
                 char *number = strrchr(line, ' ');
@@ -45,23 +45,23 @@ Draw_Image read_XBM_image(const char* filename) {
                     xbmImage.height = atoi(number);
                 }
             }
-            continue; // Пропускаємо обробку рядка для даних
+            continue; 
         }
 
-        // Читання шістнадцяткових значень
+        
         if (byte_index < sizeof(xbmImage.image_buffer)) {
             char *token = strtok(line, ", \n");
             while (token != NULL && byte_index < sizeof(xbmImage.image_buffer)) {
                 if (strstr(token, "0x") != NULL) {
-                    uint8_t value = strtol(token, NULL, 16); // Перетворення з 16-річного
-                    xbmImage.image_buffer[byte_index++] = value; // Записуємо в буфер
+                    uint8_t value = strtol(token, NULL, 16); 
+                    xbmImage.image_buffer[byte_index++] = value;
                 }
                 token = strtok(NULL, ", \n");
             }
         }
     }
 
-    XBM_file.close(); // Закриваємо файл після читання
+    XBM_file.close(); 
     unsigned long endTime = micros();
     long duration = (endTime - startTime) / 1000;
 

@@ -1,7 +1,13 @@
+// This file contains functions for reading and handling binary image files (.bin) stored on an SD card. . 
+// The `read_binary_image()` function reads a binary image file from the SD card in 1024-byte chunks and stores the data in a buffer. 
+// It also calculates the total number of pages in the image based on the file size.
+
+
 #ifndef BINARY_READ
 #define BINARY_READ
 
 #include <SDCardConfig.h>
+
 bool isBinFile(const char* filepath){
         const char* ext = strrchr(filepath, '.'); 
     if (ext) {
@@ -12,19 +18,18 @@ bool isBinFile(const char* filepath){
 }
 void print_binary_image(uint8_t* binImage) {
     Serial.println("Displaying first 64 bytes of the image buffer:");
-    
-    // Виводимо перші 64 байти з зображення
+    //first 64 bytes
     for (int i = 0; i < 64; i++) {
         if (i % 16 == 0) {
-            Serial.println();  // Додаємо новий рядок після кожних 16 байтів
+            Serial.println();
         }
-        Serial.print(binImage[i], HEX);  // Виводимо байт у шістнадцятковому форматі
+        Serial.print(binImage[i], HEX);  
         Serial.print(" ");
     }
-    Serial.println();  // Додаємо ще один новий рядок в кінці
+    Serial.println();  
 }
 
-
+//readding binary image
 Draw_Image read_binary_image(const char* filename,int page) {
 
     SdFile bin_file;
@@ -64,8 +69,6 @@ Draw_Image read_binary_image(const char* filename,int page) {
     Serial.print("Read Duration");
     Serial.print(duration);
     Serial.println("MS");
-      // Закриваємо файл після завершення
-    //print_binary_image(binImage.image_buffer);
 
     return binImage; 
 }

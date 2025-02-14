@@ -1,3 +1,8 @@
+//  This file contains a structure and functions for limiting and monitoring the FPS
+//  Used when binary frames opened as video
+
+
+
 #ifndef FPS_LIMITER
 #define FPS_LIMITER
 #include <Arduino.h>
