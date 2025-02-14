@@ -11,7 +11,8 @@ This project is designed to read data from an SD card and display it on an ESP82
 
 - Open-source project — feel free to contribute with pull requests.
 
-- You can even play monocrome video in binary format on it https://github.com/user-attachments/assets/6ab3960a-5d0c-4b49-a16e-c42f48a2fc2a
+- You can even play monocrome video in binary format on it
+  https://github.com/user-attachments/assets/6ab3960a-5d0c-4b49-a16e-c42f48a2fc2a
 
 
 
