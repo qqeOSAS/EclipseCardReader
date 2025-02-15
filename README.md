@@ -26,18 +26,16 @@ This project is designed to read data from an SD card and display it on an ESP82
 
 ## Installation
 
-1. **Set up your ESP8266**:
-   - Install the [ESP8266 board package](https://github.com/esp8266/Arduino) in the Arduino IDE or PlatformIO.
    
-2. **Install necessary libraries**:
+1. **Install necessary libraries**:
    - Install the `U8g2` library for handling displays.
    - Install `SD` library for reading from the SD card.
    
-3. **Connect the SD card and display**:
+2. **Connect the SD card and display**:
    - Ensure your SD card module is connected to the ESP8266.
    - Connect your display module (OLED or TFT) to the ESP8266.
 
-4. **Upload the code**:
+3. **Upload the code**:
    - Open the Arduino IDE, load the project files, and upload the sketch to your ESP8266.
 
 ## Usage
@@ -54,10 +52,10 @@ Once the project is set up, the device will read files from the SD card and disp
 - More file format support.
 - Enhanced navigation and file management features.
 - Optimization for large files and better performance.
-- Comunicating with phone program by wifi
+- Wifi communication
 - Hacking tools
 - Games
-- Usefull aplications
+- Usefull applications
 
 ## Contributing
 
