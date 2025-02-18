@@ -35,8 +35,8 @@ struct __attribute__((packed)) BMPInfoHeader {
     uint32_t importantColors;
 };
 
-
-uint8_t reverseByte(uint8_t byte) {
+uint8_t swapBits(uint8_t byte) {
+    // Інверсія порядку бітів
     byte = (byte & 0xF0) >> 4 | (byte & 0x0F) << 4;
     byte = (byte & 0xCC) >> 2 | (byte & 0x33) << 2;
     byte = (byte & 0xAA) >> 1 | (byte & 0x55) << 1;
@@ -45,7 +45,7 @@ uint8_t reverseByte(uint8_t byte) {
 
 void convertBMPto1BPP(uint8_t* bmpData, uint8_t* outputData, int width, int height) {
     int bmpHeaderSize = 54;
-    int bmpRowSize = (width * 3 + 3) & ~3;
+    int bmpRowSize = (width * 3 + 3) & ~3;  // Вирівнювання до 4 байтів
     int outputIndex = 0;
 
     for (int y = 0; y < height; y++) {  
@@ -53,6 +53,7 @@ void convertBMPto1BPP(uint8_t* bmpData, uint8_t* outputData, int width, int heig
             uint8_t byte = 0;
             for (int bit = 0; bit < 8; bit++) {
                 if (x + bit < width) {
+                    // Правильний розрахунок індексу для зворотного порядку рядків
                     int bmpIndex = bmpHeaderSize + (height - 1 - y) * bmpRowSize + (x + bit) * 3;
                     uint8_t b = bmpData[bmpIndex];
                     uint8_t g = bmpData[bmpIndex + 1];
@@ -60,7 +61,7 @@ void convertBMPto1BPP(uint8_t* bmpData, uint8_t* outputData, int width, int heig
 
                     uint8_t gray = (r + g + b) / 3;
                     if (gray < 128) {  
-                        byte |= (1 << (7 - bit));  
+                        byte |= (1 << (7 - bit));  // Правильний порядок бітів
                     }
                 }
             }
@@ -69,18 +70,13 @@ void convertBMPto1BPP(uint8_t* bmpData, uint8_t* outputData, int width, int heig
     }
 }
 
-
-
 bool isBMPfile(const char* filepath) {
     const char* ext = strrchr(filepath, '.'); 
-    if (ext && strcasecmp(ext, ".bmp") == 0)
-        return true;
-    return false; 
+    return (ext && strcasecmp(ext, ".bmp") == 0);
 }
 
 void read_BMP(const char* filename) {
     SdFile bmpFile;
-
     BMPFileHeader fileHeader;
     BMPInfoHeader infoHeader;
 
@@ -99,22 +95,19 @@ void read_BMP(const char* filename) {
         return;
     }
 
-
-    Serial.print("BMP Width: "); Serial.println(infoHeader.width);
-    Serial.print("BMP Height: "); Serial.println(infoHeader.height);
-    Serial.print("Bit Depth: "); Serial.println(infoHeader.bitDepth);
-    
     if (infoHeader.bitDepth != 24) {
         Serial.println("Цей BMP має бути 24-бітним!");
         bmpFile.close();
         return;
     }
 
+    int width = infoHeader.width;
+    int height = infoHeader.height;
     bmpFile.seekSet(fileHeader.dataOffset);
     long pixelDataSize = fileHeader.fileSize - fileHeader.dataOffset;
 
     uint8_t* pixelData = (uint8_t*)malloc(pixelDataSize);
-    uint8_t* monoBitmap = (uint8_t*)malloc((128 * 64) / 8); 
+    uint8_t* monoBitmap = (uint8_t*)malloc((width * height) / 8);
 
     if (!pixelData || !monoBitmap) {
         Serial.println("Помилка виділення пам'яті!");
@@ -123,7 +116,7 @@ void read_BMP(const char* filename) {
     }
 
     bmpFile.read(pixelData, pixelDataSize);
-    convertBMPto1BPP(pixelData, monoBitmap, 128, 64);
+    convertBMPto1BPP(pixelData, monoBitmap, width, height);
 
     Serial.println("Mono Bitmap (перші 16 байтів):");
     for (int i = 0; i < 16; i++) {
@@ -132,9 +125,9 @@ void read_BMP(const char* filename) {
     }
     Serial.println();
 
-    while(1){
+    while (1) {
         u8g2.clearBuffer();
-        u8g2.drawXBM(0, 0, 128, 64, monoBitmap);
+        u8g2.drawXBM(0, 0, width, height, monoBitmap);
         u8g2.sendBuffer();
     }
 
@@ -143,4 +136,5 @@ void read_BMP(const char* filename) {
     bmpFile.close();
 }
 
-#endif
+
+#endif 

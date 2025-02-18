@@ -3,7 +3,7 @@
 #include <SdCard_utils.h>
 #include <drawFilesystem.h>
 #include <DisplayConfig.h>
-#include <button.h>
+#include <MainScreenBrowser.h>
  
 
 
@@ -35,6 +35,8 @@ void setup() {
 }
 
 void loop() {
-    draw_directory();
+
+   // draw_directory();
+   draw_main_screen();
     
 }
