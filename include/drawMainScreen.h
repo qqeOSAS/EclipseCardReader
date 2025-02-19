@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include <DisplayConfig.h>
 #include <Bitmaps.h>
-#include <drawAnimation.h>
+#include <Icon_animations.h>
 
 
 
@@ -33,6 +33,8 @@ void draw_main_screen(){
         
         u8g2.setColorIndex(1);
         draw_sd_card_icon_animation();
+        draw_WiFi_icon_animation();
+        draw_setings_icon_animation();
 
         
         u8g2.sendBuffer();
