@@ -5,6 +5,7 @@
 #include <DisplayConfig.h>
 #include <Bitmaps.h>
 #include <Icon_animations.h>
+#include <UserInputs.h>
 
 
 
@@ -22,6 +23,12 @@ void draw_main_screen_frame(){
     u8g2.drawXBMP(0,0,128,64,main_screen_frames_bitmap_128x64);
 
 }
+void draw_main_screen_selecting_icon(){
+    u8g2.drawRFrame(1,27,30,37,5);
+    u8g2.drawRFrame(35,27,30,37,5);
+    u8g2.drawRFrame(69,27,30,37,5);
+
+}
 
 
 
@@ -32,9 +39,11 @@ void draw_main_screen(){
         draw_Clock("11:15PM");
         
         u8g2.setColorIndex(1);
+
         draw_sd_card_icon_animation();
         draw_WiFi_icon_animation();
         draw_setings_icon_animation();
+        draw_main_screen_selecting_icon();
 
         
         u8g2.sendBuffer();
