@@ -45,12 +45,13 @@ void draw_main_screen(){
         int command = serial_command();
         Selected_Icon_Info icon_info = get_select_icon(command);
 
+
         u8g2.clearBuffer();
         draw_main_screen_frame();
         draw_Clock("11:15PM");
-        draw_sd_card_icon_animation();
-        draw_WiFi_icon_animation();
-        draw_setings_icon_animation();
+        draw_sd_card_icon_animation(icon_info.draw_anim1);
+        draw_WiFi_icon_animation(icon_info.draw_anim2);
+        draw_setings_icon_animation(icon_info.draw_anim3);
         draw_main_screen_selecting_icon(icon_info.select_icon_num);
 
         if(icon_info.selected_b){
