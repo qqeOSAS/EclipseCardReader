@@ -119,6 +119,17 @@ void draw_directory(){
     yield(); 
 
 }
+void displaySDFileSystem(){
+
+    while(!Select_btn.isHold() && !listUP_btn.isHold()){
+        Select_btn.tick();
+        listUP_btn.tick();
+        ESP.wdtDisable();
+        draw_directory();
+        ESP.wdtEnable(WDTO_8S);
+    }
+
+}
 
 
 
