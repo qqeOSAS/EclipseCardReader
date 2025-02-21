@@ -120,7 +120,7 @@ void draw_directory(){
 
 }
 void displaySDFileSystem(){
-
+///////////////костиль!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     while(!Select_btn.isHold() && !listUP_btn.isHold()){
         Select_btn.tick();
         listUP_btn.tick();
