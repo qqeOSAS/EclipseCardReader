@@ -175,6 +175,38 @@ void draw_directory_info(const char* directory){
     }
     u8g2.setColorIndex(1);
 }
+void draw_insert_SD_screen(){
+    unsigned long currentTime = millis();
+    static unsigned long timer_1 = 0;
+    u8g2.clearBuffer();
+
+    u8g2.setColorIndex(1);
+    u8g2.drawBox(0,0,128,10);
+    u8g2.setColorIndex(0);
+    u8g2.setFontMode(1);
+    u8g2.setFont(u8g2_font_6x13_t_cyrillic);
+
+
+    int str_widht = u8g2.getUTF8Width("/SD card not detected.Please insert Card");
+
+    static int x_pos = 0;
+    u8g2.setCursor(x_pos,9);
+
+    //sligting if path str longer then screen size
+    if(str_widht > 126){
+        x_pos -= 1;
+        if(x_pos < -str_widht - 30)
+            x_pos = 130;
+        
+    }
+    else
+        x_pos = 0;
+
+    u8g2.print("/SD card not detected.Please insert Card");
+
+
+    u8g2.sendBuffer();
+}
 
 
 #endif

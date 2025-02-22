@@ -14,6 +14,7 @@
 #include <XBMImagebrowser.h>
 #include <txtFilesbrowser.h>
 #include <BMPImageBrowser.h>
+#include <drawFileMenu.h>
 
 
 bool DrawDirectoryStep(char* directory);
@@ -119,14 +120,33 @@ void draw_directory(){
     yield(); 
 
 }
+
 void displaySDFileSystem(){
 ///////////////костиль!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    while(!Select_btn.isHold() && !listUP_btn.isHold()){
-        Select_btn.tick();
-        listUP_btn.tick();
-        ESP.wdtDisable();
-        draw_directory();
-        ESP.wdtEnable(WDTO_8S);
+    if(!begin_SD()){
+        bool begin_sd_b = false;
+        while(!begin_sd_b){
+            ESP.wdtDisable();
+            static unsigned long timer_1  = 0;
+            unsigned long curt_millis = millis();
+
+            if(curt_millis - timer_1 >= 2000){
+                begin_sd_b = begin_SD();
+                timer_1 = curt_millis;
+            }
+
+            draw_insert_SD_screen();
+            ESP.wdtEnable(WDTO_8S);
+        }
+    }
+
+    if(begin_SD()){
+        while(!listDown_btn.isHold()){
+            listDown_btn.tick();
+            ESP.wdtDisable();
+            draw_directory();
+            ESP.wdtEnable(WDTO_8S);
+        }
     }
 
 }
