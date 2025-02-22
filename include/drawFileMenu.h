@@ -84,10 +84,6 @@ SelectedFile return_select_label(char files_arr[][30], int command, int y, int p
     return selectedFile;
 }
 
-
-
-
-
 int draw_file_names(char files_arr[][30], int count, int status,bool reset_page) {
     u8g2.setFont(u8g2_font_5x8_t_cyrillic);
 
@@ -176,8 +172,6 @@ void draw_directory_info(const char* directory){
     u8g2.setColorIndex(1);
 }
 void draw_insert_SD_screen(){
-    unsigned long currentTime = millis();
-    static unsigned long timer_1 = 0;
     u8g2.clearBuffer();
 
     u8g2.setColorIndex(1);

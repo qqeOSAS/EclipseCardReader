@@ -13,6 +13,7 @@ void browse_txt_file(char* directory){
     int page = 0;
     readTextFile(directory,page);
     while(drawState.result.command != BACK){
+        ESP.wdtDisable();
         bool read_next_page = false;
         switch(drawState.result.command){
             case LIST_DOWN_MENU:
@@ -34,7 +35,7 @@ void browse_txt_file(char* directory){
         draw_text_file(directory,text_file_page_buffer);
 
 
-        yield();
+        ESP.wdtEnable(WDTO_8S);
     }
     for (int i = 0; i < sizeof(text_file_page_buffer); i++) {
         text_file_page_buffer[i] = '\0';
