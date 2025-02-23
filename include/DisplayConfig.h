@@ -21,7 +21,8 @@ struct CommandData {
 };
 struct SelectedFile {
     bool isSelected;  
-    char fileName[30];  
+    char fileName[30];
+    int fileIndex;  
 };
 struct DrawState {
     int step = 0;         

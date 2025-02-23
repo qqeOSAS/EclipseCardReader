@@ -55,8 +55,8 @@ SelectedFile return_select_label(char files_arr[][30], int command, int y, int p
 
     int corrector = (page_num - 1) * 5;  
     selectedFile.isSelected = false;
-
     selectedFile.fileName[0] = '\0';  
+    selectedFile.fileIndex = -1;
 
     if (command == SELECT) {
         selectedFile.isSelected = true; 
@@ -64,23 +64,31 @@ SelectedFile return_select_label(char files_arr[][30], int command, int y, int p
         switch (y) {
             case PAGE_Y_0:
                 strcpy(selectedFile.fileName, files_arr[0 + corrector]);  
+                selectedFile.fileIndex = 0 + corrector;
                 break;
             case PAGE_Y_1:
                 strcpy(selectedFile.fileName, files_arr[1 + corrector]);
+                selectedFile.fileIndex = 1 + corrector;
                 break;
             case PAGE_Y_2:
                 strcpy(selectedFile.fileName, files_arr[2 + corrector]);
+                selectedFile.fileIndex = 2 + corrector;
                 break;
             case PAGE_Y_3:
                 strcpy(selectedFile.fileName, files_arr[3 + corrector]);
+                selectedFile.fileIndex = 3 + corrector;
                 break;
             case PAGE_Y_4:
                 strcpy(selectedFile.fileName, files_arr[4 + corrector]);
+                selectedFile.fileIndex = 4 + corrector;
                 break;
         }
     }
 
-    Serial.println(selectedFile.fileName);
+    Serial.print("Selected file: ");
+    Serial.print(selectedFile.fileName);
+    Serial.print(" at index: ");
+    Serial.println(selectedFile.fileIndex);
     return selectedFile;
 }
 

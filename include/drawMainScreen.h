@@ -8,6 +8,7 @@
 #include <UserInputs.h>
 #include <User_Interface/main_screen_user_inputs.h>
 #include <drawSDFilesSystem.h>
+#include <drawWifi_options.h>
 
 
 
@@ -58,6 +59,9 @@ void draw_main_screen(){
             switch(icon_info.select_icon_num){
                 case 0:
                     displaySDFileSystem();  break;
+                case 1:
+                    displayWiFiOptions(); break;
+                    break;
             }
         }
 
