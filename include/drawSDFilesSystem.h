@@ -141,8 +141,10 @@ void displaySDFileSystem(){
     }
 
     if(begin_SD()){
-        while(!listDown_btn.isHold()){
+        while(1){
             listDown_btn.tick();
+            if(listDown_btn.isHold())
+                break;
             ESP.wdtDisable();
             draw_directory();
             ESP.wdtEnable(WDTO_8S);

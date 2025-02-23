@@ -61,7 +61,6 @@ void draw_main_screen(){
                     displaySDFileSystem();  break;
                 case 1:
                     displayWiFiOptions(); break;
-                    break;
             }
         }
 

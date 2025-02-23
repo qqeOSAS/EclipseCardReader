@@ -85,10 +85,6 @@ SelectedFile return_select_label(char files_arr[][30], int command, int y, int p
         }
     }
 
-    Serial.print("Selected file: ");
-    Serial.print(selectedFile.fileName);
-    Serial.print(" at index: ");
-    Serial.println(selectedFile.fileIndex);
     return selectedFile;
 }
 
@@ -209,6 +205,7 @@ void draw_insert_SD_screen(){
 
     u8g2.sendBuffer();
 }
+
 
 
 #endif
