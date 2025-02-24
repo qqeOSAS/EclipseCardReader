@@ -137,8 +137,6 @@ int Files_list(const char* directory, char files_arr[][30]) {
     return file_count; 
 }
 
-
-
 void copyToArray(char original[][30], int count, char destination[][30]) {
     for (int i = 0; i < count; i++) {
         strcpy(destination[i], original[i]); 
@@ -183,6 +181,15 @@ bool isHEADER_File(const char* filepath){
     return false;
 }
 
+unsigned long get_file_size(const char* filepath){
+    SdFile file;
+    if (file.open(filepath, O_RDONLY)) {
+        unsigned long size = file.fileSize();
+        file.close();
+        return size;
+    }
+    return 0;
+}
 
 
 #endif

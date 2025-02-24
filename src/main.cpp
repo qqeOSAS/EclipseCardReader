@@ -4,6 +4,7 @@
 #include <drawSDFilesSystem.h>
 #include <DisplayConfig.h>
 #include <MainScreenBrowser.h>
+#include <drawFileMenu.h>
  
 
 
@@ -29,14 +30,15 @@ void setup() {
 
   // Читання з файлу
 
-    
+  draw_main_screen();
 
 
 }
 
 void loop() {
+    draw_file_properties("data.txt");
 
    // draw_directory();
-   draw_main_screen();
+   //draw_main_screen();
     
 }

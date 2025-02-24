@@ -205,7 +205,22 @@ void draw_insert_SD_screen(){
 
     u8g2.sendBuffer();
 }
-
+void draw_file_properties(const char* file_name){
+    unsigned long file_size = get_file_size(file_name);
+    u8g2.clearBuffer();
+    u8g2.setColorIndex(1);
+    draw_directory_info(("File properties/" + String(file_name)).c_str());
+    u8g2.setFont(u8g2_font_5x8_t_cyrillic);
+    u8g2.setCursor(0,20);
+    u8g2.print("File name: ");
+    u8g2.print(file_name);
+    u8g2.drawLine(0,21,128,21);
+    u8g2.setCursor(0,30);
+    u8g2.print("File size: ");
+    u8g2.print(file_size);
+    u8g2.drawLine(0,31,128,31);
+    u8g2.sendBuffer();
+}
 
 
 #endif
