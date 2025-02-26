@@ -2,6 +2,8 @@
 #define SD_UTILS
 
 #include <SDCardConfig.h>
+#include <SdFat.h>
+#include <SdFatConfig.h>
 
 char lastDirectory[200] = "/";
 char currentDirectory[200] = "/";
@@ -181,15 +183,44 @@ bool isHEADER_File(const char* filepath){
     return false;
 }
 
-unsigned long get_file_size(const char* filepath){
-    SdFile file;
-    if (file.open(filepath, O_RDONLY)) {
-        unsigned long size = file.fileSize();
-        file.close();
-        return size;
+bool deleteFile(const char* filepath) {
+    if (sd.remove(filepath)) {
+        Serial.print("Файл успішно видалено: ");
+        Serial.println(filepath);
+        return true;
+    } else {
+        Serial.print("Не вдалося видалити файл: ");
+        Serial.println(filepath);
+        return false;
     }
-    return 0;
 }
 
+struct FileProperties{
+    unsigned long size;
+    uint16_t creation_date;
+    uint16_t creation_time;
+    uint16_t lastWrite_date;
+    uint16_t lastWrite_time;
+    uint8_t attributes;
+};
 
+FileProperties get_file_properties(const char* filepath){
+    SdFile file;
+    FileProperties properties = {0, 0, 0, 0, 0, 0};
+    
+    if (file.open(filepath, O_RDONLY)) {
+        DirFat_t dir;
+        file.dirEntry(&dir);
+        properties.creation_date = *dir.createDate;
+        properties.creation_time = *dir.createTime;
+        properties.lastWrite_date = *dir.modifyDate;
+        properties.lastWrite_time = *dir.modifyTime;
+        properties.attributes = dir.attributes;
+
+        properties.size = file.fileSize();
+
+        file.close();
+    }
+    return properties;
+}
 #endif
