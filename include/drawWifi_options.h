@@ -80,7 +80,6 @@ void draw_options(){
     yield(); 
 
 }
-
 void displayWiFiOptions(){
     while(1){
         listDown_btn.tick();
