@@ -85,6 +85,31 @@ SelectedFile return_select_label(char files_arr[][30], int command, int y, int p
                 break;
         }
     }
+    if(command == OPEN_FILE_PROPERTIES){
+        selectedFile.openProperties = true;
+        switch (y) {
+            case PAGE_Y_0:
+                strcpy(selectedFile.fileName, files_arr[0 + corrector]);  
+                selectedFile.fileIndex = 0 + corrector;
+                break;
+            case PAGE_Y_1:
+                strcpy(selectedFile.fileName, files_arr[1 + corrector]);
+                selectedFile.fileIndex = 1 + corrector;
+                break;
+            case PAGE_Y_2:
+                strcpy(selectedFile.fileName, files_arr[2 + corrector]);
+                selectedFile.fileIndex = 2 + corrector;
+                break;
+            case PAGE_Y_3:
+                strcpy(selectedFile.fileName, files_arr[3 + corrector]);
+                selectedFile.fileIndex = 3 + corrector;
+                break;
+            case PAGE_Y_4:
+                strcpy(selectedFile.fileName, files_arr[4 + corrector]);
+                selectedFile.fileIndex = 4 + corrector;
+                break;
+        }
+    }
 
     return selectedFile;
 }
@@ -207,39 +232,58 @@ void draw_insert_SD_screen(){
     u8g2.sendBuffer();
 }
 
-void draw_file_properties(const char* file_name){
-    FileProperties file_properties = get_file_properties(file_name);
-    static selected_user_option user_option = {false,0};
-    int command = serial_command();
+void draw_file_properties(char* file_name){
+    while(1){
+        ESP.wdtDisable();
+        FileProperties file_properties = get_file_properties(file_name);
+        static selected_user_option user_option = {false,0};
+        int command = serial_command();
 
-    u8g2.clearBuffer();
-    u8g2.setColorIndex(1);
+        u8g2.clearBuffer();
+        u8g2.setColorIndex(1);
 
-    draw_directory_info(("File properties/" + String(file_name)).c_str());
+        draw_directory_info(("File properties/" + String(file_name)).c_str());
 
-    u8g2.setFont(u8g2_font_5x8_t_cyrillic);
+        u8g2.setFont(u8g2_font_5x8_t_cyrillic);
 
-    u8g2.setCursor(0,20); u8g2.print("File name: "); u8g2.print(file_name);
-    u8g2.drawLine(0,21,128,21);
+        u8g2.setCursor(0,20); u8g2.print("File name: "); u8g2.print(file_name);
+        u8g2.drawLine(0,21,128,21);
 
-    u8g2.setCursor(0,30); u8g2.print("File size: "); u8g2.print(file_properties.size); u8g2.print(" bytes");
-    u8g2.drawLine(0,31,128,31);
+        u8g2.setCursor(0,30); u8g2.print("File size: "); u8g2.print(file_properties.size); u8g2.print(" bytes");
+        u8g2.drawLine(0,31,128,31);
 
-    u8g2.setCursor(0,40); u8g2.print("Creation Time: "); u8g2.print(file_properties.creation_date); u8g2.print(file_properties.creation_time);
-    u8g2.drawLine(0,41,128,41);
+        u8g2.setCursor(0,40); u8g2.print("Created:"); 
+        u8g2.print(file_properties.creation_time_day);
+        u8g2.print(".");
+        u8g2.print(file_properties.creation_time_month);
+        u8g2.print(".");
+        u8g2.print(file_properties.creation_time_year);
+        u8g2.print(" ");
+        u8g2.print(file_properties.creation_time_hours);
+        u8g2.print(":");
+        u8g2.print(file_properties.creation_time_minutes);
+        u8g2.print(":");
+        u8g2.print(file_properties.creation_time_seconds);
 
-    u8g2.setCursor(0,50); u8g2.print("Attributes "); u8g2.print(file_properties.attributes);
-    u8g2.drawLine(0,51,128,51);
-    user_option = draw_files_properties_menu_user(command);
+        u8g2.drawLine(0,41,128,41);
 
-    Serial.print("User option: ");
-    Serial.println(user_option.selected_option);
-    Serial.print("User selected: ");
-    Serial.println(user_option.is_selected);
+        u8g2.setCursor(0,50); u8g2.print("Attributes "); u8g2.print(file_properties.attributes);
+        u8g2.drawLine(0,51,128,51);
+        user_option = draw_files_properties_menu_user(command);
+
+        Serial.print("User option: ");
+        Serial.println(user_option.selected_option);
+        Serial.print("User selected: ");
+        Serial.println(user_option.is_selected);
+
+        if(user_option.is_selected && !user_option.selected_option)
+            break;
+          
     
 
-    
-    u8g2.sendBuffer();
+        ESP.wdtDisable();
+        u8g2.sendBuffer();
+    }
 }
 
 

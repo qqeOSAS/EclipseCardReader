@@ -36,9 +36,9 @@ void setup() {
 }
 
 void loop() {
-    draw_file_properties("data.txt");
+    //draw_file_properties("data.txt");
 
    // draw_directory();
-   //draw_main_screen();
+   draw_main_screen();
     
 }

@@ -197,11 +197,16 @@ bool deleteFile(const char* filepath) {
 
 struct FileProperties{
     unsigned long size;
-    uint16_t creation_date;
-    uint16_t creation_time;
+    uint8_t creation_time_day;
+    uint8_t creation_time_month;
+    uint16_t creation_time_year;
+    uint8_t creation_time_hours;
+    uint8_t creation_time_minutes;
+    uint8_t creation_time_seconds;
     uint16_t lastWrite_date;
     uint16_t lastWrite_time;
     uint8_t attributes;
+
 };
 
 FileProperties get_file_properties(const char* filepath){
@@ -211,8 +216,26 @@ FileProperties get_file_properties(const char* filepath){
     if (file.open(filepath, O_RDONLY)) {
         DirFat_t dir;
         file.dirEntry(&dir);
-        properties.creation_date = *dir.createDate;
-        properties.creation_time = *dir.createTime;
+
+        uint16_t raw_creation_time = *dir.createTime;
+        uint16_t raw_creating_date = *dir.createDate;
+
+    //    Bits   | 15-9  | 8-5  | 4-0  |
+    //    Field  | Year  | Month | Day |
+
+    //    Bits  | 15-11 | 10-5  | 4-0  |
+    //    Field | Hours | Min   | Sec/2 |
+      
+
+
+        properties.creation_time_year = ((raw_creating_date >> 9) & 0x7F) + 1980; // Витягуємо рік (7 біт) і додаємо 1980
+        properties.creation_time_month = (raw_creating_date >> 5) & 0x0F;          // Витягуємо місяць (4 біти)
+        properties.creation_time_day = raw_creating_date & 0x1F;  
+
+        properties.creation_time_hours = (raw_creation_time >> 11) & 0x1F;  // Витягуємо години (5 біт)
+        properties.creation_time_minutes = (raw_creation_time >> 5) & 0x3F;   // Витягуємо хвилини (6 біт)
+        properties.creation_time_seconds = (raw_creation_time & 0x1F) * 2;    // Витягуємо секунди (5 біт) і множимо на 2
+
         properties.lastWrite_date = *dir.modifyDate;
         properties.lastWrite_time = *dir.modifyTime;
         properties.attributes = dir.attributes;

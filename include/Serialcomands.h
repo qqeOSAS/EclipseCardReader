@@ -6,6 +6,7 @@
 #define SELECT 3
 #define BACK 4
 #define OPEN_PLAYER 5
+#define OPEN_FILE_PROPERTIES 6
 
 
 

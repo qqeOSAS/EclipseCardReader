@@ -21,8 +21,9 @@ struct CommandData {
 };
 struct SelectedFile {
     bool isSelected;  
-    char fileName[30];
-    int fileIndex;  
+    char fileName[60];
+    int fileIndex; 
+    bool openProperties = false;
 };
 struct DrawState {
     int step = 0;         
@@ -32,6 +33,7 @@ struct DrawState {
     bool reset_page = false;
     CommandData result;
     SelectedFile selectedFileData;
+    
 };
 DrawState drawState;
 

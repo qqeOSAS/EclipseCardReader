@@ -87,6 +87,9 @@ bool DrawDirectoryStep(char* directory){
                 
                 
             }
+            if(drawState.selectedFileData.openProperties){
+                draw_file_properties(drawState.selectedFileData.fileName);
+            }
 
             if (drawState.result.command == BACK) {
                 getParentDirectory(directory);
@@ -96,8 +99,9 @@ bool DrawDirectoryStep(char* directory){
 
             drawState.step++;
             break;
-
-        case 6:  // Send draw buffer to display
+        case 6: 
+        Serial.print("ФАЙЛ:");
+        Serial.print(drawState.selectedFileData.openProperties); // Send draw buffer to display
             u8g2.sendBuffer();
             drawState.step = 0; 
             return false;     
