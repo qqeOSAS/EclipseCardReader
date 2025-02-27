@@ -88,7 +88,7 @@ bool DrawDirectoryStep(char* directory){
                 
             }
             if(drawState.selectedFileData.openProperties ){
-                if(!isDirectory(drawState.selectedFileData.fileName))
+                //if(!isDirectory(drawState.selectedFileData.fileName))
                     draw_file_properties(drawState.selectedFileData.fileName);
             }
 

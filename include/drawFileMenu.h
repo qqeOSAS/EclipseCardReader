@@ -263,12 +263,32 @@ void draw_file_properties(char* file_name){
         u8g2.print(file_properties.creation_time_hours);
         u8g2.print(":");
         u8g2.print(file_properties.creation_time_minutes);
-        u8g2.print(":");
-        u8g2.print(file_properties.creation_time_seconds);
 
         u8g2.drawLine(0,41,128,41);
 
-        u8g2.setCursor(0,50); u8g2.print("Attributes "); u8g2.print(file_properties.attributes);
+        u8g2.setCursor(0,50); u8g2.print("Attributes: ");
+        switch (file_properties.attributes){
+            case 0x00:
+                u8g2.print("Normal");break;
+            case 0x01:
+                u8g2.print("Read only");break;
+            case 0x02:
+                u8g2.print("Hidden");break;
+            case 0x04:
+                u8g2.print("System");break;
+            case 0x08:
+                u8g2.print("Volume label");break;
+            case 0x10:
+                u8g2.print("Directory");break;
+            case 0x16:
+                u8g2.print("Dir.Hiden.Sys");break;
+            case 0x20:
+                u8g2.print("Archive");break;
+            case 0x22:
+                u8g2.print("Archive and hidden");break;
+            case 0x30:
+                u8g2.print("Long file name");break;
+        }
         u8g2.drawLine(0,51,128,51);
         user_option = draw_files_properties_menu_user(command);
 
