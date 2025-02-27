@@ -43,17 +43,17 @@ selected_user_option draw_files_properties_menu_user(int command) {
     }
 
     u8g2.setColorIndex(1); // Set color index to 0 before drawing the box
-    u8g2.drawRBox(0, 53, 128, 14, 4);
+    u8g2.drawBox(0, 53, 128, 14);
 
     u8g2.setColorIndex(0); // Set color index to 1 before drawing the frames and text
     switch (selected_icon) {
         case 0:
-            u8g2.drawRFrame(0, 52, 64, 13, 4); 
+            u8g2.drawRFrame(-2, 52, 64, 12, 4); 
             // Debug: Print the frame being drawn for case 0
             //Serial.println("Drawing frame for option 0");
             break;
         case 1:
-            u8g2.drawRFrame(64, 52, 68, 13, 4); 
+            u8g2.drawRFrame(64, 52, 68, 12, 4); 
             // Debug: Print the frame being drawn for case 1
             //Serial.println("Drawing frame for option 1");
             break;

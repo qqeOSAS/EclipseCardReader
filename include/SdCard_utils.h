@@ -209,35 +209,38 @@ struct FileProperties{
 
 };
 
-FileProperties get_file_properties(const char* filepath){
+FileProperties get_file_properties(const char* filepath) {
     SdFile file;
     FileProperties properties = {0, 0, 0, 0, 0, 0};
-    
+
     if (file.open(filepath, O_RDONLY)) {
         DirFat_t dir;
         file.dirEntry(&dir);
 
-        uint16_t raw_creation_time = *dir.createTime;
-        uint16_t raw_creating_date = *dir.createDate;
+        uint16_t raw_creation_time = *reinterpret_cast<uint16_t*>(dir.createTime);
+        uint16_t raw_creating_date = *reinterpret_cast<uint16_t*>(dir.createDate);
 
-    //    Bits   | 15-9  | 8-5  | 4-0  |
-    //    Field  | Year  | Month | Day |
+        // Перевіряємо, чи createDate існує, якщо ні - беремо modifyDate
+        if (raw_creating_date == 0) {
+            raw_creating_date = *reinterpret_cast<uint16_t*>(dir.modifyDate);
+        }
+        if (raw_creation_time == 0) {
+            raw_creation_time = *reinterpret_cast<uint16_t*>(dir.modifyTime);
+        }
 
-    //    Bits  | 15-11 | 10-5  | 4-0  |
-    //    Field | Hours | Min   | Sec/2 |
-      
+        //printf("raw_creating_date = 0x%04X\n", raw_creating_date);
+       // printf("raw_creation_time = 0x%04X\n", raw_creation_time);
 
+        properties.creation_time_year = ((raw_creating_date >> 9) & 0x7F) + 1980;
+        properties.creation_time_month = (raw_creating_date >> 5) & 0x0F;
+        properties.creation_time_day = raw_creating_date & 0x1F;
 
-        properties.creation_time_year = ((raw_creating_date >> 9) & 0x7F) + 1980; // Витягуємо рік (7 біт) і додаємо 1980
-        properties.creation_time_month = (raw_creating_date >> 5) & 0x0F;          // Витягуємо місяць (4 біти)
-        properties.creation_time_day = raw_creating_date & 0x1F;  
+        properties.creation_time_hours = (raw_creation_time >> 11) & 0x1F;
+        properties.creation_time_minutes = (raw_creation_time >> 5) & 0x3F;
+        properties.creation_time_seconds = (raw_creation_time & 0x1F) * 2;
 
-        properties.creation_time_hours = (raw_creation_time >> 11) & 0x1F;  // Витягуємо години (5 біт)
-        properties.creation_time_minutes = (raw_creation_time >> 5) & 0x3F;   // Витягуємо хвилини (6 біт)
-        properties.creation_time_seconds = (raw_creation_time & 0x1F) * 2;    // Витягуємо секунди (5 біт) і множимо на 2
-
-        properties.lastWrite_date = *dir.modifyDate;
-        properties.lastWrite_time = *dir.modifyTime;
+        properties.lastWrite_date = *reinterpret_cast<uint16_t*>(dir.modifyDate);
+        properties.lastWrite_time = *reinterpret_cast<uint16_t*>(dir.modifyTime);
         properties.attributes = dir.attributes;
 
         properties.size = file.fileSize();
@@ -246,4 +249,5 @@ FileProperties get_file_properties(const char* filepath){
     }
     return properties;
 }
+
 #endif
