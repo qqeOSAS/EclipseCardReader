@@ -15,6 +15,7 @@
 #include <txtFilesbrowser.h>
 #include <BMPImageBrowser.h>
 #include <drawFileMenu.h>
+#include <File properties browser/draw_Properties.h>
 
 
 bool DrawDirectoryStep(char* directory);

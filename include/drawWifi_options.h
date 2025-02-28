@@ -6,17 +6,11 @@
 #include <UserInputs.h>
 #include <DisplayConfig.h>
 #include <drawFileMenu.h>
+#include <SdCard_utils.h>
 
-struct DrawWiFiOptionsState {
-    int step = 0;         
-    int OptionCount = 0;   
-    int pageNum = 0;      
-    bool reset_page = false;
-    CommandData result;
-    SelectedFile selectedFileData;
-};
 
-DrawWiFiOptionsState drawWiFiState;
+
+DrawOptionsState drawWiFiState;
 
 
 char wifi_options[][30] = {"Connect to WiFi", "Disconnect from WiFi", "ESP_Now","WiFi Jammer","WiFi_deauther","newoption","SDDSd"};
@@ -69,6 +63,7 @@ void draw_wifi_options(){
     }
     u8g2.sendBuffer();
 }
+
 void draw_options(){
     static unsigned long timer_1 = 0;
     unsigned long currentMillis = millis();

@@ -197,6 +197,7 @@ bool deleteFile(const char* filepath) {
 
 struct FileProperties{
     unsigned long size;
+    char name [11];
     uint8_t creation_time_day;
     uint8_t creation_time_month;
     uint16_t creation_time_year;
@@ -209,13 +210,18 @@ struct FileProperties{
 
 };
 
+
 FileProperties get_file_properties(const char* filepath) {
     SdFile file;
-    FileProperties properties = {0, 0, 0, 0, 0, 0};
+    FileProperties properties = {0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
     if (file.open(filepath, O_RDONLY)) {
         DirFat_t dir;
         file.dirEntry(&dir);
+         // Отримання імені файлу
+        strncpy(properties.name, (char*)dir.name, 11);
+        properties.name[11] = '\0'; 
+        
 
         uint16_t raw_creation_time = *reinterpret_cast<uint16_t*>(dir.createTime);
         uint16_t raw_creating_date = *reinterpret_cast<uint16_t*>(dir.createDate);

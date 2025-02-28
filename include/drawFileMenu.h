@@ -4,7 +4,6 @@
 #include <DisplayConfig.h>
 #include <SdCard_utils.h>
 #include <UserInputs.h>
-#include <User_Interface/File_properties_userInputs.h>
 
 CommandData draw_selecting_icon(bool draw_icon);
 
@@ -13,6 +12,14 @@ SelectedFile return_select_label(char files_arr[][30], int command, int y, int p
 int draw_file_names(char files_arr[][30], int count, int status,bool reset_page);
 
 void draw_directory_info(const char* directory);
+struct DrawOptionsState {
+    int step = 0;         
+    int OptionCount = 0;   
+    int pageNum = 0;      
+    bool reset_page = false;
+    CommandData result;
+    SelectedFile selectedFileData;
+};
 
 
 CommandData draw_selecting_icon(bool draw_icon) {
@@ -233,79 +240,7 @@ void draw_insert_SD_screen(){
     u8g2.sendBuffer();
 }
 
-void draw_file_properties(char* file_name){
-    while(1){
-        ESP.wdtDisable();
-        FileProperties file_properties = get_file_properties(file_name);
-        static selected_user_option user_option = {false,0};
-        int command = serial_command();
 
-        u8g2.clearBuffer();
-        u8g2.setColorIndex(1);
-
-        draw_directory_info(("File properties/" + String(file_name)).c_str());
-
-        u8g2.setFont(u8g2_font_5x8_t_cyrillic);
-
-        u8g2.setCursor(0,20); u8g2.print("File name: "); u8g2.print(file_name);
-        u8g2.drawLine(0,21,128,21);
-
-        u8g2.setCursor(0,30); u8g2.print("File size: "); u8g2.print(file_properties.size); u8g2.print(" bytes");
-        u8g2.drawLine(0,31,128,31);
-
-        u8g2.setCursor(0,40); u8g2.print("Created:"); 
-        u8g2.print(file_properties.creation_time_day);
-        u8g2.print(".");
-        u8g2.print(file_properties.creation_time_month);
-        u8g2.print(".");
-        u8g2.print(file_properties.creation_time_year);
-        u8g2.print(" ");
-        u8g2.print(file_properties.creation_time_hours);
-        u8g2.print(":");
-        u8g2.print(file_properties.creation_time_minutes);
-
-        u8g2.drawLine(0,41,128,41);
-
-        u8g2.setCursor(0,50); u8g2.print("Attributes: ");
-        switch (file_properties.attributes){
-            case 0x00:
-                u8g2.print("Normal");break;
-            case 0x01:
-                u8g2.print("Read only");break;
-            case 0x02:
-                u8g2.print("Hidden");break;
-            case 0x04:
-                u8g2.print("System");break;
-            case 0x08:
-                u8g2.print("Volume label");break;
-            case 0x10:
-                u8g2.print("Directory");break;
-            case 0x16:
-                u8g2.print("Dir.Hiden.Sys");break;
-            case 0x20:
-                u8g2.print("Archive");break;
-            case 0x22:
-                u8g2.print("Archive and hidden");break;
-            case 0x30:
-                u8g2.print("Long file name");break;
-        }
-        u8g2.drawLine(0,51,128,51);
-        user_option = draw_files_properties_menu_user(command);
-
-        Serial.print("User option: ");
-        Serial.println(user_option.selected_option);
-        Serial.print("User selected: ");
-        Serial.println(user_option.is_selected);
-
-        if(user_option.is_selected && !user_option.selected_option)
-            break;
-          
-    
-
-        ESP.wdtDisable();
-        u8g2.sendBuffer();
-    }
-}
 
 
 #endif
