@@ -50,38 +50,35 @@ void draw_wifi_selected_option(int fileIndex){
 
 
 void draw_wifi_options(){
-    u8g2.clearBuffer();
 
     u8g2.setColorIndex(1);
     draw_directory_info(" WIFI OPTIONS");
-    drawWiFiState.result = draw_selecting_icon(1);
     drawWiFiState.pageNum = draw_file_names(wifi_options, 7, drawWiFiState.result.status,0);
     drawWiFiState.selectedFileData = return_select_label(wifi_options, drawWiFiState.result.command, drawWiFiState.result.y, drawWiFiState.pageNum);
 
     if(drawWiFiState.selectedFileData.isSelected){
         draw_wifi_selected_option(drawWiFiState.selectedFileData.fileIndex);
     }
-    u8g2.sendBuffer();
 }
 
-void draw_options(){
-    static unsigned long timer_1 = 0;
-    unsigned long currentMillis = millis();
 
-    if (currentMillis - timer_1 >= 5) { 
-            draw_wifi_options();
-            timer_1 = currentMillis;
-        }
-    yield(); 
-
-}
 void displayWiFiOptions(){
     while(1){
-        listDown_btn.tick();
-        if(listDown_btn.isHold())
-            break;
+        static unsigned long timer_1 = 0;
+        unsigned long currentMillis = millis();
+        
         ESP.wdtDisable();
-        draw_options();
+
+        if (currentMillis - timer_1 >= 5) {
+            u8g2.clearBuffer();
+            drawWiFiState.result = draw_selecting_icon(1);
+
+            if(drawWiFiState.result.command == BACK) break;
+            
+            draw_wifi_options();
+            timer_1 = currentMillis;
+            u8g2.sendBuffer();
+        }
         ESP.wdtEnable(WDTO_8S);
     }
 }

@@ -25,11 +25,9 @@ void draw_file_properties(char* file_name){
 
         if(user_option.is_selected && user_option.selected_option == OK)
             break;
-        if(user_option.is_selected && user_option.selected_option == ACTIONS){
+        if(user_option.is_selected && user_option.selected_option == ACTIONS)  
             display_properties_actions();
-            break;
-            
-        }
+
           
     
 
