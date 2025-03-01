@@ -18,8 +18,8 @@
 #include <File properties browser/draw_Properties.h>
 
 
-bool DrawDirectoryStep(char* directory);
-void draw_directory();
+
+
 
 bool DrawDirectoryStep(char* directory){
     switch (drawState.step) {

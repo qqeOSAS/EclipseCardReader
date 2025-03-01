@@ -255,5 +255,30 @@ FileProperties get_file_properties(const char* filepath) {
     }
     return properties;
 }
+struct editable_atributes{
+    bool visibility;
+    bool read_only;
+};
+void save_attributes(const char* filepath, editable_atributes* attributes) {
+    SdFile file;
+    if (file.open(filepath, O_RDWR)) {
+        DirFat_t dir;
+        file.dirEntry(&dir);
 
+        if (attributes->visibility)
+            dir.attributes |= 0x02;
+        else
+            dir.attributes &= ~0x02;
+
+        if (attributes->read_only)
+            dir.attributes |= 0x01;
+        else
+            dir.attributes &= ~0x01;
+
+        file.sync(); 
+        file.close();
+    } else {
+        Serial.println("Не вдалося відкрити файл для запису.");
+    }
+}
 #endif

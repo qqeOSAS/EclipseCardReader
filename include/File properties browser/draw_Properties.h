@@ -9,16 +9,20 @@
 
 
 void draw_file_properties(char* file_name){
+    FileProperties file_properties = get_file_properties(file_name);
+    selected_user_option user_option = {false,0};
     while(1){
         ESP.wdtDisable();
-        FileProperties file_properties = get_file_properties(file_name);
-        static selected_user_option user_option = {false,0};
+
         int command = serial_command();
 
         u8g2.clearBuffer();
         u8g2.setColorIndex(1);
 
-        draw_directory_info(("File properties/" + String(file_name)).c_str());
+        char full_path[100];
+        strcpy(full_path, "File properties/");
+        strcat(full_path, file_name);
+        draw_directory_info(full_path);
 
         user_option = draw_files_properties_menu_user(command);
         draw_properties_(&file_properties);
@@ -26,7 +30,7 @@ void draw_file_properties(char* file_name){
         if(user_option.is_selected && user_option.selected_option == OK)
             break;
         if(user_option.is_selected && user_option.selected_option == ACTIONS)  
-            display_properties_actions();
+            display_properties_actions(&file_properties, file_name);
 
           
     

@@ -4,10 +4,11 @@
 #include <Arduino.h>
 #include <DisplayConfig.h>
 #include <drawFileMenu.h>
+#include <File properties browser/draw_edit_attributes.h>
 
 DrawOptionsState PropertiesActionsState;
 
-char Actions_options[][30] = {"Delete file", "Hide file", "Make read only", "Rename"};
+char Actions_options[][30] = {"Delete file", "Edit attributes", "Rename"};
 
 void draw_properties_actions_selected_option(int fileIndex){
     switch(fileIndex){
@@ -33,7 +34,7 @@ void draw_properties_actions_selected_option(int fileIndex){
 void draw_properties_actions(){
     u8g2.setColorIndex(1);
     draw_directory_info("File properties/Actions");
-    PropertiesActionsState.pageNum = draw_file_names(Actions_options, 4, PropertiesActionsState.result.status, 0);
+    PropertiesActionsState.pageNum = draw_file_names(Actions_options, 3, PropertiesActionsState.result.status, 0);
     PropertiesActionsState.selectedFileData = return_select_label(Actions_options, PropertiesActionsState.result.command, PropertiesActionsState.result.y, PropertiesActionsState.pageNum);
 
     if(PropertiesActionsState.selectedFileData.isSelected){
@@ -41,7 +42,7 @@ void draw_properties_actions(){
     }
 }
 
-void display_properties_actions(){
+void display_properties_actions(FileProperties* file_properties,char* file_name){
     static unsigned long timer_1 = 0;
     while(1){
         ESP.wdtDisable();
@@ -52,6 +53,13 @@ void display_properties_actions(){
             PropertiesActionsState.result = draw_selecting_icon(1);
 
             if(PropertiesActionsState.result.command == BACK) break;
+
+            if(PropertiesActionsState.selectedFileData.isSelected){
+                
+                if(PropertiesActionsState.selectedFileData.fileIndex == 1)
+                    Display_edit_attributes(file_properties,file_name);
+                    
+            }
             
             draw_properties_actions();
             timer_1 = currentMillis;

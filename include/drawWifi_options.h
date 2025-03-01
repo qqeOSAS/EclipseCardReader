@@ -13,7 +13,7 @@
 DrawOptionsState drawWiFiState;
 
 
-char wifi_options[][30] = {"Connect to WiFi", "Disconnect from WiFi", "ESP_Now","WiFi Jammer","WiFi_deauther","newoption","SDDSd"};
+char wifi_options[][30] = {"Connect to WiFi", "Disconnect from WiFi", "ESP_Now", "WiFi Jammer", "WiFi_deauther", "newoption", "SDDSd"};
 
 void draw_wifi_selected_option(int fileIndex){
     switch(fileIndex){

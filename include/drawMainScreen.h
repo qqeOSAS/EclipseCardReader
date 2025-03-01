@@ -20,6 +20,7 @@ void draw_Clock(char* formated_time_str){
     u8g2.print("11:15PM");
     u8g2.setColorIndex(1);
 
+
 }
 void draw_main_screen_frame(){
     u8g2.setColorIndex(1);
