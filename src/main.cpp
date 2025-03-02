@@ -32,7 +32,7 @@ void setup() {
 
   draw_main_screen();
 
-
+    //Display_delete_file("/Folder1/Текстові файли/історії/myfile.txt");
 }
 
 void loop() {

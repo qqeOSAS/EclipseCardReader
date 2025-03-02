@@ -8,7 +8,7 @@
 char lastDirectory[200] = "/";
 char currentDirectory[200] = "/";
 char text_file_page_buffer[130];
-
+char Properties_directory[200];
 
 bool begin_SD();
 void print_SD_info();
@@ -284,12 +284,33 @@ void save_attributes(const char* filepath, editable_atributes* attributes) {
         Serial.println("Не вдалося відкрити файл для запису.");
     }
 }
-//void deleteFile(const char* filepath) {
-//    if (sd.remove(filepath)) {
- //       Serial.print("Файл успішно видалено: ");
-//        Serial.println(filepath);
-//    }
-//}
+bool delete_sd_file(const char* filepath) {
+    if(!isDirectory(filepath)){
+        if (sd.remove(filepath)) {
+            Serial.print("Файл успішно видалено: ");
+            Serial.println(filepath);
+            return true;
+        }
+        else {
+            Serial.println("Помилка при видаленні папки.");
+            return false;
+        }
+    }
+    //якщо пуста папка
+
+    else{
+        if(sd.rmdir(filepath)){
+            Serial.println("Папка успішно видалена.");
+            return true;
+        } 
+        else{ 
+            Serial.println("Помилка при видаленні папки.");
+            return false;
+        }
+
+    }
+    
+}
 
 
 #endif

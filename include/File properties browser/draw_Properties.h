@@ -12,7 +12,9 @@ void draw_file_properties(char* file_name){
     FileProperties file_properties = get_file_properties(file_name);
     selected_user_option user_option = {false,0};
     while(1){
+        
         ESP.wdtDisable();
+        Serial.println(file_name);
 
         int command = serial_command();
 
@@ -29,11 +31,12 @@ void draw_file_properties(char* file_name){
 
         if(user_option.is_selected && user_option.selected_option == OK)
             break;
-        if(user_option.is_selected && user_option.selected_option == ACTIONS)  
+        if(user_option.is_selected && user_option.selected_option == ACTIONS){  
             display_properties_actions(&file_properties, file_name);
+            break;
+        }
 
           
-    
 
         ESP.wdtDisable();
         u8g2.sendBuffer();

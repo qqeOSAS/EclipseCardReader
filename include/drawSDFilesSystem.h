@@ -84,13 +84,16 @@ bool DrawDirectoryStep(char* directory){
                     
                 if(isBMPfile(directory))
                     browse_BMP_image(directory);
-                    
+                Serial.print("Directory: NAMEEEE");
+                Serial.println(directory);
                 
                 
             }
+        
             if(drawState.selectedFileData.openProperties ){
                 //if(!isDirectory(drawState.selectedFileData.fileName))
-                    draw_file_properties(drawState.selectedFileData.fileName);
+                    snprintf(Properties_directory, sizeof(Properties_directory), "%s/%s", directory, drawState.selectedFileData.fileName);
+                    draw_file_properties(Properties_directory);
             }
 
             if (drawState.result.command == BACK) {
@@ -117,11 +120,9 @@ void draw_directory(){
     static unsigned long timer_1 = 0;
     unsigned long currentMillis = millis();
 
-    if (currentMillis - timer_1 >= 5) { 
-        if (!DrawDirectoryStep(currentDirectory)) {
-            timer_1 = currentMillis;
-        }
-    }
+    
+    DrawDirectoryStep(currentDirectory);
+ 
 
     yield(); 
 

@@ -132,10 +132,10 @@ void Display_edit_attributes(FileProperties* file_properties, char* file_name){
                 if(user_choice.selected_option == 3) break;
             }
             u8g2.sendBuffer();
-
+            timer_1 = currentMillis;
         }
         
-        ESP.wdtDisable();
+        ESP.wdtEnable(WDTO_8S);
     }
 }
 
