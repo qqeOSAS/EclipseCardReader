@@ -1,7 +1,8 @@
 #ifndef VID_PLAY
 #define  VID_PLAY
 #include <DisplayConfig.h>
-#include <Bitmaps.h>
+#include <Bitmaps_headers/Bitmaps.h>
+
 
 
 void draw_player_menu(int y){

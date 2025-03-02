@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <DisplayConfig.h>
-#include <Bitmaps.h>
+#include <Bitmaps_headers/Bitmaps.h>
 #include <Icon_animations.h>
 #include <UserInputs.h>
 #include <User_Interface/main_screen_user_inputs.h>

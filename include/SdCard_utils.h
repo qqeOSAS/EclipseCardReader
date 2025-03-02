@@ -275,10 +275,21 @@ void save_attributes(const char* filepath, editable_atributes* attributes) {
         else
             dir.attributes &= ~0x01;
 
+        // Save the modified directory entry back to the file
+        file.dirEntry(&dir);
+
         file.sync(); 
         file.close();
     } else {
         Serial.println("Не вдалося відкрити файл для запису.");
     }
 }
+//void deleteFile(const char* filepath) {
+//    if (sd.remove(filepath)) {
+ //       Serial.print("Файл успішно видалено: ");
+//        Serial.println(filepath);
+//    }
+//}
+
+
 #endif
