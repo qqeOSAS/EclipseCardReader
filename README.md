@@ -1,10 +1,11 @@
 #  EclipseCardReader Project
 
 This project is designed to read data from an SD card and display it on an ESP8266-based device. It supports various file types and formats, including text, binary files, and image files in XBM and BIN formats. It also supports Cyrillic text display. More features will be added in the future.
-
-![0-02-05-235390ea414d3b16d32e517033a4c7a39a03cbfd7492ff033648bcea15bd4963_a6bbaa052ea283f2](https://github.com/user-attachments/assets/27f47024-83cf-47c9-b5b5-764fdef4376a)
 ![0-02-05-7d27540fc13b7ccfe05d305e92de7660659ca910c8436d646dc3c32b854821ba_5e46d6799baead9d](https://github.com/user-attachments/assets/ad814d22-9d8b-40bb-a98c-fd0620cec6de)
+![0-02-05-235390ea414d3b16d32e517033a4c7a39a03cbfd7492ff033648bcea15bd4963_a6bbaa052ea283f2](https://github.com/user-attachments/assets/27f47024-83cf-47c9-b5b5-764fdef4376a)
 ![0-02-05-5fd539d9425924827cf47028db6f424b4b42caf41aeed0ffb1b3eefbe7a31d5c_31db0134bd097097](https://github.com/user-attachments/assets/81c51f07-5d4b-47d2-854c-d72074957494)
+![0-02-05-d872321e6d63a7388ff39bb39ee99e843fac06e999c48f0906c3f88082a3570d_bbbf8c074acce483](https://github.com/user-attachments/assets/e18a5ed0-fe7d-48be-8c45-bbc47d4c5efe)
+![0-02-05-3826e74b619d82baf90581f9ee3a56a675f34acf9ef2267ad8d33f180e28e14c_2d0e194ab1a64e67](https://github.com/user-attachments/assets/8308cdc7-9933-41d4-b34f-4c88234f5241)
 
 ## Features
 - Reads and displays text files (`.txt`, `.log`, `.csv`, `.ini`).![0-02-05-d29b04aa1d99147aa4999640226d7b2c21c310e76e2e2fae6d00f9fa9fff6592_d1c26bf3d6b69a05](https://github.com/user-attachments/assets/e3a959da-ce05-483e-8483-9c32a80c7fba)
