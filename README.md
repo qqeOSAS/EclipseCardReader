@@ -51,6 +51,10 @@ Once the project is set up, the device will read files from the SD card and disp
 - **Binary files**: `.bin`
 - **Image files**: `.xbm`, `.bin` (binary image format)
 - BETA **BMP files** not work as well
+### Supported Operations With Files
+- **Change file attribute**:
+- **Delete file**:
+  
 
 ### Future Features:
 - More file format support.
