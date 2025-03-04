@@ -62,11 +62,6 @@ void draw_succesfull_delete(char* filename){
         u8g2.setFont(u8g2_font_nokiafc22_tr);
         u8g2.setCursor(5, 30); u8g2.print("Successfully removed");
 
-
-        
-
-
-
         u8g2.sendBuffer();
         ESP.wdtEnable(WDTO_8S);
         start_time = millis();

@@ -44,6 +44,7 @@ void draw_main_screen_selecting_icon(int select_icon_num){
 
 
 void draw_main_screen(){
+    ESP.wdtDisable();
         int command = serial_command();
         Selected_Icon_Info icon_info = get_select_icon(command);
 
@@ -68,7 +69,7 @@ void draw_main_screen(){
 
         
         u8g2.sendBuffer();
-    
+    ESP.wdtEnable(WDTO_8S);
 }
 
 

@@ -30,7 +30,7 @@ void setup() {
 
   // Читання з файлу
 
-  draw_main_screen();
+  //draw_main_screen();
 
     //Display_delete_file("/Folder1/Текстові файли/історії/myfile.txt");
 }

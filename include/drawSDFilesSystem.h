@@ -132,15 +132,24 @@ void displaySDFileSystem(){
 ///////////////костиль!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if(!begin_SD()){
         bool begin_sd_b = false;
+        unsigned long start_time = millis();
+        unsigned long end_time = start_time + 10000;
         while(!begin_sd_b){
             ESP.wdtDisable();
+            start_time = millis();
             static unsigned long timer_1  = 0;
             unsigned long curt_millis = millis();
+
+            if(start_time >= end_time){
+                break;
+            }
 
             if(curt_millis - timer_1 >= 2000){
                 begin_sd_b = begin_SD();
                 timer_1 = curt_millis;
             }
+            if(listDown_btn.isHold())
+            break;
 
             draw_insert_SD_screen();
             ESP.wdtEnable(WDTO_8S);
