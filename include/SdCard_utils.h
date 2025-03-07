@@ -16,7 +16,7 @@ int return_card_size();
 bool isDirectory(const char* path);
 char global_derictory_files[MAX_GLOBAL_DERICTORY_FILES][30];
 
-#define MAX_FILES 100  // Максимальна кількість файлів
+#define MAX_FILES 1000  // Максимальна кількість файлів
 // Функція для отримання списку файлів у заданому каталозі
 
 int Files_list(const char* directory, char files_arr[][30]);
@@ -284,6 +284,7 @@ void save_attributes(const char* filepath, editable_atributes* attributes) {
         Serial.println("Не вдалося відкрити файл для запису.");
     }
 }
+
 bool delete_sd_file(const char* filepath) {
     if(!isDirectory(filepath)){
         if (sd.remove(filepath)) {
@@ -310,6 +311,25 @@ bool delete_sd_file(const char* filepath) {
 
     }
     
+}
+bool rename_sd_file(const char* old_filepath, const char* new_filepath) {
+    if(sd.exists(old_filepath)){
+        if(sd.rename(old_filepath, new_filepath)) {
+            Serial.print("Файл успішно перейменовано: ");
+            Serial.print(old_filepath);
+            Serial.print(" -> ");
+            Serial.println(new_filepath);
+            return true;
+        } 
+        else {
+            Serial.print("Помилка при перейменуванні файлу: ");
+            Serial.print(old_filepath);
+            Serial.print(" -> ");
+            Serial.println(new_filepath);
+            return false;
+        }
+    }
+    return false;
 }
 
 

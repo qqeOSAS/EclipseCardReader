@@ -11,7 +11,7 @@
 #include <SDCardConfig.h>
 
 bool isTextFile(const char* filepath);
-void readTextFile(char* filename, byte page);
+int readTextFile(char* filename, byte page);
 
 
 bool isTextFile(const char* filepath) {
@@ -27,8 +27,10 @@ bool isTextFile(const char* filepath) {
     return false; 
 }
 
-void readTextFile(char* filename, byte page) {
+
+int readTextFile(char* filename, byte page) {
     SdFile file;
+
 
     int position = (page - 1) * 130;
     
@@ -36,14 +38,17 @@ void readTextFile(char* filename, byte page) {
     if (!sd.exists(filename)) {
         Serial.print("File does not exist: ");
         Serial.println(filename);
-        return;
+        return -1;
     }
 
     if (!file.open(filename, O_READ)) {
         Serial.print("Failed to open file: ");
         Serial.println(filename);
-        return;
+        return -1;
     }
+    uint32_t fileSize = file.fileSize();
+    int file_pages = fileSize / 130;
+
 
     byte array_index = 0;
     
@@ -69,6 +74,7 @@ void readTextFile(char* filename, byte page) {
 
     file.close();
     Serial.println("\nFile read complete.");
+    return file_pages;
 }
 
 

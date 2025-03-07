@@ -47,7 +47,10 @@ void display_properties_actions(FileProperties* file_properties,char* file_name)
                         exit = true;
                         PropertiesActionsState = {0,0,0,0,0,0};
                         break;
-                }
+                    case 2:
+                        //rename file
+                        
+                        break;}
             }
             if (exit) break;
             

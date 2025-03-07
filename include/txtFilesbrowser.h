@@ -9,7 +9,7 @@ void browse_txt_file(char* directory);
 
 void browse_txt_file(char* directory) {
     int page = 0;  // Initialize the page number to 0
-    readTextFile(directory, page);  // Read the first page of the text file
+    int file_pages  = readTextFile(directory, page);  // Read the first page of the text file
 
     // Loop to handle user commands
     while (drawState.result.command != BACK) {
@@ -19,7 +19,11 @@ void browse_txt_file(char* directory) {
         // Handle user commands
         switch (drawState.result.command) {
             case LIST_DOWN_MENU:
-                page++;  // Move to the next page
+                page++;
+                if(page > file_pages){
+                    page = page - 1;
+                    break;
+                }     // Move to the next page
                 read_next_page = true;  // Set the flag to read the next page
                 break;
             case LIST_UP_MENU:

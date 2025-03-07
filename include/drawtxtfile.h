@@ -49,12 +49,12 @@ void draw_text_file(char* directory, char* page_buffer) {
                 break;
             }
 
-            if (chars_in_row >= 26) {
+            if (chars_in_row >= 25) {
                 x = 0;
                 y += 10; 
                 chars_in_row = 0; 
                 rows_on_screen++; 
-                page_buffer++;   
+                continue;   
             }
 
             char current_char[5] = {0}; 
