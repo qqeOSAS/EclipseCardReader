@@ -5,6 +5,7 @@
 #include <DisplayConfig.h>
 #include <MainScreenBrowser.h>
 #include <drawFileMenu.h>
+//#include <WiFiManager.h> 
  
 
 
@@ -20,6 +21,7 @@ void setup() {
     Serial.print("Поточна частота: ");
     Serial.print(ESP.getCpuFreqMHz());
     Serial.println(" MHz");
+
    //   if (myFile.open("data.txt", FILE_WRITE)) {
    // myFile.println("TEST WRITE DAATA.");
    // myFile.println("WRITED DATA: 12345");

@@ -6,6 +6,7 @@
 #define SELECT 3
 #define BACK 4
 #define OPEN_PLAYER 5
+#define UPDATE_SSIDS 7
 #define OPEN_FILE_PROPERTIES 6
 
 

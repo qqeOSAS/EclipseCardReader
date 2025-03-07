@@ -47,6 +47,11 @@ int serial_command() {
         listDown_btn.resetStates();
         return OPEN_PLAYER;
     }
+    if(listDown_btn.isDouble()){
+        listDown_btn.resetStates();
+        return UPDATE_SSIDS;
+    }
+    
 
     return 0;
  }

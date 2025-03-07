@@ -7,7 +7,7 @@
 #include <DisplayConfig.h>
 #include <drawFileMenu.h>
 #include <SdCard_utils.h>
-
+#include <WiFi Draw/draw_connect_toWiFi.h>
 
 
 DrawOptionsState drawWiFiState;
@@ -18,8 +18,7 @@ char wifi_options[][30] = {"Connect to WiFi", "Disconnect from WiFi", "ESP_Now",
 void draw_wifi_selected_option(int fileIndex){
     switch(fileIndex){
         case 0:
-            Serial.print("SELECTED: ");
-            Serial.println("Connect to WiFi");
+            display_SSID_list();
             break;
         case 1:
             Serial.print("SELECTED: ");
@@ -56,9 +55,7 @@ void draw_wifi_options(){
     drawWiFiState.pageNum = draw_file_names(wifi_options, 7, drawWiFiState.result.status,0);
     drawWiFiState.selectedFileData = return_select_label(wifi_options, drawWiFiState.result.command, drawWiFiState.result.y, drawWiFiState.pageNum);
 
-    if(drawWiFiState.selectedFileData.isSelected){
-        draw_wifi_selected_option(drawWiFiState.selectedFileData.fileIndex);
-    }
+    
 }
 
 
@@ -74,6 +71,10 @@ void displayWiFiOptions(){
             drawWiFiState.result = draw_selecting_icon(1);
 
             if(drawWiFiState.result.command == BACK) break;
+            
+            if(drawWiFiState.selectedFileData.isSelected){
+                draw_wifi_selected_option(drawWiFiState.selectedFileData.fileIndex);
+            }
             
             draw_wifi_options();
             timer_1 = currentMillis;
