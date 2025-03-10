@@ -15,8 +15,8 @@ DrawOptionsState drawWiFiState;
 
 char wifi_options[][30] = {"Connect to WiFi", "Disconnect from WiFi", "ESP_Now", "WiFi Jammer", "WiFi_deauther", "newoption", "SDDSd"};
 
-void draw_wifi_selected_option(int fileIndex){
-    switch(fileIndex){
+void draw_wifi_selected_option(int selected_fileIndex){
+    switch(selected_fileIndex){
         case 0:
             display_SSID_list();
             break;

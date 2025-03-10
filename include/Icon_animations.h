@@ -6,10 +6,18 @@
 #include <Bitmaps_headers/Rotating_SD_gif_bitmap.h>
 #include <Bitmaps_headers/WiFi_Icon_gif_bitmap.h>
 #include <Bitmaps_headers/Setings_icon_animation_bitmap.h>
+#include <Bitmaps_headers/Rotating_anhena_gif.h>
 
 
 
-
+void draw_anthena_icon_animation(){
+    static AnimationData spining_anthena_Icon  = {Anthena_gif_30X30, 35, 30, 30, 5, 11};
+    static int current_frame = 0;
+    static unsigned long timer_1 = 0;
+    unsigned long cur_millis = millis();
+   
+        draw_animation(spining_anthena_Icon, &cur_millis, &timer_1,50,current_frame);
+}
 void draw_sd_card_icon_animation(bool draw_anim){
     static AnimationData spining_sd_Icon  = {Rotating_SD_gif_bitmap_25x35, 27, 25, 35, 4, 27};
     static int current_frame = 0;

@@ -51,6 +51,10 @@ int serial_command() {
         listDown_btn.resetStates();
         return UPDATE_SSIDS;
     }
+    if(listUP_btn.isHold()){
+        listDown_btn.resetStates();
+        return OPEN_FILE_PROPERTIES;
+    }
     
 
     return 0;
