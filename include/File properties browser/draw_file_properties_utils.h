@@ -14,7 +14,7 @@ struct selected_user_option {
     byte selected_option = 0;
 };
 
-selected_user_option draw_files_properties_menu_user(int command) {
+selected_user_option draw_files_properties_menu_user(int command,char* button_1_label, char* button_2_label) {
     selected_user_option user_option = {false, 0};
     static int8 selected_icon = 0;
 
@@ -46,9 +46,9 @@ selected_user_option draw_files_properties_menu_user(int command) {
     u8g2.setFont(u8g2_font_nokiafc22_tr);
     u8g2.setFontMode(1);
     u8g2.setCursor(30, 62);
-    u8g2.print("OK");
+    u8g2.print(button_1_label);
     u8g2.setCursor(70, 62);
-    u8g2.print("Actions");
+    u8g2.print(button_2_label);
 
     return user_option;
 }

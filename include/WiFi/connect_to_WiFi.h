@@ -6,6 +6,7 @@
 struct SSID_LIST_INFO{
     char SSID_LIST[20][30]; // Assuming a maximum of 10 SSIDs
     int rssiList[20];
+    byte encryption_type[20];
     int ssid_to_store;
 
 };
@@ -38,12 +39,24 @@ void get_SSID_LIST(){
         for(byte i = 0; i < ssid_list_info.ssid_to_store;  i++){
             ssid_list_info.rssiList[i] = WiFi.RSSI(i);
             sprintf(ssid_list_info.SSID_LIST[i], "%s", WiFi.SSID(i).c_str());
+            ssid_list_info.encryption_type[i] = WiFi.encryptionType(i);
         }
         bubbleSort_SSID(ssid_list_info);
-    
-
     }
 
+}
+bool check_SSID_existing(const char* selected_SSID){
+    int n = WiFi.scanNetworks();
+
+    for (int i = 0; i < n; i++) {
+        if (strcmp(WiFi.SSID(i).c_str(), selected_SSID) == 0) 
+            return true;
+    }
+    return false;
+}
+
+void connect_to_selected_SSID(){
+    
 }
 
 #endif

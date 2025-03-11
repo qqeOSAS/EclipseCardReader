@@ -26,7 +26,7 @@ void draw_file_properties(char* file_name){
         strcat(full_path, file_name);
         draw_directory_info(full_path);
 
-        user_option = draw_files_properties_menu_user(command);
+        user_option = draw_files_properties_menu_user(command,"OK","Actions");
         draw_properties_(&file_properties);
 
         if(user_option.is_selected && user_option.selected_option == OK)
