@@ -7,11 +7,14 @@
 #include <Bitmaps_headers/Bitmaps.h>
 #include <ReadTxt.h>
 #include <ReadXBM.h>
+#include <ReadBinary.h>
+
+
 CommandData draw_selecting_icon(bool draw_icon);
 
 SelectedFile return_select_label(char files_arr[][30], int command, int y, int page_num);
 
-int draw_file_names(char files_arr[][30], int count, int status,bool reset_page);
+int draw_file_names(char files_arr[][30], int count, int status,bool reset_page, bool draw_icons);
 
 void draw_directory_info(const char* directory);
 struct DrawOptionsState {
@@ -28,6 +31,8 @@ byte return_file_type_icon(char* filename){
         return TEXT_FILE;
     if(isXBMFile(filename))
         return XBM_FILE;
+    if(isBinFile(filename))
+        return BIN_FILE;
 
     else 
         return DIRECTORY;
@@ -39,9 +44,9 @@ void draw_file_type_icon(byte y,byte file_type){
         case DIRECTORY: u8g2.drawXBMP(0,y,10,8, folder_icon_10x8);  break;
         case TEXT_FILE: u8g2.drawXBMP(0,y,10,8,txt_file_icon_10x8); break;
         case XBM_FILE:  u8g2.drawXBMP(0,y,10,8,XBM_file_icon_10x8); break;
+        case BIN_FILE:  u8g2.drawXBMP(0,y,10,8,BIN_file_icon_10x8); break;
     }
 }
-
 
 CommandData draw_selecting_icon(bool draw_icon) {
     int command = serial_command();
@@ -143,7 +148,7 @@ SelectedFile return_select_label(char files_arr[][30], int command, int y, int p
     return selectedFile;
 }
 
-int draw_file_names(char files_arr[][30], int count, int status,bool reset_page) {
+int draw_file_names(char files_arr[][30], int count, int status,bool reset_page,bool draw_icons) {
     u8g2.setFont(u8g2_font_5x8_t_cyrillic);
 
     const byte lines_per_page = 5;  
@@ -164,7 +169,7 @@ int draw_file_names(char files_arr[][30], int count, int status,bool reset_page)
         page_num--;
     }
     // Updating corrector 
-    byte x = 0;
+  
     byte y = 20;
     Serial.print("Page: ");
     Serial.println(page_num);
@@ -176,9 +181,16 @@ int draw_file_names(char files_arr[][30], int count, int status,bool reset_page)
         int file_index = corrector + i;
         if (file_index >= count) break;
 
-        
-        byte file_type = return_file_type_icon(files_arr[file_index]);
+        if(draw_icons){
+            byte file_type = return_file_type_icon(files_arr[file_index]);
             draw_file_type_icon(y-7,file_type);
+
+        }
+        else{
+            u8g2.setCursor(0,y);
+            u8g2.print(file_index);
+            u8g2.print(")");
+        }
         
 
         u8g2.setCursor(14, y);
@@ -263,8 +275,6 @@ void draw_insert_SD_screen(){
 
     u8g2.sendBuffer();
 }
-
-
 
 
 #endif

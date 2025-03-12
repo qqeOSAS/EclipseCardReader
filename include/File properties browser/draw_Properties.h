@@ -47,10 +47,4 @@ void draw_file_properties(char* file_name){
 
 
 
-
-
-
-
-
-
 #endif

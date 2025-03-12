@@ -6,18 +6,18 @@
 #include <drawFileMenu.h>
 #include <File properties browser/draw_edit_attributes.h>
 #include <File properties browser/draw_delete_file.h>
+#include <BinImageBrowser.h>
 
 DrawOptionsState PropertiesActionsState;
 
-char Actions_options[][30] = {"Delete file", "Edit attributes", "Rename"};
+char Actions_options[][30] = {"Delete file", "Edit attributes", "Rename","Open as bin image"};
 
 
 void draw_properties_actions(){
     u8g2.setColorIndex(1);
     draw_directory_info("File properties/Actions");
-    PropertiesActionsState.pageNum = draw_file_names(Actions_options, 3, PropertiesActionsState.result.status,PropertiesActionsState.reset_page);
+    PropertiesActionsState.pageNum = draw_file_names(Actions_options, 4, PropertiesActionsState.result.status,PropertiesActionsState.reset_page,0);
     PropertiesActionsState.selectedFileData = return_select_label(Actions_options, PropertiesActionsState.result.command, PropertiesActionsState.result.y, PropertiesActionsState.pageNum);
-
 }
 
 void display_properties_actions(FileProperties* file_properties,char* file_name){
@@ -50,7 +50,15 @@ void display_properties_actions(FileProperties* file_properties,char* file_name)
                     case 2:
                         //rename file
                         
-                        break;}
+                        break;
+                    case 3:
+                        browse_bin_image(file_name);
+                        exit = true;
+                        PropertiesActionsState = {0,0,0,0,0,0};
+                        break;
+
+
+                }
             }
             if (exit) break;
             

@@ -81,11 +81,10 @@ void draw_ssid_list_menu(){
     u8g2.setBitmapMode(1);
     u8g2.setColorIndex(1);
     draw_directory_info("SSID List");
-    drawSSidListState.pageNum = draw_file_names(ssid_list_info.SSID_LIST, ssid_list_info.ssid_to_store, drawSSidListState.result.status,0);
+    drawSSidListState.pageNum = draw_file_names(ssid_list_info.SSID_LIST, ssid_list_info.ssid_to_store, drawSSidListState.result.status,0,1);
     drawSSidListState.selectedFileData = return_select_label(ssid_list_info.SSID_LIST, drawSSidListState.result.command, drawSSidListState.result.y, drawSSidListState.pageNum);
 
 }
-
 
 void display_SSID_list(){
     unsigned long timer_1 = 0;
@@ -117,8 +116,6 @@ void display_SSID_list(){
             bool exist = check_SSID_existing(drawSSidListState.selectedFileData.fileName);
             if(exist)
                 draw_SSID_info(drawSSidListState.selectedFileData.fileName,drawSSidListState.selectedFileData.fileIndex);
-
-
 
         }
 

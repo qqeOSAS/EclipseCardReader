@@ -20,6 +20,7 @@ char global_derictory_files[MAX_GLOBAL_DERICTORY_FILES][30];
 #define DIRECTORY 1
 #define TEXT_FILE 2
 #define XBM_FILE 3
+#define BIN_FILE 4
 
 // Функція для отримання списку файлів у заданому каталозі
 

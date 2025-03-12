@@ -1,7 +1,6 @@
 #ifndef WIFI_OPTIONS
 #define WIFI_OPTIONS
 
-
 #include <Arduino.h>
 #include <UserInputs.h>
 #include <DisplayConfig.h>
@@ -9,9 +8,7 @@
 #include <SdCard_utils.h>
 #include <WiFi Draw/draw_connect_toWiFi.h>
 
-
 DrawOptionsState drawWiFiState;
-
 
 char wifi_options[][30] = {"Connect to WiFi", "Disconnect from WiFi", "ESP_Now", "WiFi Jammer", "WiFi_deauther", "newoption", "SDDSd"};
 
@@ -47,12 +44,11 @@ void draw_wifi_selected_option(int selected_fileIndex){
     }
 }
 
-
 void draw_wifi_options(){
 
     u8g2.setColorIndex(1);
     draw_directory_info(" WIFI OPTIONS");
-    drawWiFiState.pageNum = draw_file_names(wifi_options, 7, drawWiFiState.result.status,0);
+    drawWiFiState.pageNum = draw_file_names(wifi_options, 7, drawWiFiState.result.status,0,0);
     drawWiFiState.selectedFileData = return_select_label(wifi_options, drawWiFiState.result.command, drawWiFiState.result.y, drawWiFiState.pageNum);
 
     
