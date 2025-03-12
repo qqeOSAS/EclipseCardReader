@@ -4,7 +4,9 @@
 #include <DisplayConfig.h>
 #include <SdCard_utils.h>
 #include <UserInputs.h>
-
+#include <Bitmaps_headers/Bitmaps.h>
+#include <ReadTxt.h>
+#include <ReadXBM.h>
 CommandData draw_selecting_icon(bool draw_icon);
 
 SelectedFile return_select_label(char files_arr[][30], int command, int y, int page_num);
@@ -20,6 +22,25 @@ struct DrawOptionsState {
     CommandData result;
     SelectedFile selectedFileData;
 };
+byte return_file_type_icon(char* filename){
+
+    if(isTextFile(filename))
+        return TEXT_FILE;
+    if(isXBMFile(filename))
+        return XBM_FILE;
+
+    else 
+        return DIRECTORY;
+
+    return 0;
+}
+void draw_file_type_icon(byte y,byte file_type){
+    switch(file_type){
+        case DIRECTORY: u8g2.drawXBMP(0,y,10,8, folder_icon_10x8);  break;
+        case TEXT_FILE: u8g2.drawXBMP(0,y,10,8,txt_file_icon_10x8); break;
+        case XBM_FILE:  u8g2.drawXBMP(0,y,10,8,XBM_file_icon_10x8); break;
+    }
+}
 
 
 CommandData draw_selecting_icon(bool draw_icon) {
@@ -153,11 +174,14 @@ int draw_file_names(char files_arr[][30], int count, int status,bool reset_page)
     // Printing files names at current page on screen 
     for (int i = 0; i < lines_per_page; i++) {
         int file_index = corrector + i;
-        if (file_index >= count) break; 
+        if (file_index >= count) break;
 
-        u8g2.setCursor(x, y);
-        u8g2.print(file_index + 1);  // file num
-        u8g2.print(") ");
+        
+        byte file_type = return_file_type_icon(files_arr[file_index]);
+            draw_file_type_icon(y-7,file_type);
+        
+
+        u8g2.setCursor(14, y);
         u8g2.print(files_arr[file_index]);  // file name
         y += 10;
         Serial.print("File index: ");

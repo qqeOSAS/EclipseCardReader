@@ -17,6 +17,10 @@ bool isDirectory(const char* path);
 char global_derictory_files[MAX_GLOBAL_DERICTORY_FILES][30];
 
 #define MAX_FILES 1000  // Максимальна кількість файлів
+#define DIRECTORY 1
+#define TEXT_FILE 2
+#define XBM_FILE 3
+
 // Функція для отримання списку файлів у заданому каталозі
 
 int Files_list(const char* directory, char files_arr[][30]);
@@ -153,6 +157,7 @@ void getParentDirectory(char* currentDirectory) {
         strcpy(currentDirectory, "/"); 
     }
 }
+
 
 void normalizePath(char* path) {
     char* writePtr = path; 
