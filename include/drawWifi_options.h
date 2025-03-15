@@ -48,7 +48,7 @@ void draw_wifi_options(){
 
     u8g2.setColorIndex(1);
     draw_directory_info(" WIFI OPTIONS");
-    drawWiFiState.pageNum = draw_file_names(wifi_options, 7, drawWiFiState.result.status,0,0);
+    drawWiFiState.pageNum = draw_file_names(wifi_options, 5, drawWiFiState.result.status,0,1,1,0,WiFi_options_icons);
     drawWiFiState.selectedFileData = return_select_label(wifi_options, drawWiFiState.result.command, drawWiFiState.result.y, drawWiFiState.pageNum);
 
     

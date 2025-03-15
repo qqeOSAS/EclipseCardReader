@@ -9,12 +9,14 @@
 #include <ReadXBM.h>
 #include <ReadBinary.h>
 
+#define WIFI_ICONS 1
+
+
 
 CommandData draw_selecting_icon(bool draw_icon);
 
 SelectedFile return_select_label(char files_arr[][30], int command, int y, int page_num);
 
-int draw_file_names(char files_arr[][30], int count, int status,bool reset_page, bool draw_icons);
 
 void draw_directory_info(const char* directory);
 struct DrawOptionsState {
@@ -46,6 +48,9 @@ void draw_file_type_icon(byte y,byte file_type){
         case XBM_FILE:  u8g2.drawXBMP(0,y,10,8,XBM_file_icon_10x8); break;
         case BIN_FILE:  u8g2.drawXBMP(0,y,10,8,BIN_file_icon_10x8); break;
     }
+}
+void draw_spec_icon(byte y, const unsigned char* bitmap){
+    u8g2.drawXBMP(0,y,10,8,bitmap);
 }
 
 CommandData draw_selecting_icon(bool draw_icon) {
@@ -148,7 +153,7 @@ SelectedFile return_select_label(char files_arr[][30], int command, int y, int p
     return selectedFile;
 }
 
-int draw_file_names(char files_arr[][30], int count, int status,bool reset_page,bool draw_icons) {
+int draw_file_names(char files_arr[][30], int count, int status, bool reset_page, bool draw_icons,bool skip_sim_icons, int8 draw_spec_similar_icons, const unsigned char* spec_individ_icons_arr[] = nullptr) {
     u8g2.setFont(u8g2_font_5x8_t_cyrillic);
 
     const byte lines_per_page = 5;  
@@ -156,7 +161,7 @@ int draw_file_names(char files_arr[][30], int count, int status,bool reset_page,
     static byte page_num = 1; 
     int corrector = (page_num - 1) * lines_per_page; 
 
-    if(reset_page){
+    if (reset_page) {
         Serial.println("RESET_PAGE");
         page_num = 1;
         corrector = 0;
@@ -168,30 +173,40 @@ int draw_file_names(char files_arr[][30], int count, int status,bool reset_page,
     } else if (status == 1 && page_num > 1) {
         page_num--;
     }
-    // Updating corrector 
-  
+
     byte y = 20;
     Serial.print("Page: ");
     Serial.println(page_num);
     Serial.print("Corrector: ");
     Serial.println(corrector);  
 
-    // Printing files names at current page on screen 
+    // Printing file names at the current page on screen 
     for (int i = 0; i < lines_per_page; i++) {
         int file_index = corrector + i;
         if (file_index >= count) break;
 
-        if(draw_icons){
-            byte file_type = return_file_type_icon(files_arr[file_index]);
-            draw_file_type_icon(y-7,file_type);
-
+        if(!skip_sim_icons && draw_icons){
+            if (draw_spec_similar_icons == 1) 
+                draw_spec_icon(y - 7, WiFI_waves_icon10x8);
         }
-        else{
-            u8g2.setCursor(0,y);
+
+        if (skip_sim_icons && draw_icons) {
+            if (spec_individ_icons_arr != nullptr)
+                draw_spec_icon(y - 7, spec_individ_icons_arr[file_index]);
+            else {
+                byte file_type;
+                if (draw_spec_similar_icons == 0) {
+                        file_type = return_file_type_icon(files_arr[file_index]);
+                        draw_file_type_icon(y - 7, file_type);
+                }
+            }
+        }
+        
+        else if(!draw_icons) {
+            u8g2.setCursor(0, y);
             u8g2.print(file_index);
             u8g2.print(")");
         }
-        
 
         u8g2.setCursor(14, y);
         u8g2.print(files_arr[file_index]);  // file name

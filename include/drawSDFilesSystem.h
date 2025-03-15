@@ -47,7 +47,7 @@ bool DrawDirectoryStep(char* directory){
             else
                 drawState.reset_page = false;
             strcpy(lastDirectory,directory);
-            drawState.pageNum = draw_file_names(drawState.availableFiles, drawState.fileCount, drawState.result.status,drawState.reset_page,1);
+            drawState.pageNum = draw_file_names(drawState.availableFiles, drawState.fileCount, drawState.result.status,drawState.reset_page,1,1,0,0);
             drawState.step++;
             break;
 

@@ -16,7 +16,7 @@ char Actions_options[][30] = {"Delete file", "Edit attributes", "Rename","Open a
 void draw_properties_actions(){
     u8g2.setColorIndex(1);
     draw_directory_info("File properties/Actions");
-    PropertiesActionsState.pageNum = draw_file_names(Actions_options, 4, PropertiesActionsState.result.status,PropertiesActionsState.reset_page,0);
+    PropertiesActionsState.pageNum = draw_file_names(Actions_options, 4, PropertiesActionsState.result.status,PropertiesActionsState.reset_page,0,1,0,0);
     PropertiesActionsState.selectedFileData = return_select_label(Actions_options, PropertiesActionsState.result.command, PropertiesActionsState.result.y, PropertiesActionsState.pageNum);
 }
 
