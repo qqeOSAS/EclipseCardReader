@@ -8,6 +8,7 @@
 #include <WiFi/connect_to_WiFi.h>
 #include <Icon_animations.h>
 #include <File properties browser/draw_file_properties_utils.h>
+#include "draw_enter_string_screen.h"
 
 
 DrawOptionsState drawSSidListState;
@@ -68,8 +69,22 @@ void draw_SSID_info(char* selected_SSID, byte selected_ssid_index){
             case ENC_TYPE_NONE: u8g2.print("Open network"); break;
             default: u8g2.print("unknown type");
         }
-        if(user_opt.is_selected && user_opt.selected_option == OK)
-            break;
+        if(user_opt.is_selected){
+            switch(user_opt.selected_option){
+                case OK:  break;
+                case 1:
+                    while(1){
+                        ESP.wdtDisable();
+                        draw_enter_string_screen("Enter SSSID pasword.");
+                        ESP.wdtEnable(WDTO_8S);
+                    }
+                    break;
+
+
+
+            }
+
+        }
         user_opt = draw_files_properties_menu_user(command,"OK","Connect");
         u8g2.sendBuffer();
         ESP.wdtEnable(WDTO_8S);
