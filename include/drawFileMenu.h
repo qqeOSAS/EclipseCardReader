@@ -168,11 +168,12 @@ int draw_file_names(char files_arr[][30], int count, int status, bool reset_page
     }
 
     // updating page depending on the result
-    if (status == 2 && page_num < page_count) {
+    if (status == 2 && page_num < page_count) 
         page_num++;
-    } else if (status == 1 && page_num > 1) {
+     
+    else if (status == 1 && page_num > 1) 
         page_num--;
-    }
+    
 
     byte y = 20;
     Serial.print("Page: ");
@@ -232,7 +233,7 @@ void draw_directory_info(const char* directory){
 
     int directory_widht = u8g2.getUTF8Width(directory);
 
-    static int x_pos = 0;
+    static int x_pos = 5;
     u8g2.setCursor(x_pos,9);
 
     //sligting if path str longer then screen size
@@ -246,7 +247,7 @@ void draw_directory_info(const char* directory){
         
     }
     else
-        x_pos = 0;
+        x_pos = 5;
 
     u8g2.print(directory);
 
