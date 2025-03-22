@@ -6,6 +6,7 @@
 #include <DisplayConfig.h>
 #include <UserInputs.h>
 #include <drawFileMenu.h>
+#include <utils/String_utils.h>
 
 struct selectedChar{
     bool isSelected;
@@ -93,32 +94,20 @@ selectedChar return_select_char(int command,byte page_num,selected_icon_pos icon
                 selected_char_index = round((icon_pos.x + 2) / 10);
                 break;
             case 42:
-                selected_char_index = round(11 + float(icon_pos.x) / 10);
-                Serial.println(11);
-                Serial.println("+");
-                Serial.println(icon_pos.x);
-                Serial.println("/");
-                Serial.println(10);
-                Serial.println("=");
-                Serial.println(selected_char_index);
-                
+                selected_char_index = round(11 + float(icon_pos.x) / 10);                
                 break;
             case 52:
                 selected_char_index = round(22 + float(icon_pos.x) / 10);
                 break;
         }
         selected_char.charValue = keyboard_chars[corrector + int(selected_char_index)];
-        Serial.print(icon_pos.x);
-        Serial.println(icon_pos.x);
-        Serial.print("Index: ");
-        Serial.println(selected_char_index);
-        Serial.print("Selected char: ");
-        Serial.println(selected_char.charValue);
     }
 
     return selected_char;
 
 }
+
+
 //returns page number
 byte draw_keyboard(byte next_page){
     const byte symbols_per_page = 34;  
@@ -155,6 +144,7 @@ byte draw_keyboard(byte next_page){
 }
 
 void draw_enter_string_screen(char* up_label){
+    static char entered_string[30] = "";
 
     u8g2.clearBuffer();
     u8g2.setColorIndex(1);
@@ -171,7 +161,9 @@ void draw_enter_string_screen(char* up_label){
     selected_icon_pos icon_pos = draw_select_icon(command);
     byte keyboard_page = draw_keyboard(icon_pos.next_keyboard_page);
     selectedChar selected_char = return_select_char(command,keyboard_page,icon_pos);
-
+    if(selected_char.isSelected)
+        add_char(entered_string,selected_char.charValue,sizeof(entered_string));
+    Serial.println(entered_string);
 
 
     u8g2.sendBuffer();
