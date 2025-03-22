@@ -7,6 +7,15 @@
 #include <UserInputs.h>
 #include <drawFileMenu.h>
 
+struct selectedChar{
+    bool isSelected;
+    char charValue;
+};
+struct selected_icon_pos{
+    byte next_keyboard_page;
+    int x;
+    int y;
+};
 
 char keyboard_chars[] = {
     // Цифри
@@ -29,14 +38,15 @@ char keyboard_chars[] = {
 };
 
 //returns next page
-byte draw_select_icon(int command) {
+selected_icon_pos draw_select_icon(int command) {
+    selected_icon_pos icon_pos = {0, 0, 0};
+
     static int select_icon_x = -2;
     static int select_icon_y = 32;
 
     // Update the position of the selection icon based on the command
     if (command == LIST_UP_MENU) select_icon_x -= 10;
     else if (command == LIST_DOWN_MENU) select_icon_x += 10;
-    
 
     // Handle wrapping when moving left
     if (select_icon_x < -2) {
@@ -44,7 +54,7 @@ byte draw_select_icon(int command) {
         select_icon_y -= 10; // Move up a row
         if (select_icon_y < 32) {
             select_icon_y = 52; // Wrap to the bottom row
-            return 2; // Indicate previous page
+            icon_pos.next_keyboard_page = 2; // Indicate previous page
         }
     }
 
@@ -54,16 +64,63 @@ byte draw_select_icon(int command) {
         select_icon_y += 10; // Move down a row
         if (select_icon_y > 52) {
             select_icon_y = 32; // Wrap to the top row
-            return 1; // Indicate next page
+            icon_pos.next_keyboard_page = 1; // Indicate next page
         }
     }
 
+    // Set the x and y positions in the structure
+    icon_pos.x = select_icon_x;
+    icon_pos.y = select_icon_y;
+
     // Draw the selection icon
     u8g2.drawFrame(select_icon_x, select_icon_y, 10, 10);
-    return 0; // No page change
+    return icon_pos;
 }
 
-void draw_keyboard(byte next_page){
+selectedChar return_select_char(int command,byte page_num,selected_icon_pos icon_pos){
+    selectedChar selected_char = {false,0};
+    byte symbols_per_page = 34;
+    int corrector = (page_num - 1) * symbols_per_page;
+    float selected_char_index = 0;
+
+    if(icon_pos.x < 0 )
+        icon_pos.x = 0;
+
+    if(command == SELECT){
+        selected_char.isSelected = true;
+        switch(icon_pos.y){
+            case 32:
+                selected_char_index = round((icon_pos.x + 2) / 10);
+                break;
+            case 42:
+                selected_char_index = round(11 + float(icon_pos.x) / 10);
+                Serial.println(11);
+                Serial.println("+");
+                Serial.println(icon_pos.x);
+                Serial.println("/");
+                Serial.println(10);
+                Serial.println("=");
+                Serial.println(selected_char_index);
+                
+                break;
+            case 52:
+                selected_char_index = round(22 + float(icon_pos.x) / 10);
+                break;
+        }
+        selected_char.charValue = keyboard_chars[corrector + int(selected_char_index)];
+        Serial.print(icon_pos.x);
+        Serial.println(icon_pos.x);
+        Serial.print("Index: ");
+        Serial.println(selected_char_index);
+        Serial.print("Selected char: ");
+        Serial.println(selected_char.charValue);
+    }
+
+    return selected_char;
+
+}
+//returns page number
+byte draw_keyboard(byte next_page){
     const byte symbols_per_page = 34;  
     const byte page_count = 3;
     static byte page_num = 1;
@@ -93,7 +150,7 @@ void draw_keyboard(byte next_page){
         }    
     }
 
-
+    return page_num;
 
 }
 
@@ -110,9 +167,10 @@ void draw_enter_string_screen(char* up_label){
     u8g2.drawXBMP(108,30,20,34,enter_char_panel);
 
     byte command = serial_command();
-    byte next_keyboard_page = draw_select_icon(command);
-    draw_keyboard(next_keyboard_page);
 
+    selected_icon_pos icon_pos = draw_select_icon(command);
+    byte keyboard_page = draw_keyboard(icon_pos.next_keyboard_page);
+    selectedChar selected_char = return_select_char(command,keyboard_page,icon_pos);
 
 
 
