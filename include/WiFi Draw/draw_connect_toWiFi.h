@@ -81,18 +81,30 @@ void draw_SSID_info(char* selected_SSID, byte selected_ssid_index){
                 case 1:
                     while(1){
                         ESP.wdtDisable();
-                        entered_str_info str_info = draw_enter_string_screen("Enter SSSID pasword.");
-                        if(str_info.isEntered){
-                            Serial.println(str_info.entered_string);
-                            user_opt = {0,0};
-                            break;
-                        } 
+                        entered_str = draw_enter_string_screen("Enter SSSID pasword.");
+                        if(entered_str.isEntered){
+                            if(entered_str.selected_action == 2){
+                                strcpy(entered_str.entered_string, ""); // Use strcpy for C-style strings
+                                entered_str.isEntered = false;
+                                entered_str.selected_action = 0;
+                                break;
+                            }
+                            if(entered_str.selected_action == 1){
+                                strcpy(entered_str.entered_string, ""); // Use strcpy for C-style strings
+                                entered_str.isEntered = false;
+                                entered_str.selected_action = 0;
+                                user_opt = {false,0};
+                                byte connectStat = connect_to_selected_SSID(selected_SSID,entered_str.entered_string);
+                                Serial.print("Connection status: ");
+                                Serial.println(connectStat);
+                                exit_loop = true;
+                                break;                       
+                            } 
+                        }
                         ESP.wdtEnable(WDTO_8S);
                     }
-                    break;
-
-
-
+                break;
+                
             }
             if(exit_loop) break;
 

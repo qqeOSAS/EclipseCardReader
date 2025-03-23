@@ -55,8 +55,19 @@ bool check_SSID_existing(const char* selected_SSID){
     return false;
 }
 
-void connect_to_selected_SSID(){
-    
+byte connect_to_selected_SSID(char* selected_SSID, char* password){
+    WiFi.mode(WIFI_STA); 
+    WiFi.begin(selected_SSID, password);  // Підключаємося
+    unsigned long start_time = millis();
+    unsigned long end_time = start_time + 10000;  // 10 секунд на підключення
+    while (WiFi.status() != WL_CONNECTED && start_time < end_time) {
+        delay(500);
+        ESP.wdtDisable();
+        Serial.println(".");
+        start_time = millis();
+        ESP.wdtEnable(WDTO_8S);
+    }
+    return WiFi.status();
 }
 
 #endif

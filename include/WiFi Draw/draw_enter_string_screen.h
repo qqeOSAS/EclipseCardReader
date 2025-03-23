@@ -27,6 +27,7 @@ struct entered_str_info{
     bool isEntered;
     byte selected_action;
 };
+entered_str_info entered_str = {"",false,0};
 
 char keyboard_chars[] = {
     // Цифри
@@ -193,7 +194,7 @@ void update_enter_string(char* entered_string, bool is_selected, char selected_c
 }
 
 entered_str_info draw_enter_string_screen(char* up_label){
-    static entered_str_info entered_str = {"",false};
+    
    
     u8g2.clearBuffer();
     u8g2.setColorIndex(1);
@@ -228,7 +229,7 @@ entered_str_info draw_enter_string_screen(char* up_label){
                     entered_str.isEntered = true;
                     break;
                 case EXIT:
-                    entered_str.selected_action = 1;
+                    entered_str.selected_action = 2;
                     entered_str.isEntered = true;
                     break;
                 case CLEAR_CHAR:
