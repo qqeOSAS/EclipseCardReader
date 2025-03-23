@@ -12,35 +12,41 @@ struct selectedChar{
     bool isSelected;
     char charValue;
 };
-struct selected_icon_pos{
+struct selected_char_icon_pos{
     byte next_keyboard_page;
     int x;
     int y;
+};
+struct selected_action{
+    bool isSelected;
+    byte var;
+};
+
+struct entered_str_info{
+    char entered_string[30] = "";
+    bool isEntered;
+    byte selected_action;
 };
 
 char keyboard_chars[] = {
     // Цифри
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-    
     // Великі літери
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 
     'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-
     // Малі літери
     'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
     'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-
     // Символи пунктуації та спеціальні символи
     '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', 
     '[', ']', '{', '}', '\\', '|', ';', ':', '\'', '"', ',', '.', '/', '<', '>', '?', '`', '~',
-
     // Пробіл
     ' '
 };
 
 //returns next page
-selected_icon_pos draw_select_icon(int command) {
-    selected_icon_pos icon_pos = {0, 0, 0};
+selected_char_icon_pos draw_select_icon(int command) {
+    selected_char_icon_pos icon_pos = {0, 0, 0};
 
     static int select_icon_x = -2;
     static int select_icon_y = 32;
@@ -78,7 +84,46 @@ selected_icon_pos draw_select_icon(int command) {
     return icon_pos;
 }
 
-selectedChar return_select_char(int command,byte page_num,selected_icon_pos icon_pos){
+#define SAVE 1
+#define EXIT 2
+#define CLEAR_CHAR 3
+
+selected_action draw_select_action_icon(int command,byte page_num){
+    selected_action selected_action = {false,0};
+    const static byte select_icon_x = 107;
+    static byte select_icon_y = 32;
+
+    if(command == LIST_UP_MENU) select_icon_y -= 10;
+    else if(command == LIST_DOWN_MENU) select_icon_y += 10;
+    
+    if(select_icon_y < 32){
+        select_icon_y = 52;
+    }
+    if(select_icon_y > 52){
+        select_icon_y = 32;
+    }
+    if(command == SELECT){
+        selected_action.isSelected = true;
+        switch(select_icon_y){
+            case 32:
+                selected_action.var = SAVE;
+                break;
+            case 42:
+                selected_action.var = EXIT;
+                break;
+            case 52:
+                selected_action.var = CLEAR_CHAR;
+                break;
+        }
+    }
+
+    u8g2.drawFrame(select_icon_x,select_icon_y,30,10);
+   
+    return selected_action;
+
+}
+
+selectedChar return_select_char(int command,byte page_num,selected_char_icon_pos icon_pos){
     selectedChar selected_char = {false,0};
     byte symbols_per_page = 34;
     int corrector = (page_num - 1) * symbols_per_page;
@@ -142,31 +187,66 @@ byte draw_keyboard(byte next_page){
     return page_num;
 
 }
+void update_enter_string(char* entered_string, bool is_selected, char selected_char){
+    if(is_selected)
+        add_char_to_str(entered_string,selected_char,30);
+}
 
-void draw_enter_string_screen(char* up_label){
-    static char entered_string[30] = "";
-
+entered_str_info draw_enter_string_screen(char* up_label){
+    static entered_str_info entered_str = {"",false};
+   
     u8g2.clearBuffer();
     u8g2.setColorIndex(1);
     u8g2.setFont(u8g2_font_NokiaSmallBold_tr);
 
     u8g2.setCursor(2,10);
-   // u8g2.print(up_label);
-    draw_directory_info("Enter SSID pasord");
+    draw_directory_info(up_label);
+
     u8g2.drawRFrame(0,15,128,15,2);
     u8g2.drawXBMP(108,30,20,34,enter_char_panel);
 
     byte command = serial_command();
+   
+    static bool select_char = true;
+    if(command == 10){
+        select_char = !select_char;
+    }
+    if(select_char){
+        selected_char_icon_pos icon_pos = draw_select_icon(command);
+        byte keyboard_page = draw_keyboard(icon_pos.next_keyboard_page);
+        selectedChar selected_char = return_select_char(command,keyboard_page,icon_pos);
+        update_enter_string(entered_str.entered_string,selected_char.isSelected,selected_char.charValue);
+        Serial.println(entered_str.entered_string);
+    }
+    if(!select_char){
+        selected_action selected_action = draw_select_action_icon(command,1);
+        draw_keyboard(0);
+        if(selected_action.isSelected){
+            switch(selected_action.var){
+                case SAVE:
+                    entered_str.selected_action = 1;
+                    entered_str.isEntered = true;
+                    break;
+                case EXIT:
+                    entered_str.selected_action = 1;
+                    entered_str.isEntered = true;
+                    break;
+                case CLEAR_CHAR:
+                    remove_last_char(entered_str.entered_string);
+                    break;
+            }
+        }
 
-    selected_icon_pos icon_pos = draw_select_icon(command);
-    byte keyboard_page = draw_keyboard(icon_pos.next_keyboard_page);
-    selectedChar selected_char = return_select_char(command,keyboard_page,icon_pos);
-    if(selected_char.isSelected)
-        add_char(entered_string,selected_char.charValue,sizeof(entered_string));
-    Serial.println(entered_string);
+    }
+    u8g2.setFont(u8g2_font_6x13_t_cyrillic); 
+    u8g2.setCursor(2,27);
+    u8g2.print(entered_str.entered_string);
+
+
 
 
     u8g2.sendBuffer();
+    return entered_str;
 }
 
 

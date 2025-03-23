@@ -19,19 +19,23 @@ selected_user_option draw_files_properties_menu_user(int command,char* button_1_
     static int8 selected_icon = 0;
 
 
+
+
     switch (command) {
         case SELECT:
             user_option.is_selected = true;
             user_option.selected_option = selected_icon;
             break;
+    
         case LIST_DOWN_MENU:
-            selected_icon++;
-            if (selected_icon > 1) selected_icon = 0;break;
+            if (selected_icon < 1) selected_icon++;  // 0 → 1, далі не росте
+            break;
+    
         case LIST_UP_MENU:
-            selected_icon--;
-            if (selected_icon < 0) selected_icon = 1;break;
+            if (selected_icon > 0) selected_icon--;  // 1 → 0, далі не зменшується
+            break;
     }
-
+    
     u8g2.setColorIndex(1);
     u8g2.drawBox(0, 53, 128, 14);
 

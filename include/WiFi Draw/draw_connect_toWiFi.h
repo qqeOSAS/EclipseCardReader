@@ -42,6 +42,7 @@ void draw_scanning_SSID(){
 
 void draw_SSID_info(char* selected_SSID, byte selected_ssid_index){
     selected_user_option user_opt = {false,0};
+    bool exit_loop = false;
 
     while(1){
         ESP.wdtDisable();
@@ -69,13 +70,23 @@ void draw_SSID_info(char* selected_SSID, byte selected_ssid_index){
             case ENC_TYPE_NONE: u8g2.print("Open network"); break;
             default: u8g2.print("unknown type");
         }
+        user_opt = draw_files_properties_menu_user(command,"OK","Connect");
         if(user_opt.is_selected){
+            Serial.println("Selected option:");
+            Serial.println(user_opt.selected_option);
             switch(user_opt.selected_option){
-                case OK:  break;
+                case OK:
+                    exit_loop = true; 
+                break;
                 case 1:
                     while(1){
                         ESP.wdtDisable();
-                        draw_enter_string_screen("Enter SSSID pasword.");
+                        entered_str_info str_info = draw_enter_string_screen("Enter SSSID pasword.");
+                        if(str_info.isEntered){
+                            Serial.println(str_info.entered_string);
+                            user_opt = {0,0};
+                            break;
+                        } 
                         ESP.wdtEnable(WDTO_8S);
                     }
                     break;
@@ -83,9 +94,9 @@ void draw_SSID_info(char* selected_SSID, byte selected_ssid_index){
 
 
             }
+            if(exit_loop) break;
 
         }
-        user_opt = draw_files_properties_menu_user(command,"OK","Connect");
         u8g2.sendBuffer();
         ESP.wdtEnable(WDTO_8S);
     }
