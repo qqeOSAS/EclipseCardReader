@@ -194,8 +194,7 @@ void update_enter_string(char* entered_string, bool is_selected, char selected_c
 }
 
 entered_str_info draw_enter_string_screen(char* up_label){
-    
-   
+
     u8g2.clearBuffer();
     u8g2.setColorIndex(1);
     u8g2.setFont(u8g2_font_NokiaSmallBold_tr);
@@ -242,10 +241,7 @@ entered_str_info draw_enter_string_screen(char* up_label){
     u8g2.setFont(u8g2_font_6x13_t_cyrillic); 
     u8g2.setCursor(2,27);
     u8g2.print(entered_str.entered_string);
-
-
-
-
+    
     u8g2.sendBuffer();
     return entered_str;
 }

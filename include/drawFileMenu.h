@@ -43,14 +43,14 @@ byte return_file_type_icon(char* filename){
 }
 void draw_file_type_icon(byte y,byte file_type){
     switch(file_type){
-        case DIRECTORY: u8g2.drawXBMP(0,y,10,8, folder_icon_10x8);  break;
-        case TEXT_FILE: u8g2.drawXBMP(0,y,10,8,txt_file_icon_10x8); break;
-        case XBM_FILE:  u8g2.drawXBMP(0,y,10,8,XBM_file_icon_10x8); break;
-        case BIN_FILE:  u8g2.drawXBMP(0,y,10,8,BIN_file_icon_10x8); break;
+        case DIRECTORY: u8g2.drawXBMP(2,y,10,8, folder_icon_10x8);  break;
+        case TEXT_FILE: u8g2.drawXBMP(2,y,10,8,txt_file_icon_10x8); break;
+        case XBM_FILE:  u8g2.drawXBMP(2,y,10,8,XBM_file_icon_10x8); break;
+        case BIN_FILE:  u8g2.drawXBMP(2,y,10,8,BIN_file_icon_10x8); break;
     }
 }
 void draw_spec_icon(byte y, const unsigned char* bitmap){
-    u8g2.drawXBMP(0,y,10,8,bitmap);
+    u8g2.drawXBMP(2,y,10,8,bitmap);
 }
 
 CommandData draw_selecting_icon(bool draw_icon) {

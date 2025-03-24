@@ -56,10 +56,11 @@ bool check_SSID_existing(const char* selected_SSID){
 }
 
 byte connect_to_selected_SSID(char* selected_SSID, char* password){
+    WiFi.setHostname("EclipseDevice");
     WiFi.mode(WIFI_STA); 
     WiFi.begin(selected_SSID, password);  // Підключаємося
     unsigned long start_time = millis();
-    unsigned long end_time = start_time + 10000;  // 10 секунд на підключення
+    unsigned long end_time = start_time + 20000;  // 10 секунд на підключення
     while (WiFi.status() != WL_CONNECTED && start_time < end_time) {
         delay(500);
         ESP.wdtDisable();
