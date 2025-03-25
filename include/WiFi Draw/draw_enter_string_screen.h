@@ -208,7 +208,7 @@ entered_str_info draw_enter_string_screen(char* up_label){
     byte command = serial_command();
    
     static bool select_char = true;
-    if(command == 10){
+    if(command == OPEN_PLAYER){
         select_char = !select_char;
     }
     if(select_char){

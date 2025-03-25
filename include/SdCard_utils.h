@@ -338,5 +338,63 @@ bool rename_sd_file(const char* old_filepath, const char* new_filepath) {
     return false;
 }
 
+bool create_directory(const char* directory) {
+    begin_SD();
+    if (!sd.exists(directory)) {
+        if (sd.mkdir(directory)) {
+            Serial.print("Папка успішно створена: ");
+            Serial.println(directory);
+            return true;
+        } else {
+            Serial.print("Помилка при створенні папки: ");
+            Serial.println(directory);
+            return false;
+        }
+    }
+    else{
+        Serial.print("Папка вже існує: ");
+        Serial.println(directory);
+        return false;
+    }
+    
+    
+}
+bool create_txt_file(const char* filepath, char* filename, char* content) {
+    begin_SD();
+    SdFile file;
+
+    size_t filepath_size = strlen(filepath) + strlen(filename) + 1;
+    char* full_filepath = (char*)malloc(filepath_size);
+
+    if (full_filepath == NULL) {
+        Serial.println("Failed to allocate memory for filepath");
+        return false; 
+    }
+    snprintf(full_filepath, filepath_size, "%s%s", filepath, filename);
+
+    // Перевірка, чи файл вже існує
+    if (file.exists(full_filepath)) {
+        Serial.println("File already exists!");
+        free(full_filepath);  // Не забувайте звільнити пам'ять
+        return false;
+    }
+
+    // Створення файлу і запис у нього
+    if (file.open(full_filepath, O_CREAT | O_WRITE)) {
+        file.println(content);
+        file.close();
+        Serial.println("Файл успішно створено!");
+        free(full_filepath);  // Звільнення пам'яті
+        return true;
+    } 
+    else {
+        Serial.println("Не вдалося створити файл!");
+        free(full_filepath);  // Звільнення пам'яті
+        return false;
+    }
+}
+
+
+
 
 #endif

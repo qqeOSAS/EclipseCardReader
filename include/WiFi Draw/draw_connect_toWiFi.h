@@ -10,7 +10,6 @@
 #include <File properties browser/draw_file_properties_utils.h>
 #include "draw_enter_string_screen.h"
 
-
 DrawOptionsState drawSSidListState;
 
 void draw_scanning_SSID(){
@@ -83,7 +82,7 @@ byte draw_enter_WiFi_pasword(char* selected_SSID) {
 }
 
 
-void draw_after_attempt(byte returned_status,char* selected_SSID){
+void draw_after_attempt(byte returned_status,char* selected_SSID,char* entered_password){
     selected_user_option user_opt = {false,0};
     bool exit_loop = false;
     while(1){
@@ -118,6 +117,27 @@ void draw_after_attempt(byte returned_status,char* selected_SSID){
             switch(user_opt.selected_option){
                 case OK: exit_loop = true; break;
                 case 1:
+                    if(returned_status == WL_CONNECTED){
+                        create_directory("WiFi_connection_logs");
+                        size_t filename_size = strlen(selected_SSID) + strlen("_log.txt") + 1;
+                        char* filename = (char*)malloc(filename_size);
+
+                        if (filename == NULL) {
+                            Serial.println("Failed to allocate memory for filename");
+                            return; 
+                        }
+                        size_t content_size = strlen("SSID") + strlen(" Log") + 1 + strlen("SSID: ") + strlen(selected_SSID) + 1 + strlen("Pasword: ") + 1 + strlen(entered_password) + 1;
+                        char* content = (char*)malloc(content_size);
+
+                        sprintf(content, "SSID Log\nSSID: %s\nPasword: %s", selected_SSID, entered_password);
+                        snprintf(filename,filename_size,"%s_log.txt",selected_SSID);
+                        Serial.println(filename);
+                        Serial.println(content);
+                        Serial.println(content_size);
+                        create_txt_file("WiFi_connection_logs/",filename,content);
+                        free(filename);
+                        free(content);
+                    }
                     exit_loop = true; 
                     break;
             }
@@ -135,13 +155,22 @@ void draw_SSID_info(char* selected_SSID, byte selected_ssid_index){
     selected_user_option user_opt = {false,0};
     bool exit_loop = false;
 
+    size_t prompt_size = strlen(selected_SSID) + 1 + strlen("Info "); // +1 для '\0'
+    char* prompt = (char*)malloc(prompt_size);
+
+    if (prompt == NULL) {
+        Serial.println("Failed to allocate memory for prompt");
+        return; 
+    }
+    snprintf(prompt, prompt_size, "%s Info", selected_SSID);
+
     while(1){
         ESP.wdtDisable();
         int command = serial_command();
        
         
         u8g2.clearBuffer();
-        draw_directory_info("SELECTED SSID INFO");
+        draw_directory_info(prompt);
         u8g2.setColorIndex(1);
     
         u8g2.setFont(u8g2_font_5x8_t_cyrillic);
@@ -168,7 +197,7 @@ void draw_SSID_info(char* selected_SSID, byte selected_ssid_index){
                 case OK: exit_loop = true; break;
                 case 1:
                     byte connection_stat = draw_enter_WiFi_pasword(selected_SSID);
-                    draw_after_attempt(connection_stat,selected_SSID);
+                    draw_after_attempt(connection_stat,selected_SSID,entered_str.entered_string);
                     exit_loop = true;
                 break;
                 
@@ -179,6 +208,7 @@ void draw_SSID_info(char* selected_SSID, byte selected_ssid_index){
         u8g2.sendBuffer();
         ESP.wdtEnable(WDTO_8S);
     }
+    free(prompt);
 
 }
 
@@ -231,3 +261,5 @@ void display_SSID_list(){
     }
 }
 #endif
+
+
