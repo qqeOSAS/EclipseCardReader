@@ -31,16 +31,17 @@ entered_str_info entered_str = {"",false,0};
 
 char keyboard_chars[] = {
     // Цифри
-    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-    // Великі літери
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 
-    'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-    // Малі літери
-    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
-    'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-    // Символи пунктуації та спеціальні символи
-    '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', 
-    '[', ']', '{', '}', '\\', '|', ';', ':', '\'', '"', ',', '.', '/', '<', '>', '?', '`', '~',
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9','A',
+    'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+    'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
+
+    'X', 'Y', 'Z','a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
+    'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+    'u', 'v', 'w', 'x', 'y', 'z','!', '@', '#', '$', '%',
+
+    '^', '&', '*', '(', ')', '-', '_', '=', '+', '[', ']', '{',
+    '}', '\\', '|', ';', ':', '\'', '"', ',', '.', '/', '<',
+    '>', '?', '`', '~',
     // Пробіл
     ' '
 };
@@ -126,7 +127,7 @@ selected_action draw_select_action_icon(int command,byte page_num){
 
 selectedChar return_select_char(int command,byte page_num,selected_char_icon_pos icon_pos){
     selectedChar selected_char = {false,0};
-    byte symbols_per_page = 34;
+    byte symbols_per_page = 33;
     int corrector = (page_num - 1) * symbols_per_page;
     float selected_char_index = 0;
 
@@ -156,7 +157,7 @@ selectedChar return_select_char(int command,byte page_num,selected_char_icon_pos
 
 //returns page number
 byte draw_keyboard(byte next_page){
-    const byte symbols_per_page = 34;  
+    const byte symbols_per_page = 33;  
     const byte page_count = 3;
     static byte page_num = 1;
     int corrector = (page_num - 1) * symbols_per_page;
@@ -190,7 +191,7 @@ byte draw_keyboard(byte next_page){
 }
 void update_enter_string(char* entered_string, bool is_selected, char selected_char){
     if(is_selected)
-        add_char_to_str(entered_string,selected_char,30);
+        add_char_to_str(entered_string,selected_char,29);
 }
 
 entered_str_info draw_enter_string_screen(char* up_label){
@@ -238,22 +239,13 @@ entered_str_info draw_enter_string_screen(char* up_label){
         }
 
     }
+    const byte x = 5;
     u8g2.setFont(u8g2_font_6x13_t_cyrillic); 
-    u8g2.setCursor(2,27);
+    u8g2.setCursor(x,27);
     u8g2.print(entered_str.entered_string);
     
     u8g2.sendBuffer();
     return entered_str;
 }
-
-
-
-
-
-
-
-
-
-
 
 #endif

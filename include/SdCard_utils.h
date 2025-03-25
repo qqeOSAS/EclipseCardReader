@@ -158,6 +158,13 @@ void getParentDirectory(char* currentDirectory) {
         strcpy(currentDirectory, "/"); 
     }
 }
+void trimToLastDirectory(char* currentDirectory) {
+    char* lastSlash = strrchr(currentDirectory, '/'); // Знаходимо останній слеш
+    if (lastSlash != NULL) {
+        // Зсуваємо рядок так, щоб залишити тільки частину після останнього слеша
+        memmove(currentDirectory, lastSlash + 1, strlen(lastSlash));
+    }
+}
 
 
 void normalizePath(char* path) {

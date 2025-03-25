@@ -6,6 +6,7 @@
 #include <drawFileMenu.h>
 #include <File properties browser/draw_edit_attributes.h>
 #include <File properties browser/draw_delete_file.h>
+#include <File properties browser/draw_rename_file.h>
 #include <BinImageBrowser.h>
 
 DrawOptionsState PropertiesActionsState;
@@ -48,7 +49,8 @@ void display_properties_actions(FileProperties* file_properties,char* file_name)
                         PropertiesActionsState = {0,0,0,0,0,0};
                         break;
                     case 2:
-                        //rename file
+                        Display_rename_file(file_name);
+                        
                         
                         break;
                     case 3:
