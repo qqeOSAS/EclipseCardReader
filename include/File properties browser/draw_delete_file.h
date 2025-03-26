@@ -12,7 +12,7 @@ struct user_choice{
 #define DELETE 0
 #define CANCEL 1
 
-user_choice draw_choice(int command,char* filename){
+user_choice draw_choice(int command,char* filename, char* button_label1, char* button_label2){
     user_choice user_choice = {false, 0};
     static int8 selected_icon = 0;
 
@@ -40,10 +40,10 @@ user_choice draw_choice(int command,char* filename){
     }
     u8g2.setFont(u8g2_font_NokiaSmallBold_tr);
     u8g2.setCursor(15, 62);
-    u8g2.print("Cancel && Exit)");
+    u8g2.print(button_label1);
     u8g2.setFontMode(1);
     u8g2.setCursor(10, 51);
-    u8g2.print("Delete: ");
+    u8g2.print(button_label2);
     u8g2.setFont(u8g2_font_5x8_t_cyrillic);
     u8g2.print(filename);
 
@@ -91,7 +91,7 @@ void Display_delete_file(char* file_name){
 
         if (currentMillis - timer_1 >= 5) {
             u8g2.clearBuffer();
-            user_choice = draw_choice(command,file_name);
+            user_choice = draw_choice(command,file_name,"Cancel && Exit)","Delete");
             draw_delete_file(file_name);
             if(user_choice.is_selected){
 

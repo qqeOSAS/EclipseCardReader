@@ -245,6 +245,7 @@ entered_str_info draw_enter_string_screen(char* up_label){
     u8g2.print(entered_str.entered_string);
     
     u8g2.sendBuffer();
+    
     return entered_str;
 }
 

@@ -9,6 +9,7 @@
 #include <Icon_animations.h>
 #include <File properties browser/draw_file_properties_utils.h>
 #include "draw_enter_string_screen.h"
+#include <File properties browser/draw_delete_file.h>
 
 DrawOptionsState drawSSidListState;
 
@@ -80,6 +81,26 @@ byte draw_enter_WiFi_pasword(char* selected_SSID) {
 
     return connectStat;
 }
+void draw_select_update_log(){
+    user_choice user_choice = {false,0};
+    bool exit_loop = false;
+    while(1){
+        ESP.wdtDisable();
+        int command = serial_command();
+        u8g2.clearBuffer();
+        u8g2.setColorIndex(1);
+        draw_directory_info("Do you want to update log to this SSID?");
+        user_choice = draw_choice(command,"No","Yes");
+        if(user_choice.is_selected){
+            
+            }
+        }
+
+        
+
+
+
+    }
 
 
 void draw_after_attempt(byte returned_status,char* selected_SSID,char* entered_password){
@@ -118,7 +139,9 @@ void draw_after_attempt(byte returned_status,char* selected_SSID,char* entered_p
                 case OK: exit_loop = true; break;
                 case 1:
                     if(returned_status == WL_CONNECTED){
-                        create_directory("WiFi_connection_logs");
+                        if(!sd.exists("WiFi_connection_logs"))
+                            create_directory("WiFi_connection_logs");
+
                         size_t filename_size = strlen(selected_SSID) + strlen("_log.txt") + 1;
                         char* filename = (char*)malloc(filename_size);
 
@@ -134,7 +157,10 @@ void draw_after_attempt(byte returned_status,char* selected_SSID,char* entered_p
                         Serial.println(filename);
                         Serial.println(content);
                         Serial.println(content_size);
-                        create_txt_file("WiFi_connection_logs/",filename,content);
+                        if(!sd.exists(filename))
+                            create_txt_file("WiFi_connection_logs/",filename,content);
+                        else
+                            
                         free(filename);
                         free(content);
                     }
@@ -151,7 +177,7 @@ void draw_after_attempt(byte returned_status,char* selected_SSID,char* entered_p
 
 }
 
-void draw_SSID_info(char* selected_SSID, byte selected_ssid_index){
+void display_SSID_info(char* selected_SSID, byte selected_ssid_index){
     selected_user_option user_opt = {false,0};
     bool exit_loop = false;
 
@@ -250,7 +276,7 @@ void display_SSID_list(){
             Serial.println(drawSSidListState.selectedFileData.fileName);
             bool exist = check_SSID_existing(drawSSidListState.selectedFileData.fileName);
             if(exist)
-                draw_SSID_info(drawSSidListState.selectedFileData.fileName,drawSSidListState.selectedFileData.fileIndex);
+                display_SSID_info(drawSSidListState.selectedFileData.fileName,drawSSidListState.selectedFileData.fileIndex);
 
         }
 

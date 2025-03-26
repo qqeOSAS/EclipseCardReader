@@ -325,6 +325,13 @@ bool delete_sd_file(const char* filepath) {
     }
     
 }
+bool check_file_for_exist(const char* filepath){
+    if(sd.exists(filepath)){
+        return true;
+    }
+    return false;
+}
+
 bool rename_sd_file(const char* old_filepath, const char* new_filepath) {
     if(sd.exists(old_filepath)){
         if(sd.rename(old_filepath, new_filepath)) {
