@@ -9,7 +9,7 @@
 #include <Icon_animations.h>
 #include <File properties browser/draw_file_properties_utils.h>
 #include "draw_enter_string_screen.h"
-#include <File properties browser/draw_delete_file.h>
+#include <display_interface_utils.h>
 
 DrawOptionsState drawSSidListState;
 
@@ -39,7 +39,7 @@ void draw_scanning_SSID(){
         ESP.wdtEnable(WDTO_8S);
     } 
 }
-byte draw_enter_WiFi_pasword(char* selected_SSID) {
+byte draw_enter_WiFi_pasword(char* selected_SSID,byte selected_ssid_encryption) {
     strcpy(entered_str.entered_string, ""); // Очищаємо введений рядок
     entered_str.isEntered = false;
     byte connectStat;
@@ -55,7 +55,14 @@ byte draw_enter_WiFi_pasword(char* selected_SSID) {
 
     while (1) {
         ESP.wdtDisable();
-        entered_str = draw_enter_string_screen(prompt); // Передаємо динамічно створений рядок
+        if(selected_ssid_encryption == ENC_TYPE_NONE){
+            entered_str.isEntered = true;
+            entered_str.selected_action = 1;
+        }
+        else
+            entered_str = draw_enter_string_screen(prompt); // Передаємо динамічно створений рядок
+
+
         if (entered_str.isEntered) {
             if (entered_str.selected_action == 2) {
                 strcpy(entered_str.entered_string, ""); // Очищаємо введений рядок
@@ -81,27 +88,58 @@ byte draw_enter_WiFi_pasword(char* selected_SSID) {
 
     return connectStat;
 }
-void draw_select_update_log(){
+void draw_select_update_log(char* filepath,char* filename, char* content){
     user_choice user_choice = {false,0};
     bool exit_loop = false;
+    size_t prompt_size = strlen("File") + strlen(filepath) + strlen(filename) + strlen("alredy created in folder (WiFi_connection_logs/). That means that you can update log pasword && SSID. (^_^)") + 1;
+    char* label = (char*)malloc(prompt_size);
+    sprintf(label,"File %s%s alredy created in folder (WiFi_connection_logs/) you can update log pasword && SSID",filepath,filename);
     while(1){
         ESP.wdtDisable();
         int command = serial_command();
         u8g2.clearBuffer();
         u8g2.setColorIndex(1);
-        draw_directory_info("Do you want to update log to this SSID?");
-        user_choice = draw_choice(command,"No","Yes");
+        
+        draw_directory_info(label);
+        u8g2.setFont(u8g2_font_nokiafc22_tr);
+        u8g2.setCursor(1, 20); u8g2.print("You want to update file?");
+        u8g2.setFont(u8g2_font_5x8_t_cyrillic);
+        u8g2.setCursor(1, 30); u8g2.print("(File will not be deleted)");
+
+        u8g2.print(filename);
+        user_choice = draw_select_two_options_menu(command,".","No.","Yes");
         if(user_choice.is_selected){
+            switch(user_choice.selected_option){
+                case 1: 
+                    exit_loop = true;
+                    break;
+
+                case 0:
+                    size_t filepath_size = strlen(filepath) + strlen(filename) + 1;
+                    char* full_filepath = (char*)malloc(filepath_size);
+
+                    clear_txt_file(full_filepath);
+                    free(full_filepath);
+                    Serial.println(content);
+                    create_txt_file(filepath,filename,content);
+
+                    exit_loop = true;
+                    break;
+
             
             }
         }
+        if(exit_loop) break;
 
         
 
 
-
+        u8g2.sendBuffer();
+        ESP.wdtEnable(WDTO_8S);
     }
+    free(label);
 
+}
 
 void draw_after_attempt(byte returned_status,char* selected_SSID,char* entered_password){
     selected_user_option user_opt = {false,0};
@@ -154,13 +192,26 @@ void draw_after_attempt(byte returned_status,char* selected_SSID,char* entered_p
 
                         sprintf(content, "SSID Log\nSSID: %s\nPasword: %s", selected_SSID, entered_password);
                         snprintf(filename,filename_size,"%s_log.txt",selected_SSID);
+
                         Serial.println(filename);
                         Serial.println(content);
                         Serial.println(content_size);
-                        if(!sd.exists(filename))
+                        size_t filepath_size = strlen("WiFi_connection_logs/") + strlen(filename) ;
+                        char* full_filepath = (char*)malloc(filepath_size);
+                        sprintf(full_filepath,"WiFi_connection_logs/%s",filename);
+
+                        if(!sd.exists(full_filepath)){
+                            Serial.println("File not exist");
                             create_txt_file("WiFi_connection_logs/",filename,content);
-                        else
-                            
+                        }
+                        else{
+                            Serial.println("File exist");
+                            draw_select_update_log("WiFi_connection_logs/",filename,content);
+                        }
+                        
+
+                        
+                        free(full_filepath);
                         free(filename);
                         free(content);
                     }
@@ -222,7 +273,7 @@ void display_SSID_info(char* selected_SSID, byte selected_ssid_index){
             switch(user_opt.selected_option){
                 case OK: exit_loop = true; break;
                 case 1:
-                    byte connection_stat = draw_enter_WiFi_pasword(selected_SSID);
+                    byte connection_stat = draw_enter_WiFi_pasword(selected_SSID,ssid_list_info.encryption_type[selected_ssid_index]);
                     draw_after_attempt(connection_stat,selected_SSID,entered_str.entered_string);
                     exit_loop = true;
                 break;

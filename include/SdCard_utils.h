@@ -408,6 +408,28 @@ bool create_txt_file(const char* filepath, char* filename, char* content) {
     }
 }
 
+bool clear_txt_file(char* filepath){
+    SdFile file;
+
+    if (file.open(filepath, O_RDWR)) {
+        if(file.truncate(0)){
+            Serial.println("Файл успішно очищено!");
+            file.close();
+            return true;
+        }
+        else{
+            Serial.println("Помилка при очищенні файлу!");
+            file.close();
+            return false;
+        }
+    }
+    else {
+        Serial.print("Не вдалося відкрити файл: ");
+        Serial.println(filepath);
+        return false;
+    }
+}
+
 
 
 
