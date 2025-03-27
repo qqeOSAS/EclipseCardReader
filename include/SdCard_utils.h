@@ -7,7 +7,7 @@
 
 char lastDirectory[200] = "/";
 char currentDirectory[200] = "/";
-char text_file_page_buffer[130];
+//char text_file_page_buffer[130];
 char Properties_directory[200];
 
 bool begin_SD();

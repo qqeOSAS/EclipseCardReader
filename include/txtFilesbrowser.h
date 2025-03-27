@@ -8,13 +8,22 @@
 void browse_txt_file(char* directory);
 
 void browse_txt_file(char* directory) {
+    char* text_file_page_buffer = (char*)malloc(130);
+    if(text_file_page_buffer == NULL){
+        Serial.println("Failed to allocate memory for text file buffer");
+        return;
+    }
+
+
     int page = 0;  // Initialize the page number to 0
-    int file_pages  = readTextFile(directory, page);  // Read the first page of the text file
+    int file_pages  = readTextFile(directory, page,text_file_page_buffer);  // Read the first page of the text file
 
     // Loop to handle user commands
     while (drawState.result.command != BACK) {
         ESP.wdtDisable();  // Disable the watchdog timer
-        bool read_next_page = false;  // Flag to determine if the next page should be read
+        bool read_next_page = false; 
+        Serial.print("Free heap: ");
+        Serial.println(ESP.getFreeHeap()); // Flag to determine if the next page should be read
 
         // Handle user commands
         switch (drawState.result.command) {
@@ -36,19 +45,20 @@ void browse_txt_file(char* directory) {
 
         // If the flag is set, read the next page
         if (read_next_page) {
-            readTextFile(directory, page);  // Read the text file at the current page
+            readTextFile(directory, page,text_file_page_buffer);  // Read the text file at the current page
             read_next_page = false;  // Reset the flag
         }
 
-        draw_text_file(directory, text_file_page_buffer);  // Display the text file on the screen
+        draw_text_file(directory,text_file_page_buffer);  // Display the text file on the screen
 
         ESP.wdtEnable(WDTO_8S);  // Enable the watchdog timer with an 8-second timeout
     }
 
     // Clear the text file buffer after exiting the loop
-    for (int i = 0; i < sizeof(text_file_page_buffer); i++) {
-        text_file_page_buffer[i] = '\0';
-    }
+    //for (int i = 0; i < sizeof(text_file_page_buffer); i++) {
+    //    text_file_page_buffer[i] = '\0';
+    //}
+    free(text_file_page_buffer);  // Free the memory allocated for the text file buffer
 }
 
 #endif

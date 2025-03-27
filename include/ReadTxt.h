@@ -11,7 +11,7 @@
 #include <SDCardConfig.h>
 
 bool isTextFile(const char* filepath);
-int readTextFile(char* filename, byte page);
+int readTextFile(char* filename, byte page,char* text_file_page_buffer);
 
 
 bool isTextFile(const char* filepath) {
@@ -28,7 +28,7 @@ bool isTextFile(const char* filepath) {
 }
 
 
-int readTextFile(char* filename, byte page) {
+int readTextFile(char* filename, byte page, char* text_file_page_buffer) {
     SdFile file;
 
 
