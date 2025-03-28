@@ -10,6 +10,7 @@
 #include <File properties browser/draw_file_properties_utils.h>
 #include "draw_enter_string_screen.h"
 #include <display_interface_utils.h>
+#include <Read_system_files.h>
 
 DrawOptionsState drawSSidListState;
 
@@ -40,8 +41,25 @@ void draw_scanning_SSID(){
     } 
 }
 byte draw_enter_WiFi_pasword(char* selected_SSID,byte selected_ssid_encryption) {
-    strcpy(entered_str.entered_string, ""); // Очищаємо введений рядок
-    entered_str.isEntered = false;
+    size_t filename_size = strlen(selected_SSID) + strlen("_log.txt") + 1;
+    char* filename = (char*)malloc(filename_size);
+    sprintf(filename,"%s_log.txt",selected_SSID);
+    char* extructed_password = (char*)malloc(30);
+        
+    extructed_password = read_Wifi_log_file("WiFi_connection_logs/", filename);
+    free(filename);
+    if(extructed_password != NULL){
+        strcpy(entered_str.entered_string,extructed_password);
+        entered_str.isEntered = true;
+        entered_str.selected_action = 1;
+        Serial.println("Password found");
+    }
+    else{
+        strcpy(entered_str.entered_string, ""); // Очищаємо введений рядок
+        entered_str.isEntered = false;
+        Serial.println("Password not found");
+    }
+
     byte connectStat;
     size_t prompt_size = strlen("Enter password for ") + strlen(selected_SSID) + 1; // +1 для '\0'
     char* prompt = (char*)malloc(prompt_size);
@@ -85,6 +103,7 @@ byte draw_enter_WiFi_pasword(char* selected_SSID,byte selected_ssid_encryption) 
 
     // Звільняємо пам'ять
     free(prompt);
+    free(extructed_password);
 
     return connectStat;
 }
@@ -187,10 +206,10 @@ void draw_after_attempt(byte returned_status,char* selected_SSID,char* entered_p
                             Serial.println("Failed to allocate memory for filename");
                             return; 
                         }
-                        size_t content_size = strlen("SSID") + strlen(" Log") + 1 + strlen("SSID: ") + strlen(selected_SSID) + 1 + strlen("Pasword: ") + 1 + strlen(entered_password) + 1;
+                        size_t content_size = strlen("SSID") + strlen(" Log") + 1 + strlen("SSID: ") + strlen(selected_SSID) + 1 + strlen("Pasword: ") + 1 + strlen(entered_password) + 3;
                         char* content = (char*)malloc(content_size);
 
-                        sprintf(content, "SSID Log\nSSID: %s\nPasword: %s", selected_SSID, entered_password);
+                        sprintf(content, "SSID Log\nSSID: %s\nPasword: \"%s\"", selected_SSID, entered_password);
                         snprintf(filename,filename_size,"%s_log.txt",selected_SSID);
 
                         Serial.println(filename);

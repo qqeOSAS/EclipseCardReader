@@ -429,6 +429,10 @@ bool clear_txt_file(char* filepath){
         return false;
     }
 }
+//bool extract_txt_WiFi_log(char* filepath){
+//    SdFile file;
+    
+//}
 
 
 
