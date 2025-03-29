@@ -13,7 +13,7 @@ SdFat sd;
 struct Draw_Image {
     int width;                // Ширина зображення
     int height;               // Висота зображення
-    uint8_t image_buffer[1024];
+    uint8_t* image_buffer;
     uint32 image_pages; // Буфер для зображення
 };
 

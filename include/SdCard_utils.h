@@ -297,8 +297,9 @@ void save_attributes(const char* filepath, editable_atributes* attributes) {
         Serial.println("Не вдалося відкрити файл для запису.");
     }
 }
-
+// require full file path
 bool delete_sd_file(const char* filepath) {
+    begin_SD();
     if(!isDirectory(filepath)){
         if (sd.remove(filepath)) {
             Serial.print("Файл успішно видалено: ");
@@ -381,7 +382,6 @@ bool create_txt_file(const char* filepath, char* filename, char* content) {
     char* full_filepath = (char*)malloc(filepath_size);
 
     if (full_filepath == NULL) {
-        Serial.println("Failed to allocate memory for filepath");
         return false; 
     }
     snprintf(full_filepath, filepath_size, "%s%s", filepath, filename);
@@ -409,6 +409,7 @@ bool create_txt_file(const char* filepath, char* filename, char* content) {
 }
 
 bool clear_txt_file(char* filepath){
+    begin_SD();
     SdFile file;
 
     if (file.open(filepath, O_RDWR)) {
@@ -429,10 +430,7 @@ bool clear_txt_file(char* filepath){
         return false;
     }
 }
-//bool extract_txt_WiFi_log(char* filepath){
-//    SdFile file;
-    
-//}
+
 
 
 

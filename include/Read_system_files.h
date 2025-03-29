@@ -4,6 +4,7 @@
 #include <SDCardConfig.h>
 #include <SDCard_utils.h>
 char* read_Wifi_log_file(const char* filefolder, char* filename) {
+    begin_SD();
     SdFile file;
 
     size_t filepath_size = strlen(filefolder) + strlen(filename) + 2; // +1 для '\0' +1 для '/'
