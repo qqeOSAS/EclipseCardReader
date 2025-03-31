@@ -3,10 +3,15 @@
 
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
+extern "C" {
+    #include "user_interface.h"
+}
 struct SSID_LIST_INFO{
-    char SSID_LIST[20][30]; // Assuming a maximum of 10 SSIDs
-    int rssiList[20];
-    byte encryption_type[20];
+    char SSID_LIST[10][30]; // Assuming a maximum of 10 SSIDs
+    int rssiList[10];
+    uint8_t bssid[10][6]; // Assuming a maximum of 10 SSIDs
+    byte encryption_type[10];
+    byte channel[10];
     int ssid_to_store;
 
 };
@@ -38,7 +43,9 @@ void get_SSID_LIST(){
         ssid_list_info.ssid_to_store = min(aviable_network,10);
         for(byte i = 0; i < ssid_list_info.ssid_to_store;  i++){
             ssid_list_info.rssiList[i] = WiFi.RSSI(i);
-            sprintf(ssid_list_info.SSID_LIST[i], "%s", WiFi.SSID(i).c_str());
+            ssid_list_info.channel[i] = WiFi.channel(i);
+            memcpy(ssid_list_info.bssid[i], WiFi.BSSID(i), 6); // Копіюємо BSSID
+            sprintf(ssid_list_info.SSID_LIST[i], "%s", WiFi.SSID(i).c_str()); // Копіюємо SSID
             ssid_list_info.encryption_type[i] = WiFi.encryptionType(i);
         }
         bubbleSort_SSID(ssid_list_info);
@@ -54,7 +61,21 @@ bool check_SSID_existing(const char* selected_SSID){
     }
     return false;
 }
-
+byte check_wifi_connection_status(){
+    switch(WiFi.status()){
+        case WL_NO_SSID_AVAIL:
+        case WL_CONNECT_FAILED:
+        case WL_CONNECTION_LOST:
+        case WL_DISCONNECTED:
+        case WL_WRONG_PASSWORD:
+            return 0;
+            break;
+        case WL_CONNECTED:
+            return 1;
+            break;
+    }
+    return 0;
+}
 byte connect_to_selected_SSID(char* selected_SSID, char* password){
     WiFi.setHostname("EclipseDevice");
     WiFi.mode(WIFI_STA); 

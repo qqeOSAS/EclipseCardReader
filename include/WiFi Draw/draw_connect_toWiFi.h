@@ -11,6 +11,7 @@
 #include "draw_enter_string_screen.h"
 #include <display_interface_utils.h>
 #include <Read_system_files.h>
+#include <WiFi/WiFi_config.h>
 
 DrawOptionsState drawSSidListState;
 
@@ -238,6 +239,7 @@ void draw_after_attempt(byte returned_status,char* selected_SSID,char* entered_p
         switch (returned_status) {
             case WL_CONNECTED: 
                 u8g2.print("Connected");
+                wifi_connection_status = true;
                 user_opt = draw_files_properties_menu_user(command,"OK","Save in txt"); 
                 break;
             case WL_NO_SSID_AVAIL: u8g2.print("SSID not available"); break;

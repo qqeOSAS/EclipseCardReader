@@ -7,6 +7,7 @@
 #include <drawFileMenu.h>
 #include <SdCard_utils.h>
 #include <WiFi Draw/draw_connect_toWiFi.h>
+#include <WiFi Draw/draw_Wifi_deather.h>
 
 DrawOptionsState drawWiFiState;
 
@@ -32,6 +33,7 @@ void draw_wifi_selected_option(int selected_fileIndex){
         case 4:
             Serial.print("SELECTED: ");
             Serial.println("WiFi_deauther");
+            display_select_death_ssid();
             break;
         case 5:
             Serial.print("SELECTED: ");
