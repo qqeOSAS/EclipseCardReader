@@ -3,8 +3,9 @@
 
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
+#include <WiFi/connect_to_WiFi.h>
 
-#define SCAN_DURATION 10000 // Duration of client scan in milliseconds
+#define SCAN_DURATION 7000 // Duration of client scan in milliseconds
 
 uint8_t deauthPacket[26] = {
     /*  0 - 1  */ 0xC0, 0x00,                         // type, subtype c0: deauth (a0: disassociate)
@@ -31,8 +32,7 @@ struct client_info {
 struct wifi_ieee80211_packet_t {
     struct wifi_ieee80211_mac_hdr_t hdr;
 };
-client_info knownClients[15]; // Array to store known client MAC addresses
-client_info clients[15]; // Array to store client information
+client_info knownClients[15]; // Array to store known client MAC addresses // Array to store client information
 uint8_t targetBSSID[6];
 
 int clientCount = 0;
@@ -43,6 +43,12 @@ bool isClientKnown(uint8_t *mac) {
     }
     return false;
 }
+void printMacAddress(uint8_t *mac) {
+    char macStr[18]; // XX:XX:XX:XX:XX:XX + null terminator
+    snprintf(macStr, sizeof(macStr), "%02X:%02X:%02X:%02X:%02X:%02X",
+             mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+    Serial.println(macStr);
+}
 
 void addClient(uint8_t *mac) {
     if (isClientKnown(mac)) return;  // Якщо MAC уже є – виходимо
@@ -50,25 +56,20 @@ void addClient(uint8_t *mac) {
     if (clientCount < 15) {
         memcpy(knownClients[clientCount].mac, mac, 6);
         clientCount++;
-
-        Serial.print("Client MAC found: ");
-        for (int i = 0; i < 6; i++) {
-            Serial.printf("%02X", mac[i]);
-            if (i < 5) Serial.print(":");
-        }
-        Serial.println();
     }
 }
 
-void scanClientsInNetwork(uint8_t *bssid, int channel) {
+void scanClientsInNetwork(uint8_t *bssid, int channel, byte index) {
     Serial.println("Starting client scan...");
+    Serial.print("SSID: ");
+    Serial.println(ssid_list_info.SSID_LIST[index]);
+    Serial.print("Target BSSID: ");
+    printMacAddress(bssid);
+
     Serial.print("Scanning on channel: ");
     Serial.println(channel);
-    Serial.print("Target BSSID: ");
-    for (int i = 0; i < 6; i++) {
-        Serial.printf("%02X", bssid[i]);
-        if (i < 5) Serial.print(":");
-    }
+
+
     Serial.println();
 
     WiFi.disconnect();
@@ -89,11 +90,14 @@ void scanClientsInNetwork(uint8_t *bssid, int channel) {
             }
         }
     });
-    
+    ESP.wdtDisable();
     wifi_promiscuous_enable(true);
     Serial.println("Scanning clients for 10 seconds...");
     delay(SCAN_DURATION);
     wifi_promiscuous_enable(false);
+    ESP.wdtEnable(WDTO_8S);
+    Serial.println("Client scan finished.");
     
     Serial.printf("Client scan completed. Total clients found: %d\n", clientCount);
 }
+#endif // WIFI_DEATHER_H
