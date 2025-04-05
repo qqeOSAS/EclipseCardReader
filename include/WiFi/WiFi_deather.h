@@ -5,7 +5,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFi/connect_to_WiFi.h>
 
-#define SCAN_DURATION 7000 // Duration of client scan in milliseconds
+#define SCAN_CYCLE_DURATION 7000 // Duration of client scan in milliseconds
 
 uint8_t deauthPacket[26] = {
     /*  0 - 1  */ 0xC0, 0x00,                         // type, subtype c0: deauth (a0: disassociate)
@@ -33,16 +33,38 @@ struct wifi_ieee80211_packet_t {
     struct wifi_ieee80211_mac_hdr_t hdr;
 };
 client_info knownClients[15]; // Array to store known client MAC addresses // Array to store client information
+
 uint8_t targetBSSID[6];
 
-int clientCount = 0;
+byte scan_clientCount = 0;
+byte all_known_clients_count;
+
+byte return_all_known_clients_count() {
+    byte count = 0;
+    for (byte i = 0; i < 15; i++) {
+        if (memcmp(knownClients[i].mac, "\x00\x00\x00\x00\x00\x00", 6) != 0) {
+            count++;
+        }
+    }
+    return count;
+}
 
 bool isClientKnown(uint8_t *mac) {
-    for (int i = 0; i < clientCount; i++) {
-        if (memcmp(knownClients[i].mac, mac, 6) == 0) return true;
+    for (byte i = 0; i < 15; i++) { // Перевіряємо всі елементи масиву
+        if (memcmp(knownClients[i].mac, mac, 6) == 0) {
+            return true;
+        }
     }
     return false;
 }
+
+void clearClients() {
+    for (int i = 0; i < 15; i++) {
+        memset(knownClients[i].mac, 0, 6); // Очищаємо MAC-адресу
+    }
+    scan_clientCount = 0;
+}
+
 void printMacAddress(uint8_t *mac) {
     char macStr[18]; // XX:XX:XX:XX:XX:XX + null terminator
     snprintf(macStr, sizeof(macStr), "%02X:%02X:%02X:%02X:%02X:%02X",
@@ -51,12 +73,39 @@ void printMacAddress(uint8_t *mac) {
 }
 
 void addClient(uint8_t *mac) {
-    if (isClientKnown(mac)) return;  // Якщо MAC уже є – виходимо
-
-    if (clientCount < 15) {
-        memcpy(knownClients[clientCount].mac, mac, 6);
-        clientCount++;
+    Serial.print("Checking MAC: ");
+    for (byte i = 0; i < 6; i++) {
+        Serial.printf("%02X", mac[i]);
+        if (i < 5) Serial.print(":");
     }
+    Serial.println();
+
+    // Перевіряємо, чи MAC-адреса вже відома
+    if (isClientKnown(mac)) {
+        Serial.println("MAC already known!");
+        return;
+    }
+
+    // Шукаємо порожнє місце в масиві
+    for (int i = 0; i < 15; i++) {
+        if (memcmp(knownClients[i].mac, "\x00\x00\x00\x00\x00\x00", 6) == 0) {
+            // Зберігаємо нову MAC-адресу в перше порожнє місце
+            memcpy(knownClients[i].mac, mac, 6);
+            Serial.print("Client MAC added at index ");
+            Serial.print(i);
+            Serial.print(": ");
+            for (int j = 0; j < 6; j++) {
+                Serial.printf("%02X", mac[j]);
+                if (j < 5) Serial.print(":");
+            }
+            Serial.println();
+            scan_clientCount++;
+            return;
+        }
+    }
+
+    // Якщо масив заповнений
+    Serial.println("Client array full! Cannot add new MAC.");
 }
 
 void scanClientsInNetwork(uint8_t *bssid, int channel, byte index) {
@@ -78,7 +127,7 @@ void scanClientsInNetwork(uint8_t *bssid, int channel, byte index) {
     wifi_promiscuous_enable(false);
     memcpy(targetBSSID, bssid, 6);
 
-    clientCount = 0;
+    scan_clientCount = 0;
     wifi_set_promiscuous_rx_cb([](uint8_t *buf, uint16_t len) {
         if (len < sizeof(wifi_ieee80211_mac_hdr_t)) return;
         auto *packet = (wifi_ieee80211_packet_t*)(buf + 12);
@@ -93,11 +142,11 @@ void scanClientsInNetwork(uint8_t *bssid, int channel, byte index) {
     ESP.wdtDisable();
     wifi_promiscuous_enable(true);
     Serial.println("Scanning clients for 10 seconds...");
-    delay(SCAN_DURATION);
+    delay(SCAN_CYCLE_DURATION);
     wifi_promiscuous_enable(false);
     ESP.wdtEnable(WDTO_8S);
     Serial.println("Client scan finished.");
     
-    Serial.printf("Client scan completed. Total clients found: %d\n", clientCount);
+    Serial.printf("Client scan completed. One scan clients found: %d\n", scan_clientCount);
 }
 #endif // WIFI_DEATHER_H
