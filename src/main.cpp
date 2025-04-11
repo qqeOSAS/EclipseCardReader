@@ -1,16 +1,15 @@
-
 #include <Arduino.h>
 #include <SdCard_utils.h>
 #include <drawSDFilesSystem.h>
 #include <DisplayConfig.h>
 #include <MainScreenBrowser.h>
 #include <drawFileMenu.h>
+#include <WiFi/Beacon_spam.h>
 //#include <WiFiManager.h> 
- 
-
 
 void setup() {
     int count;
+    randomSeed(os_random());
     Serial.begin(115200);
     Begin_display();
     set_BTN_config();
@@ -29,18 +28,18 @@ void setup() {
  // } else {
  //   Serial.println("Не вдалося відкрити файл для запису.");
  // }
-
-  // Читання з файлу
-
-  //draw_main_screen();
-
-    //Display_delete_file("/Folder1/Текстові файли/історії/myfile.txt");
+    initSSIDSpammer();
+    system_update_cpu_freq(160);
+    while(1){
+        ESP.wdtDisable();
+        runSSIDSpammerLoop();
+        ESP.wdtEnable(WDTO_8S);
+    }
 }
 
 void loop() {
     //draw_file_properties("data.txt");
 
    // draw_directory();
-   draw_main_screen();
-    
+   //draw_main_screen();
 }

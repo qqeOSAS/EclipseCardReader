@@ -60,7 +60,11 @@ void draw_scan_clients(char* selected_SSID, byte selected_ssid_index, long long_
 
         ESP.wdtEnable(WDTO_8S);
     }
+    do_deauth_attack(ssid_list_info.bssid[selected_ssid_index]);
     clearClients();
+}
+void draw_deauth_attack(){
+
 }
 
 
