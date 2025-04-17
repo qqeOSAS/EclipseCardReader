@@ -384,10 +384,10 @@ void display_SSID_info(char* selected_SSID, byte selected_ssid_index){
 
 }
 
-void draw_ssid_list_menu(){
+void draw_ssid_list_menu(char* label){
     u8g2.setBitmapMode(1);
     u8g2.setColorIndex(1);
-    draw_directory_info("SSID List");
+    draw_directory_info(label);
     drawSSidListState.pageNum = draw_file_names(ssid_list_info.SSID_LIST, ssid_list_info.ssid_to_store, drawSSidListState.result.status,0,1,0,1,0);
     drawSSidListState.selectedFileData = return_select_label(ssid_list_info.SSID_LIST, drawSSidListState.result.command, drawSSidListState.result.y, drawSSidListState.pageNum);
 
@@ -402,7 +402,7 @@ void display_SSID_list(){
 
         ESP.wdtDisable();
         u8g2.clearBuffer();
-        draw_ssid_list_menu();
+        draw_ssid_list_menu("SSID list");
         drawSSidListState.result = draw_selecting_icon(1);
 
         if(drawSSidListState.result.command == BACK) break;

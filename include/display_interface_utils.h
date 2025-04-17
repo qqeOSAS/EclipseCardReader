@@ -10,6 +10,8 @@ struct user_choice{
 };
 #define DELETE 0
 #define CANCEL 1
+
+
 user_choice draw_select_two_options_menu(int command,char* filename, char* button_label1, char* button_label2){
     user_choice user_choice = {false, 0};
     static int8 selected_icon = 0;
@@ -55,4 +57,13 @@ user_choice draw_select_two_options_menu(int command,char* filename, char* butto
 
 
 
+
+
+
 #endif
+
+
+
+
+
+

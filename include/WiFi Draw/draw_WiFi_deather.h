@@ -128,7 +128,7 @@ void display_select_death_ssid(){
     while(1){
         ESP.wdtDisable();
         u8g2.clearBuffer();
-        draw_ssid_list_menu();
+        draw_ssid_list_menu("Select deauth taget");
         drawSSidListState.result = draw_selecting_icon(1);
         if(drawSSidListState.result.command == BACK) break;
 
