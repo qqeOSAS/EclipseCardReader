@@ -133,6 +133,26 @@ void draw_realSSID_flooding(){
         ESP.wdtEnable(WDTO_8S);
     }
 }
+void draw_prepared_ssid_flooding(){
+    init_flood_attack(false);
+    byte minutes = 10;
+    int seconds = 1;
+    int packets;
+    int filtered_packets = 0;
+    unsigned long timer_1  = 0;
+    char* file_content = read_txt_list_file("/Sys_Files", "names.txt");
+    if (file_content) {
+        //Serial.println("File content successfully read:");
+       // Serial.println(file_content);
+
+        // Не забудьте звільнити пам'ять після використання
+        free(file_content);
+    } else {
+        Serial.println("Failed to read file content");
+    }
+
+    
+}
 
 void draw_select_flood_attack_menu(){
     while(1){

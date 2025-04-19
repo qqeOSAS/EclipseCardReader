@@ -20,6 +20,15 @@ void setup() {
     Serial.print("Поточна частота: ");
     Serial.print(ESP.getCpuFreqMHz());
     Serial.println(" MHz");
+
+
+    char* file_content = read_txt_list_file("/Sys_Files", "names.txt");
+    if (file_content) {
+
+        free(file_content);
+    } else {
+        Serial.println("Failed to read file content");
+    }
     //init_flood_attack(false); // Ініціалізація атаки з WPA2
     //while(1){
    //     ESP.wdtDisable();

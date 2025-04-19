@@ -3,6 +3,8 @@
 
 #include <SDCardConfig.h>
 #include <SDCard_utils.h>
+#include "String_utils.h"
+
 char* read_Wifi_log_file(const char* filefolder, char* filename) {
     begin_SD();
     SdFile file;
@@ -76,6 +78,59 @@ char* read_Wifi_log_file(const char* filefolder, char* filename) {
     Serial.println("Password not found");
     free(file_content);
     return NULL;
+}
+char* read_txt_list_file(char* filefolder, char* filename) {
+    begin_SD();
+    SdFile file;
+
+    size_t filepath_size = strlen(filefolder) + strlen(filename) + 2; // +1 для '\0' +1 для '/'
+    char* full_filepath = (char*)malloc(filepath_size);
+
+    if (!full_filepath) {
+        return NULL;
+    }
+    sprintf(full_filepath, "%s/%s", filefolder, filename); // Формуємо коректний шлях
+
+    Serial.print("Full file path: ");
+    Serial.println(full_filepath);
+
+    if (!sd.exists(full_filepath)) {
+        free(full_filepath);
+        return NULL;
+    }
+
+    if (!file.open(full_filepath, O_READ)) {
+        Serial.print("Failed to open file: ");
+        free(full_filepath);
+        return NULL;
+    }
+
+    // Отримуємо розмір файлу
+    long file_size = file.fileSize();
+    Serial.print("File size: ");
+    Serial.println(file_size);
+
+    // Виділяємо пам'ять для буфера
+    char* file_content = (char*)malloc(file_size + 1); // +1 для '\0'
+    if (!file_content) {
+        Serial.println("Failed to allocate memory for file content");
+        file.close();
+        free(full_filepath);
+        return NULL;
+    }
+
+    // Зчитуємо вміст файлу
+    size_t bytes_read = file.read(file_content, file_size);
+    file_content[bytes_read] = '\0'; // Завершуємо рядок
+
+    Serial.print("File content: ");
+    Serial.println(file_content);
+
+    file.close();
+    free(full_filepath);
+
+    // Повертаємо динамічний буфер
+    return file_content;
 }
 
 

@@ -20,6 +20,14 @@ void remove_last_char(char *str) {
         str[len - 1] = '\0'; 
     }
 }
+char* read_token(char* str, const char* delim) {
+    // Використовуємо strtok для отримання токена
+    char* token = strtok(str, delim);
+    if (token != NULL) {
+        printf("Current token: %s\n", token);
+    }
+    return token;
+}
 
 
 
