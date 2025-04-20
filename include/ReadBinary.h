@@ -17,7 +17,6 @@ bool isBinFile(const char* filepath){
     return false;
 }
 void print_binary_image(uint8_t* binImage) {
-    Serial.println("Displaying first 64 bytes of the image buffer:");
     //first 64 bytes
     for (int i = 0; i < 64; i++) {
         if (i % 16 == 0) {
@@ -39,9 +38,9 @@ Draw_Image read_binary_image(const char* filename,int page) {
 
     int position = (page - 1) *1024;
 
-    if (!bin_file.open(filename, O_READ)) { 
+    if (!bin_file.open(filename, O_READ)) 
         return binImage;  
-    }
+    
     uint32_t fileSize = bin_file.fileSize();
     binImage.image_pages = fileSize / 1024;
     Serial.println(startTime);
@@ -72,6 +71,7 @@ Draw_Image read_binary_image(const char* filename,int page) {
 
     return binImage; 
 }
+
 
 
 

@@ -45,35 +45,44 @@ void draw_text_file(char* directory, char* page_buffer) {
         int rows_on_screen = 0; 
 
         while (*page_buffer != '\0') {
-            if (rows_on_screen >= 5) { 
+            if (rows_on_screen >= 5) {
                 break;
             }
-
+        
+            // Перевірка на '\n'
+            if (chars_in_row < 25 && *page_buffer == '\n') {
+                x = 0;
+                y += 10;
+                chars_in_row = 0;
+                rows_on_screen++;
+                page_buffer++;  // перейти до наступного символу
+                continue;
+            }
+        
             if (chars_in_row >= 25) {
                 x = 0;
-                y += 10; 
-                chars_in_row = 0; 
-                rows_on_screen++; 
-                continue;   
+                y += 10;
+                chars_in_row = 0;
+                rows_on_screen++;
+                continue;
             }
-
-            char current_char[5] = {0}; 
+        
+            char current_char[5] = {0};
             int char_len = utf8CharLen(*page_buffer);
             strncpy(current_char, page_buffer, char_len);
             u8g2.setCursor(x, y);
             u8g2.print(current_char);
             chars_in_row++;
-
+        
             page_buffer += char_len;
-
-            // ASCII 
+        
             if ((unsigned char)current_char[0] <= 127) {
-                x += 5; 
-            } else { 
-                // for cyrylic 
-                x += u8g2.getUTF8Width(current_char) + 1; 
+                x += 5;
+            } else {
+                x += u8g2.getUTF8Width(current_char) + 1;
             }
         }
+        
         u8g2.sendBuffer();
         yield();
     }

@@ -122,7 +122,7 @@ const unsigned char epd_bitmap_Wifi_deather_icon [] PROGMEM = {
 };
 // 'WiFI jammer', 10x8px
 const unsigned char epd_bitmap_WiFI_jammer [] PROGMEM = {
-	0xba, 0x02, 0xaa, 0x02, 0xaa, 0x03, 0xaa, 0x03, 0xaa, 0x02, 0xba, 0x02, 0xaa, 0x02, 0xa9, 0x02
+	0xfc, 0x00, 0xb6, 0x01, 0x03, 0x03, 0x49, 0x02, 0x79, 0x02, 0x03, 0x03, 0xb6, 0x01, 0xfc, 0x00
 };
 // 'Disconnect from wifi', 10x8px
 const unsigned char epd_bitmap_Disconnect_from_wifi [] PROGMEM = {
@@ -137,12 +137,14 @@ const unsigned char epd_bitmap_ESP_NOW_ICON [] PROGMEM = {
 	0x02, 0x01, 0x49, 0x02, 0x85, 0x02, 0xb5, 0x02, 0xb5, 0x02, 0x85, 0x02, 0x49, 0x02, 0x02, 0x01
 };
 
-const unsigned char* WiFi_options_icons[5] = {
+const unsigned char* WiFi_options_icons[6] = {
 	epd_bitmap_connect_to_wifi_icon,
 	epd_bitmap_Disconnect_from_wifi,
 	epd_bitmap_ESP_NOW_ICON,
 	epd_bitmap_WiFI_jammer,
-	epd_bitmap_Wifi_deather_icon
+	epd_bitmap_Wifi_deather_icon,
+	epd_bitmap_ESP_NOW_ICON
+
 };
 // 'Rename file icon', 10x8px
 const unsigned char epd_bitmap_Rename_file_icon [] PROGMEM = {

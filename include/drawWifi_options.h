@@ -12,7 +12,7 @@
 
 DrawOptionsState drawWiFiState;
 
-char wifi_options[][30] = {"Connect to WiFi", "Disconnect from WiFi", "ESP_Now", "WiFi Flood attack", "WiFi_deauther", "newoption", "SDDSd"};
+char wifi_options[][30] = {"Connect to WiFi", "Disconnect from WiFi", "ESP_Now", "WiFi Flood attack", "WiFi_deauther", "3D engine", "SDDSd"};
 
 void draw_wifi_selected_option(int selected_fileIndex){
     switch(selected_fileIndex){
@@ -28,8 +28,6 @@ void draw_wifi_selected_option(int selected_fileIndex){
             Serial.println("ESP_Now");
             break;
         case 3:
-            Serial.print("SELECTED: ");
-            Serial.println("WiFi Jammer");
             draw_select_flood_attack_menu();
          
             break;
@@ -53,7 +51,7 @@ void draw_wifi_options(){
 
     u8g2.setColorIndex(1);
     draw_directory_info(" WIFI OPTIONS");
-    drawWiFiState.pageNum = draw_file_names(wifi_options, 5, drawWiFiState.result.status,0,1,1,0,WiFi_options_icons);
+    drawWiFiState.pageNum = draw_file_names(wifi_options, 6, drawWiFiState.result.status,0,1,1,0,WiFi_options_icons);
     drawWiFiState.selectedFileData = return_select_label(wifi_options, drawWiFiState.result.command, drawWiFiState.result.y, drawWiFiState.pageNum);
 
     

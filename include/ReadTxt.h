@@ -47,7 +47,7 @@ int readTextFile(char* filename, byte page, char* text_file_page_buffer) {
         return -1;
     }
     uint32_t fileSize = file.fileSize();
-    int file_pages = fileSize / 130;
+    int file_pages = (fileSize + 129) / 130;
 
 
     byte array_index = 0;
