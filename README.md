@@ -54,6 +54,8 @@ Once the project is set up, the device will read files from the SD card and disp
 ### Supported Operations With Files
 - **Change file attribute**:
 - **Delete file**:
+  v.1.2
+- ** Rename file
   
 
 ### Future Features:
