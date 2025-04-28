@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-bool wifi_connection_status = false;
+bool WIFI_CONNECTION_STATUS = false;
 
 
 #endif

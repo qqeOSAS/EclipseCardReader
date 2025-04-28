@@ -4,11 +4,14 @@
 
 #include <DisplayConfig.h>
 #include <UserInputs.h>
+#include <Bitmaps_headers/Bitmaps.h>
+#include <WiFi/Wifi_config.h>
+#include <WiFI/connect_to_WiFi.h>
 struct user_choice{
     bool is_selected = false;
     byte selected_option = 0;   
 };
-#define DELETE 0
+
 #define CANCEL 1
 
 
@@ -49,6 +52,21 @@ user_choice draw_select_two_options_menu(int command,char* filename, char* butto
 
     return user_choice;
 }
+void draw_wifi_strengh_icon(){
+    u8g2.setBitmapMode(0);
+    u8g2.setColorIndex(1);
+    
+    byte connected_WiFi_rssi;
+    if(WIFI_CONNECTION_STATUS){
+        connected_WiFi_rssi = get_connected_WiFi_rssi();
+
+        u8g2.drawXBMP(65,5,15,14,connected_WiFi_pover_icons[connected_WiFi_rssi]);
+    }
+    else
+        u8g2.drawXBMP(65,5,15,14,epd_bitmap_Not_connected);
+    
+}
+
 
 
 

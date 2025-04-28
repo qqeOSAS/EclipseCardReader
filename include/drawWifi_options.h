@@ -12,7 +12,7 @@
 
 DrawOptionsState drawWiFiState;
 
-char wifi_options[][30] = {"Connect to WiFi", "Disconnect from WiFi", "ESP_Now", "WiFi Flood attack", "WiFi_deauther", "3D engine", "SDDSd"};
+char wifi_options[][30] = {"Connect to WiFi", "Disconnect from WiFi", "File Upload", "WiFi Flood attack", "WiFi_deauther", "3D engine", "SDDSd"};
 
 void draw_wifi_selected_option(int selected_fileIndex){
     switch(selected_fileIndex){

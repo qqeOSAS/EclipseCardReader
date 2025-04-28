@@ -53,7 +53,7 @@ void Display_delete_file(char* file_name){
             draw_delete_file(file_name);
             if(user_choice.is_selected){
 
-                if(user_choice.selected_option == DELETE){
+                if(user_choice.selected_option == 0){
                     if(delete_sd_file(file_name))
                         draw_succesfull_delete(file_name);
                     break;

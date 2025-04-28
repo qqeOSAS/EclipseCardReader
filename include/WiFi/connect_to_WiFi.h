@@ -3,6 +3,8 @@
 
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
+#include "WiFi/Wifi_config.h"
 extern "C" {
     #include "user_interface.h"
 }
@@ -16,6 +18,8 @@ struct SSID_LIST_INFO{
 
 };
 SSID_LIST_INFO ssid_list_info;
+
+
 
 void bubbleSort_SSID(SSID_LIST_INFO &ssid_list_info) {
     for (int i = 0; i < ssid_list_info.ssid_to_store - 1; i++) {
@@ -61,6 +65,26 @@ bool check_SSID_existing(const char* selected_SSID){
     }
     return false;
 }
+//returns 4 diapazons of signal strength
+// 0 - very weak signal
+// 1 - weak signal
+// 2 - moderate signal
+// 3 - strong signal
+byte get_connected_WiFi_rssi() {
+    int RawSignal = WiFi.RSSI();
+
+    if (RawSignal <= -50 && RawSignal > -60) 
+        return 3;  // Сильний сигнал
+
+    else if (RawSignal <= -60 && RawSignal > -70) 
+        return 2;  // Помірний сигнал
+
+    else if (RawSignal <= -70 && RawSignal > -80) 
+        return 1;  // Слабкий сигнал
+
+    else
+        return 0;  // Дуже слабкий сигнал
+}
 byte check_wifi_connection_status(){
     switch(WiFi.status()){
         case WL_NO_SSID_AVAIL:
@@ -92,4 +116,31 @@ byte connect_to_selected_SSID(char* selected_SSID, char* password){
     return WiFi.status();
 }
 
+int ping_WiFi_connection(){
+    HTTPClient http;
+    WiFiClient wifiClient;
+    http.begin(wifiClient, "http://clients3.google.com/generate_204");
+    int httpCode = http.GET(); // Отримуємо код відповіді
+ 
+       
+    http.end(); // Завершуємо з'єднання
+    return httpCode;
+}
+void conection_checker(){
+    unsigned long current_time = millis();
+    static unsigned long timer_1 = 0;
+
+    if(current_time - timer_1 > 10000){ // Кожні 10 секунд
+        if(check_wifi_connection_status() == 1){
+            if(ping_WiFi_connection() == 204)
+                WIFI_CONNECTION_STATUS = true;
+            else
+                WIFI_CONNECTION_STATUS = false;
+        }
+        else
+            WIFI_CONNECTION_STATUS = false;
+        timer_1 = current_time;
+    }
+    
+}
 #endif
