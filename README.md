@@ -32,15 +32,18 @@ This project is designed to read data from an SD card and display it on an ESP82
 
    
 1. **Install necessary libraries**:
-   - Install the `U8g2` library for handling displays.
-   - Install `SD` library for reading from the SD card.
+   - Install the `U8g2` library for handling displays. [Instalation](https://github.com/olikraus/u8g2/wiki)
+   - Install `SDfat` library for reading from the SD card.
+   - Install `GyverBTN` library for button initialization.
+   - Install `NTPClient` library for UTC real time sync.
+   - 
    
 2. **Connect the SD card and display**:
    - Ensure your SD card module is connected to the ESP8266.
    - Connect your display module (OLED or TFT) to the ESP8266.
 
 3. **Upload the code**:
-   - Open the Arduino IDE, load the project files, and upload the sketch to your ESP8266.
+   - Open the Platformio VsCode, load the project files, and upload the code to your ESP8266.
 
 ## Usage
 
@@ -51,11 +54,11 @@ Once the project is set up, the device will read files from the SD card and disp
 - **Binary files**: `.bin`
 - **Image files**: `.xbm`, `.bin` (binary image format)
 - BETA **BMP files** not work as well
+  
 ### Supported Operations With Files
 - **Change file attribute**:
 - **Delete file**:
-  v.1.2
-- ** Rename file
+- **Rename file**:
   
 
 ### Future Features:
