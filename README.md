@@ -33,8 +33,8 @@ This project is designed to read data from an SD card and display it on an ESP82
    
 1. **Install necessary libraries**:
    - Install the `U8g2` library for handling displays. [Instalation](https://github.com/olikraus/u8g2/wiki)
-   - Install `SDfat` library for reading from the SD card.
-   - Install `GyverBTN` library for button initialization.
+   - Install `SDfat` library for reading from the SD card.[Instalation](https://github.com/greiman/SdFat)
+   - Install `GyverBTN` library for button initialization.[Instalation](https://github.com/GyverLibs/GyverButton?tab=readme-ov-file#install)
    - Install `NTPClient` library for UTC real time sync.
    - 
    
