@@ -1,7 +1,7 @@
 #  EclipseCardReader Project
 
 EclipseCardReader project is a small pocket fully functional an ESP8266-based computer device with tiny OS on it.Its designed for operations with files on sd card and displaying file content on OLED screen it also have WiFI communication.This device is open sourse.If you want you can write your own programs limited only by your imagination.This is a great raw developing patform for developers with already written functions for communicating with modules, which allows you to develop programs at a slightly higher level without worrying about working at the lowest level if it is not necessary.The project is not standing still, but is developing steadily. If anyone wants to join, I will be happy to work in the team.
-![0-02-05-cb42846309408ed371f1f616936af0c2f6a5fed473a63bf86b07a4506bae46e6_57508004f056de91](https://github.com/user-attachments/assets/c7f574c7-a773-4386-b5ee-460e90748a94)
+![0-02-05-81ced817665f4ce3c59f07f0adb623bc67a3b109435accd9a80c7ed6d6a0eb41_dfdb2f54c31eacaf](https://github.com/user-attachments/assets/b83e6f41-9c5b-4898-8949-2413b774c677)
 ![0-02-05-8b87a7f2afa34dd0704f77e2857fa58b321f4e5b16c01d5ba58faf21007d29b1_ce7ce5612225cffe](https://github.com/user-attachments/assets/3b3c489f-63b0-4d00-8103-c56ab60cc9b6)
 ![0-02-05-5fd539d9425924827cf47028db6f424b4b42caf41aeed0ffb1b3eefbe7a31d5c_31db0134bd097097](https://github.com/user-attachments/assets/81c51f07-5d4b-47d2-854c-d72074957494)
 ![0-02-05-d872321e6d63a7388ff39bb39ee99e843fac06e999c48f0906c3f88082a3570d_bbbf8c074acce483](https://github.com/user-attachments/assets/e18a5ed0-fe7d-48be-8c45-bbc47d4c5efe)
