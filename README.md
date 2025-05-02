@@ -1,6 +1,6 @@
 #  EclipseCardReader Project
 
-This project is designed to read data from an SD card and display it on an ESP8266-based device. It supports various file types and formats, including text, binary files, and image files in XBM and BIN formats. It also supports Cyrillic text display. More features will be added in the future.
+EclipseCardReader project is a small pocket fully functional an ESP8266-based computer device with tiny OS on it.Its designed for operations with files on sd card and displaying file content on OLED screen it also have WiFI communication.This device is open sourse.If you want you can write your own programs limited only by your imagination.This is a great raw developing patform for developers with already written functions for communicating with modules, which allows you to develop programs at a slightly higher level without worrying about working at the lowest level if it is not necessary.The project is not standing still, but is developing steadily. If anyone wants to join, I will be happy to work in the team.
 ![0-02-05-7d27540fc13b7ccfe05d305e92de7660659ca910c8436d646dc3c32b854821ba_5e46d6799baead9d](https://github.com/user-attachments/assets/ad814d22-9d8b-40bb-a98c-fd0620cec6de)
 ![0-02-05-235390ea414d3b16d32e517033a4c7a39a03cbfd7492ff033648bcea15bd4963_a6bbaa052ea283f2](https://github.com/user-attachments/assets/27f47024-83cf-47c9-b5b5-764fdef4376a)
 ![0-02-05-5fd539d9425924827cf47028db6f424b4b42caf41aeed0ffb1b3eefbe7a31d5c_31db0134bd097097](https://github.com/user-attachments/assets/81c51f07-5d4b-47d2-854c-d72074957494)
