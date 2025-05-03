@@ -30,12 +30,10 @@ EclipseCardReader project is a small pocket fully functional an ESP8266-based co
 - BETA **BMP files** not work as well
   
 ### Supported Operations With Files
-- **Change file attribute**:
-- **Delete file**:
-- **Rename file**:
-
-
-
+![0-02-05-bae46946ae255d08176e60823efb4ac6ec23788cdc6a406802d3ca0c8fff4d8a_49c47cf587ff6226](https://github.com/user-attachments/assets/1b9189ff-51bf-43a9-b386-a7446ecbd6d1)
+- **Change file attribute**:  like changing file visybility
+- **Delete file**: removing file frm sd card
+- **Rename file**: You can enter file name using keabord and save
 
 ## Requirements
 - ESP8266 platform
