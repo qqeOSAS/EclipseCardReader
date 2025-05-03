@@ -12,15 +12,27 @@ EclipseCardReader project is a small pocket fully functional an ESP8266-based co
 
 
 ## Features
-- Reads and displays text files (`.txt`, `.log`, `.csv`, `.ini`).![0-02-05-57966a308527ca4d877a0d213d45f27d6344672aed144472e5d52d66e2b2863b_8df05fa3feaaefbe](https://github.com/user-attachments/assets/a48163cb-db07-4bc4-89e2-75223d3d0ab2)
-- Supports binary files (`.bin`).
+- Reads and displays text files (`.txt`, `.log`, `.csv`, `.ini`).![0-02-05-57966a308527ca4d877a0d213d45f27d6344672aed144472e5d52d66e2b2863b_8df05fa3feaaefbe](https://github.com/user-attachments/assets/a48163cb-db07-4bc4-89e2-75223d3d0ab2) it  also supports cyrylic text and enters in txt documment
+- Supports binary files (`.bin`). It cam open specially prepared images in binary format.Read about file preparations below.
 - Supports image formats (`.xbm` and `.bin` for images in binary format).- ![0-02-05-b0772b1091d2bf9108df944e561c37386b4e36b3ba7a9b9846b4bb034653ab1f_48ca4d19e0e4e435](https://github.com/user-attachments/assets/08d6afa6-c2d9-4acf-96dd-6ab32423abb7)
-- Cyrillic text support for better language compatibility.
+- Future plan to write correct  bmp file opening.
+  
 
 - Open-source project — feel free to contribute with pull requests.
 
 - You can even play monocrome video in binary format on it
   https://github.com/user-attachments/assets/6ab3960a-5d0c-4b49-a16e-c42f48a2fc2a
+  
+  ### Supported File Formats:
+- **Text files**: `.txt`, `.log`, `.csv`, `.ini`
+- **Binary files**: `.bin`
+- **Image files**: `.xbm`, `.bin` (binary image format)
+- BETA **BMP files** not work as well
+  
+### Supported Operations With Files
+- **Change file attribute**:
+- **Delete file**:
+- **Rename file**:
 
 
 
@@ -53,16 +65,7 @@ EclipseCardReader project is a small pocket fully functional an ESP8266-based co
 
 Once the project is set up, the device will read files from the SD card and display them on the connected display. You can navigate through text files, view binary files, and render images.
 
-### Supported File Formats:
-- **Text files**: `.txt`, `.log`, `.csv`, `.ini`
-- **Binary files**: `.bin`
-- **Image files**: `.xbm`, `.bin` (binary image format)
-- BETA **BMP files** not work as well
-  
-### Supported Operations With Files
-- **Change file attribute**:
-- **Delete file**:
-- **Rename file**:
+
   
 
 ### Future Features:
