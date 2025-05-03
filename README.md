@@ -36,15 +36,14 @@ EclipseCardReader project is a small pocket fully functional an ESP8266-based co
 - **Rename file**: You can enter file name using keabord and save
 
 ## Requirements
-- ESP8266 platform
-- Arduino IDE or PlatformIO
-- SD Card module
-- Display (e.g., OLED, TFT)
+- Any `ESP8266` based board like generic esp8266 or in my case ESP8266 Wemos D1 board. [AliExpress link](https://a.aliexpress.com/_EIIKsc6)
+- SD Card module.Can be any `SPI MicroSD card reader`. This one is compatible with PCB. [AliExpress link](https://a.aliexpress.com/_EHWfQvc)
+- Display:  `IIC 128x64 0,96 OLED display` ssd1306 based or ssh1306
 - External libraries: `U8g2`, `SD`, `SPI`, and other required dependencies for your display.
+- 4 tactile buttons
 
 ## Installation
 
-   
 1. **Install necessary libraries**:
    - Install the `U8g2` library for handling displays. [Instalation](https://github.com/olikraus/u8g2/wiki)
    - Install `SDfat` library for reading from the SD card.[Instalation](https://github.com/greiman/SdFat)
