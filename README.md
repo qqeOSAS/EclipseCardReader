@@ -41,7 +41,7 @@ EclipseCardReader project is a small pocket fully functional an ESP8266-based co
 - Display:  `IIC 128x64 0,96 OLED display` ssd1306 based or ssh1306 compatible with PCB [AliExoress link](https://a.aliexpress.com/_EuybAvG)
 - 5 tactile buttons with 4 contacts [AliExpress link](https://a.aliexpress.com/_EGV2sc6)
 -  1 rezistor 10k
--  PCB. You can find shematic and gerber file of the project here [files](Shematic%20&&%20gerber%20files/Gerber_PCB_Eclipse%20prototype_2025-02-15.zip)
+-  PCB. You can find shematic and gerber file of the project here [files](Shematic%20&&%20gerber%20files/)
 
 
 ## Installation
