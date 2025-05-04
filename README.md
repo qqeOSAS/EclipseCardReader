@@ -35,12 +35,12 @@ EclipseCardReader project is a small pocket fully functional an ESP8266-based co
 - **Delete file**: removing file frm sd card
 - **Rename file**: You can enter file name using keabord and save
 
-## Requirements
-- Any `ESP8266` based board like generic esp8266 or in my case ESP8266 Wemos D1 board. [AliExpress link](https://a.aliexpress.com/_EIIKsc6)
+## Required components
+- Any `ESP8266` based board like generic esp8266 or in my case ESP8266 Wemos D1 board whinch is compatible with current PCB. [AliExpress link](https://a.aliexpress.com/_EIIKsc6)
 - SD Card module.Can be any `SPI MicroSD card reader`. This one is compatible with PCB. [AliExpress link](https://a.aliexpress.com/_EHWfQvc)
-- Display:  `IIC 128x64 0,96 OLED display` ssd1306 based or ssh1306
-- External libraries: `U8g2`, `SD`, `SPI`, and other required dependencies for your display.
-- 4 tactile buttons
+- Display:  `IIC 128x64 0,96 OLED display` ssd1306 based or ssh1306 compatible with PCB [AliExoress link](https://a.aliexpress.com/_EuybAvG)
+- 5 tactile buttons with 4 contacts [AliExpress link](https://a.aliexpress.com/_EGV2sc6)
+-  1 rezistor 10k
 
 ## Installation
 
