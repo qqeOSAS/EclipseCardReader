@@ -22,15 +22,21 @@ EclipseCardReader project is a small pocket fully functional an ESP8266-based co
 
 - You can even play monocrome video in binary format on it
   https://github.com/user-attachments/assets/6ab3960a-5d0c-4b49-a16e-c42f48a2fc2a
+### WiFI Functions
+- connecting to wifi 
+- creating WiFi log in sd card for future conection
+- making Death attack (dont work as good need to be fixed)
+- making fake Network copies (Beacon spam Attack)
+- In future file send throw WiFI
   
-  ### Supported File Formats:
+  
+### Supported File Formats:
 - **Text files**: `.txt`, `.log`, `.csv`, `.ini`
 - **Binary files**: `.bin`
 - **Image files**: `.xbm`, `.bin` (binary image format)
 - BETA **BMP files** not work as well
   
 ### Supported Operations With Files
-![0-02-05-bae46946ae255d08176e60823efb4ac6ec23788cdc6a406802d3ca0c8fff4d8a_49c47cf587ff6226](https://github.com/user-attachments/assets/1b9189ff-51bf-43a9-b386-a7446ecbd6d1)
 - **Change file attribute**:  like changing file visybility
 - **Delete file**: removing file frm sd card
 - **Rename file**: You can enter file name using keabord and save
@@ -41,7 +47,7 @@ EclipseCardReader project is a small pocket fully functional an ESP8266-based co
 - Display:  `IIC 128x64 0,96 OLED display` ssd1306 based or ssh1306 compatible with PCB [AliExoress link](https://a.aliexpress.com/_EuybAvG)
 - 5 tactile buttons with 4 contacts [AliExpress link](https://a.aliexpress.com/_EGV2sc6)
 -  1 rezistor 10k
--  PCB. You can find shematic and gerber file of the project here [files](Gerber_PCB_Eclipse%20prototype_2025-02-15.zip)
+-  PCB. You can find shematic and gerber file of the project here [files](Shematic%20&&%20gerber%20files/)
 
 
 ## Installation
