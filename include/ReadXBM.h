@@ -16,6 +16,7 @@ Draw_Image read_XBM_image(const char* filename) {
 
     if (!XBM_file.open(filename, O_READ)) {
         Serial.print("Failed to open file: ");
+		
         Serial.println(filename);
         return xbmImage; 
     }

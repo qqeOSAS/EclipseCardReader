@@ -9,6 +9,7 @@
 #include <WiFi Draw/draw_connect_toWiFi.h>
 #include <WiFi Draw/draw_Wifi_deather.h>
 #include <WiFi Draw/draw_beacon_flood_attack.h>
+#include <WiFi Draw/draw_file_upload.h>
 
 DrawOptionsState drawWiFiState;
 
@@ -25,7 +26,7 @@ void draw_wifi_selected_option(int selected_fileIndex){
             break;
         case 2:
             Serial.print("SELECTED: ");
-            Serial.println("ESP_Now");
+            draw_upload_file_page();
             break;
         case 3:
             draw_select_flood_attack_menu();

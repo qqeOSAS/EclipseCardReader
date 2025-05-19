@@ -165,8 +165,9 @@ void generateTpLinkCloneSSID(char* buffer, size_t length, char* ssid) {
 //returns packets per second
 int run_flood_attack(bool enableWPA2, int ssidsCount, bool attack_type, char* ssid_target) {
     uint32_t now = millis();
+    static unsigned long pctInterval = 30;
 
-    if (now - attackTime > 100) {
+    if (now - attackTime >= pctInterval) {
         attackTime = now;
 
         nextChannel();
@@ -219,14 +220,17 @@ int run_flood_attack(bool enableWPA2, int ssidsCount, bool attack_type, char* ss
         }
     }
 
+    static int packets;
     // Вивід статистики кожну секунду
     if (now - packetRateTime > 1000) {
         packetRateTime = now;
         Serial.print("Packets/s: ");
         Serial.println(packetCounter);
+        packets = packetCounter;
         packetCounter = 0;
+        Serial.printf("Packet interval: %d\n", pctInterval);
     }
-        return packetCounter;
+        return packets;
 }
 
 
