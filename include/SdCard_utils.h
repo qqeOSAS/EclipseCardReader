@@ -428,8 +428,21 @@ bool clear_txt_file(char* filepath){
     file.close();
     return true;    
 }
-
-
+void create_upload_file(SdFile &file,char* filepath){
+    file.open(filepath, O_WRITE | O_CREAT | O_TRUNC);
+    if (!file) {
+        Serial.println("[UPLOAD] Failed to open file for writing!");
+    }
+}
+void write_upload_file(SdFile &file, const uint8_t* buf, size_t size) {
+    if (file) {
+        file.write(buf, size);
+        Serial.print("[UPLOAD] Writing chunk, size: ");
+        Serial.println(size);
+    } else {
+        Serial.println("[UPLOAD] File not open for writing!");
+    }
+}
 
 
 

@@ -10,6 +10,7 @@
 
 SdFat sd;
 
+
 struct Draw_Image {
     int width;                // Ширина зображення
     int height;               // Висота зображення
