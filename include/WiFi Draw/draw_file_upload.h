@@ -93,10 +93,10 @@ void draw_Eclipse_upload(){
             stop_Eclipse_AP();
             system_update_cpu_freq(80);
             break;
-
-
+        }
 
         ESP.wdtEnable(WDTO_8S);
+    
     }
 }
 char file_upload_options[2][30] = { "Upload by WiFI", "Upload directly to Eclipse" };
