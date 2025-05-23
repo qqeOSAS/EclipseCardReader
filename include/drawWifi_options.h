@@ -26,7 +26,7 @@ void draw_wifi_selected_option(int selected_fileIndex){
             break;
         case 2:
             Serial.print("SELECTED: ");
-            draw_upload();
+            draw_select_upload_option_menu();
             break;
         case 3:
             draw_select_flood_attack_menu();
