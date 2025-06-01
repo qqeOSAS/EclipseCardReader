@@ -46,14 +46,24 @@ bool begin_SD() {
      return res;
 }
 
+
+int return_card_size() {
+    if (!sd.card()) return 0;
+    uint64_t cardSize = sd.card()->sectorCount();
+    if (!cardSize) return 0;
+    // sectorCount() повертає кількість секторів по 512 байт
+    // 1 МБ = 1024 * 1024 байт = 2048 * 512 байт
+    return cardSize / 2048;
+}
 void print_SD_info() {
      Serial.println("Info about your SD-CARD");
   
 
      Serial.print("Card Size: ");
-     Serial.print(sd.card()->cardSize() / 2048); // Розмір у МБ
+    int cardSize = return_card_size();
+     Serial.print(cardSize);
      Serial.println(" MB");
-
+    Serial.printf("Card Type: ");
      Serial.print("File System: ");
      switch (sd.card()->type()) {
           case SD_CARD_TYPE_SD1:
@@ -69,9 +79,6 @@ void print_SD_info() {
                Serial.println("UNKNOWN");
      }
      
-}
-int return_card_size(){
-     return sd.card()->cardSize() / 2048;
 }
 bool isDirectory(const char* path) {
     SdFile file;
