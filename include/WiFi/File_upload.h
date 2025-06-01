@@ -28,8 +28,8 @@ char spinner[] = "|/-\\";
 
 // Глобальна змінна для розміру файлу
 unsigned long uploadedFileSize = 0;
-
-	
+////sdsdsadsad
+	///
 void draw_upload_file_page(unsigned long file_size) {
     spinner[0] = '|';
     spinner[1] = '/';
