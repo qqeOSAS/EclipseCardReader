@@ -31,16 +31,23 @@ void draw_upload_file_finished(unsigned long file_size){
 	u8g2.setCursor(1, 40); u8g2.printf("Writing:%llu bytes",uploadFileData.bytes_alredy_written);
     u8g2.setCursor(1, 50); u8g2.printf("Speed:%d bytes/sec",uploadFileData.bytes_per_second);
 }
-void draw_waiting_for_file(){
+void draw_waiting_for_file(bool upload_mode){
     u8g2.setColorIndex(1);
     draw_directory_info("Upload file");
     u8g2.setFont(u8g2_font_5x8_t_cyrillic);
     return_IP_address(ECLIPSE_IP_SERVER);
-    u8g2.setCursor(1, 20); u8g2.printf("Server IP: %s", ECLIPSE_IP_SERVER);
-    u8g2.setCursor(1, 30);  u8g2.print("Awaitіng for file...");
+    if(upload_mode){
+        u8g2.setCursor(1, 20); u8g2.printf("AP mode active");
+        u8g2.setCursor(1, 30); u8g2.printf("Device: %s", ECLIPSE_SSID);
+    }
+    else{
+        u8g2.setCursor(1, 20); u8g2.printf("WiFi mode active");
+        u8g2.setCursor(1, 30); u8g2.printf("Server IP: %s", ECLIPSE_IP_SERVER);
+    }
+    u8g2.setCursor(1, 40);  u8g2.print("Awaitіng for file...");
 }
 
-void draw_server_upload(){
+void draw_WiFi_upload(){
     uploadFileData.upload_ended = false;
     if(!WIFI_CONNECTION_STATUS){
         draw_wifi_upload_noWiFi();
@@ -49,7 +56,7 @@ void draw_server_upload(){
     else{
         initWebUploadServer();
         u8g2.clearBuffer();
-        draw_waiting_for_file();
+        draw_waiting_for_file(false);
         u8g2.sendBuffer(); 
     }
     system_update_cpu_freq(160);
@@ -71,11 +78,16 @@ void draw_server_upload(){
         }
     }
 }
-void draw_Eclipse_upload(){
+void draw_AP_upload(){
     create_Eclipse_AP();
     start_dns();
     start_Eclipse_web_server();
 
+    u8g2.clearBuffer();
+    draw_waiting_for_file(true);
+    u8g2.sendBuffer();
+
+    system_update_cpu_freq(160);
     while(1){
         ESP.wdtDisable();
         dnsServer.processNextRequest();
@@ -99,7 +111,7 @@ void draw_Eclipse_upload(){
     
     }
 }
-char file_upload_options[2][30] = { "Upload by WiFI", "Upload directly to Eclipse" };
+char file_upload_options[2][30] = { "WiFi upload", "AP upload" };
 
 void draw_select_upload_option_menu(){
     
@@ -122,10 +134,10 @@ void draw_select_upload_option_menu(){
 
         if(drawSSidListState.selectedFileData.isSelected){
             if(drawSSidListState.selectedFileData.fileIndex == 0)
-                draw_server_upload();
-            
+                draw_WiFi_upload();
+
             else if(drawSSidListState.selectedFileData.fileIndex == 1)
-                draw_Eclipse_upload();
+                draw_AP_upload();
         }
 
         u8g2.sendBuffer();
