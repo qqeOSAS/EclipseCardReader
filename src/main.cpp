@@ -16,10 +16,10 @@ void setup() {
     Serial.begin(115200);
     Begin_display();
     set_BTN_config();
-    initTimeClient(); // Ініціалізація NTP-клієнта
-    if(begin_SD()){
+    initTimeClient();
+    bool begin_sd = begin_SD(); // Ініціалізація NTP-клієнта
+    if(begin_sd){
         print_SD_info();
-      
     }
     Serial.print("Поточна частота: ");
     Serial.print(ESP.getCpuFreqMHz());

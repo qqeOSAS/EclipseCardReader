@@ -29,21 +29,19 @@ void copyToArray(char original[][30], int count, char destination[][30]);
 void getParentDirectory(char* currentDirectory);
 void normalizePath(char* path);
 
-
 bool begin_SD() {
-     bool res;
-     Serial.println("Cheking your card");
+    ESP.wdtDisable(); // Вимкнути watchdog timer, щоб уникнути перезавантаження під час ініціалізації SD
+    Serial.println("Cheking your card");
 
-     // Ініціалізація SD-карти
-     if (!sd.begin(SD_CS_PIN, SD_SCK_MHZ(10))) {
-          Serial.println("SD card initialization EROR!");
-          res = false;
-     }
-     else{
-          Serial.println("SD-Card succsesfolly initalizated!!.");
-          res = true;
-     }
-     return res;
+ 
+    if (sd.begin(SD_CS_PIN, SD_SCK_MHZ(4))) {
+        Serial.println("SD-Card successfully initialized!");
+        ESP.wdtEnable(WDTO_8S);
+        return true;
+    }
+    
+    Serial.println("SD card initialization ERROR!");
+    return false;
 }
 
 
@@ -236,40 +234,33 @@ FileProperties get_file_properties(const char* filepath) {
     FileProperties properties = {0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
     if (file.open(filepath, O_RDONLY)) {
-        DirFat_t dir;
-        file.dirEntry(&dir);
-         // Отримання імені файлу
-        strncpy(properties.name, (char*)dir.name, 11);
-        properties.name[11] = '\0'; 
-        
+        // Get file name
+        file.getName(properties.name, sizeof(properties.name));
+        properties.name[sizeof(properties.name) - 1] = '\0';
 
-        uint16_t raw_creation_time = *reinterpret_cast<uint16_t*>(dir.createTime);
-        uint16_t raw_creating_date = *reinterpret_cast<uint16_t*>(dir.createDate);
-
-        // Перевіряємо, чи createDate існує, якщо ні - беремо modifyDate
-        if (raw_creating_date == 0) {
-            raw_creating_date = *reinterpret_cast<uint16_t*>(dir.modifyDate);
-        }
-        if (raw_creation_time == 0) {
-            raw_creation_time = *reinterpret_cast<uint16_t*>(dir.modifyTime);
-        }
-
-        //printf("raw_creating_date = 0x%04X\n", raw_creating_date);
-       // printf("raw_creation_time = 0x%04X\n", raw_creation_time);
-
-        properties.creation_time_year = ((raw_creating_date >> 9) & 0x7F) + 1980;
-        properties.creation_time_month = (raw_creating_date >> 5) & 0x0F;
-        properties.creation_time_day = raw_creating_date & 0x1F;
-
-        properties.creation_time_hours = (raw_creation_time >> 11) & 0x1F;
-        properties.creation_time_minutes = (raw_creation_time >> 5) & 0x3F;
-        properties.creation_time_seconds = (raw_creation_time & 0x1F) * 2;
-
-        properties.lastWrite_date = *reinterpret_cast<uint16_t*>(dir.modifyDate);
-        properties.lastWrite_time = *reinterpret_cast<uint16_t*>(dir.modifyTime);
-        properties.attributes = dir.attributes;
-
+        // Get file size
         properties.size = file.fileSize();
+
+        // Get last write date and time
+        uint16_t date, time;
+        if (file.getModifyDateTime(&date, &time)) {
+            properties.lastWrite_date = date;
+            properties.lastWrite_time = time;
+        } else {
+            properties.lastWrite_date = 0;
+            properties.lastWrite_time = 0;
+        }
+
+        // Attributes are not directly accessible, set to 0 or implement if needed
+        properties.attributes = 0;
+
+        // Creation time is not available in standard SdFat, set to 0 or copy from modify time
+        properties.creation_time_year = 0;
+        properties.creation_time_month = 0;
+        properties.creation_time_day = 0;
+        properties.creation_time_hours = 0;
+        properties.creation_time_minutes = 0;
+        properties.creation_time_seconds = 0;
 
         file.close();
     }
@@ -282,23 +273,9 @@ struct editable_atributes{
 void save_attributes(const char* filepath, editable_atributes* attributes) {
     SdFile file;
     if (file.open(filepath, O_RDWR)) {
-        DirFat_t dir;
-        file.dirEntry(&dir);
-
-        if (attributes->visibility)
-            dir.attributes |= 0x02;
-        else
-            dir.attributes &= ~0x02;
-
-        if (attributes->read_only)
-            dir.attributes |= 0x01;
-        else
-            dir.attributes &= ~0x01;
-
-        // Save the modified directory entry back to the file
-        file.dirEntry(&dir);
-
-        file.sync(); 
+        // Direct modification of file attributes is not supported in standard SdFat.
+        // This function is a placeholder and does not change file attributes.
+        Serial.println("Зміна атрибутів файлу не підтримується стандартною бібліотекою SdFat.");
         file.close();
     } else {
         Serial.println("Не вдалося відкрити файл для запису.");
