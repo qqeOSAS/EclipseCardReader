@@ -13,15 +13,18 @@
 bool isTextFile(const char* filepath);
 int readTextFile(char* filename, byte page,char* text_file_page_buffer);
 
+const char* TEXT_FILE_EXTENSIONS[] = {
+    ".txt", ".log", ".csv", ".ini", ".md", ".json", ".xml", ".yaml", ".yml", ".cfg", ".conf", ".lst", ".dat", ".gcode", ".h",".c",".py",".cpp",
+};
+
 
 bool isTextFile(const char* filepath) {
     const char* ext = strrchr(filepath, '.'); 
     if (ext) {
-        if (strcasecmp(ext, ".txt") == 0 || 
-            strcasecmp(ext, ".log") == 0 || 
-            strcasecmp(ext, ".csv") == 0 || 
-            strcasecmp(ext, ".ini") == 0) {
-            return true;
+        for(byte i = 0; i < 18;i++){
+            if(strcasecmp(ext, TEXT_FILE_EXTENSIONS[i]) == 0) {
+                return true; 
+            }
         }
     }
     return false; 
