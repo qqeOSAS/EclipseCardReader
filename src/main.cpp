@@ -5,7 +5,7 @@
 #include <MainScreenBrowser.h>
 #include <drawFileMenu.h>
 #include <WiFi/Beacon_flood_attack.h>
-#include <3dEngine/engine.h>
+#include <3dEngine/ScreenSavers/Render_loadingscreen.h>
 #include <Apps/Timeclient/Time_client.h>
 //#include <WiFiManager.h> 
 
@@ -25,11 +25,10 @@ void setup() {
     Serial.print(ESP.getCpuFreqMHz());
     Serial.println(" MHz");
 
- system_update_cpu_freq(160);
-   randomSeed(analogRead(A0));
-    allocateStars(NUM_STARS);
-    initStarfield();
-    
+    system_update_cpu_freq(160);
+    Eclipse_loading_screen();
+
+  
     
 }
 float angleX = 0, angleY = 0, angleZ = 0;
@@ -38,9 +37,8 @@ float angleX = 0, angleY = 0, angleZ = 0;
 
 void loop() {
     //draw_file_properties("data.txt");
-    drawStarfield();
    // draw_directory();
-    //draw_main_screen();
+    draw_main_screen();
    
    //draw_fake_ssid_flooding();
    //run_flood_attack(false, 250, 0); // Запуск атаки з WPA2
