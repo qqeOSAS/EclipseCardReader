@@ -114,17 +114,17 @@ AcceleratedTextData version_number = {
 }; 
 AcceleratedTextData by_qqeOSAS = {
     .end_x = 65,
-    .end_y = 50,
-    .start_x = 65   ,
-    .start_y = 80,
+    .end_y = 47,
+    .start_x = -65   ,
+    .start_y = 47,
     .x_speed = 2,
     .y_speed = 2,
     .max_x_speed = 20,
     .max_y_speed = 15,
-    .axis = 2,
+    .axis = 1,
     .x_acceleration = 2,
     .y_acceleration = 2,
-    .accelerate_direction = false,
+    .accelerate_direction = true,
 };
 
 
@@ -160,10 +160,10 @@ void drawStarfield() {
 }
 void draw_Eclipse_logos(){
     static unsigned long start_time = millis();
-    static long animation1_start_time = start_time + 2000;
-    static long animation2_start_time = animation1_start_time + 700;
-    static long animation3_start_time = animation2_start_time + 500;
-    static long animation4_start_time = animation3_start_time + 500; // Uncomment if you have a third animation
+    static unsigned long animation1_start_time = start_time + 2000;
+    static unsigned long animation2_start_time = animation1_start_time + 700;
+    static unsigned long animation3_start_time = animation2_start_time + 500;
+    static unsigned  long animation4_start_time = animation3_start_time + 500; // Uncomment if you have a third animation
     static bool animation1_started = false;
     static bool animation2_started = false;
     static bool animation3_started = false;
@@ -172,7 +172,7 @@ void draw_Eclipse_logos(){
     static unsigned long tmr_2 = 0;
     static unsigned long tmr_3 = 0;
     static unsigned long tmr_4 = 0; // Uncomment if you have a third animation
-    unsigned long current_time = millis();
+    long unsigned current_time = millis();
 
     if(current_time > animation1_start_time) {
         animation1_started = true;
@@ -190,8 +190,8 @@ void draw_Eclipse_logos(){
     change_contrast(current_time, animation1_started);
     draw_accelerated_bitmap(Eclipse_logo1, &current_time, &tmr_1, animation1_started);
     draw_accelerated_bitmap(cardreader_logo, &current_time, &tmr_2, animation2_started);
-    draw_accelerated_text("V.1.1.0",version_number, &current_time, &tmr_3, animation3_started);
-    draw_accelerated_text("by qqeOSAS",by_qqeOSAS, &current_time, &tmr_4, animation4_started);
+    draw_accelerated_text("V.1.1.0",version_number, &current_time, &tmr_4, animation4_started);
+    draw_accelerated_text("by qqeOSAS",by_qqeOSAS, &current_time, &tmr_3, animation3_started);
     
     
 }
@@ -206,12 +206,12 @@ void Eclipse_loading_screen() {
     while (1) {
         ESP.wdtDisable(); // 10 seconds loading screen
         u8g2.clearBuffer();
-        int serial_cmd = serial_command();
-        if (serial_cmd == BACK)  return; // Exit the loading screen if BACK command is received
         current_time = millis();
         draw_Eclipse_logos();
         drawStarfield();
         u8g2.sendBuffer();
+        int serial_cmd = serial_command();
+        if (serial_cmd == BACK)  return; // Exit the loading screen if BACK command is received
         ESP.wdtEnable(WDTO_8S); // Re-enable watchdog timer
     }
     

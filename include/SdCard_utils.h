@@ -4,6 +4,7 @@
 #include <SDCardConfig.h>
 #include <SdFat.h>
 #include <SdFatConfig.h>
+#include <DisplayConfig.h>
 
 char lastDirectory[200] = "/";
 char currentDirectory[200] = "/";
@@ -362,13 +363,13 @@ bool create_txt_file(const char* filepath, char* filename, char* content) {
     begin_SD();
     SdFile file;
 
-    size_t filepath_size = strlen(filepath) + strlen(filename) + 1;
-    char* full_filepath = (char*)malloc(filepath_size);
+    size_t full_filepath_size = strlen(filepath) + strlen(filename) + 2 + 4; // +1 for '/', +4 for ".txt"
+    char* full_filepath = (char*)malloc(full_filepath_size);
 
     if (full_filepath == NULL) {
         return false; 
     }
-    snprintf(full_filepath, filepath_size, "%s%s", filepath, filename);
+    snprintf(full_filepath, full_filepath_size, "%s/%s.txt", filepath, filename);
 
     // Перевірка, чи файл вже існує
     if (file.exists(full_filepath)) {
@@ -391,6 +392,74 @@ bool create_txt_file(const char* filepath, char* filename, char* content) {
         return false;
     }
 }
+bool create_bin_file(const char* filepath, char* filename, uint8_t* content_data, long content_size){
+    begin_SD();
+    SdFile file;
+
+    size_t full_filepath_size = strlen(filepath) + strlen(filename) + 2 + 4; // +1 for '/', +4 for ".bin"
+    char* full_filepath = (char*)malloc(full_filepath_size);
+
+    if (full_filepath == NULL) return false; 
+    snprintf(full_filepath, full_filepath_size, "%s/%s.bin", filepath, filename);
+
+    if(file.exists(full_filepath)) {
+        Serial.println("File already exists!");
+        free(full_filepath);  // Не забувайте звільнити пам'ять
+        return false;
+    }
+    // creating bin file
+    if (file.open(full_filepath, O_CREAT | O_WRITE)) {
+
+       for (long i = 0; i < content_size; i++) 
+            file.write(content_data[i]); // Записуємо дані в файл по одному байту
+    
+        file.write(content_data, content_size); // Записуємо весь буфер за один разu8g2
+        file.close();
+        Serial.println("Файл успішно створено!");
+        free(full_filepath);  // Звільнення пам'яті
+        return true;
+    } 
+    else {
+        Serial.println("Не вдалося створити файл!");
+        free(full_filepath);  // Звільнення пам'яті
+        return false;
+    }
+
+
+}
+bool save_xbm_screenshot(const char* filepath, const char* filename) {
+    begin_SD();
+    SdFile file;
+
+    size_t full_filepath_size = strlen(filepath) + strlen(filename) + 2 + 4; // +1 for '/', +4 for ".xbm"
+    char* full_filepath = (char*)malloc(full_filepath_size);
+
+    if (full_filepath == NULL) return false; 
+
+    snprintf(full_filepath, full_filepath_size, "%s/%s.xbm", filepath, filename);
+
+    if (file.exists(full_filepath)) {
+        Serial.println("File already exists!");
+        free(full_filepath);  // Не забувайте звільнити пам'ять
+        return false;
+    }
+
+    // Створення файлу і запис у нього
+    if (file.open(full_filepath, O_CREAT | O_WRITE)) {
+        u8g2.writeBufferXBM(file); // Записуємо весь буфер за один раз
+        file.close();
+        Serial.println("Файл XBM успішно створено!");
+        free(full_filepath);  // Звільнення пам'яті
+        return true;
+    } 
+    else {
+        Serial.println("Не вдалося створити файл XBM!");
+        free(full_filepath);  // Звільнення пам'яті
+        return false;
+    }
+
+}
+
 
 bool clear_txt_file(char* filepath){
     begin_SD();

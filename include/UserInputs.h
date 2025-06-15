@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <Serialcomands.h>
 #include <ButtonsConfig.h>
+#include <utils/ScreenShot.h>
 
 
 
@@ -25,12 +26,10 @@ int serial_command() {
     listDown_btn.tick();
     listUP_btn.tick();
     Select_btn.tick();
-    
     if(listUP_btn.isClick()){
         listUP_btn.resetStates();
         return LIST_UP_MENU;
     }
-
     if(listDown_btn.isClick()){
         listDown_btn.resetStates();
         return LIST_DOWN_MENU;
@@ -39,6 +38,14 @@ int serial_command() {
         Select_btn.resetStates();
         return SELECT;
     }
+    if(listDown_btn.isHold() && listUP_btn.isHold()){
+        listDown_btn.resetStates();
+        listUP_btn.resetStates();
+        Serial.println("TAKE_SCREEN_SHOT");
+        process_screenshot();
+        return TAKE_SCREEN_SHOT;
+    }
+
     if(Select_btn.isHold()){
         Select_btn.resetStates();
         return BACK;

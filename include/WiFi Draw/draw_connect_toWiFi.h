@@ -256,9 +256,9 @@ void draw_after_attempt(byte returned_status,char* selected_SSID,char* entered_p
             switch(user_opt.selected_option){
                 case OK:
                     if(returned_status == LOG_OUT_OF_DATE){
-                        size_t filename_size = strlen(selected_SSID) + strlen("_log.txt") + 1;
+                        size_t filename_size = strlen(selected_SSID) + strlen("_log") + 1;
                         char* filename = (char*)malloc(filename_size);
-                        sprintf(filename,"%s_log.txt",selected_SSID);
+                        sprintf(filename,"%s_log",selected_SSID);
 
                         draw_deleting_log("WiFi_connection_logs",filename);
                         free(filename);
@@ -270,7 +270,7 @@ void draw_after_attempt(byte returned_status,char* selected_SSID,char* entered_p
                         if(!sd.exists("WiFi_connection_logs"))
                             create_directory("WiFi_connection_logs");
 
-                        size_t filename_size = strlen(selected_SSID) + strlen("_log.txt") + 1;
+                        size_t filename_size = strlen(selected_SSID) + strlen("_log") + 1;
                         char* filename = (char*)malloc(filename_size);
 
                         if (filename == NULL) {
@@ -280,7 +280,7 @@ void draw_after_attempt(byte returned_status,char* selected_SSID,char* entered_p
                         char* content = (char*)malloc(content_size);
 
                         sprintf(content, "SSID Log\nSSID: %s\nPasword: \"%s\"", selected_SSID, entered_password);
-                        snprintf(filename,filename_size,"%s_log.txt",selected_SSID);
+                        snprintf(filename,filename_size,"%s_log",selected_SSID);
 
                         Serial.println(filename);
                         Serial.println(content);
@@ -291,11 +291,11 @@ void draw_after_attempt(byte returned_status,char* selected_SSID,char* entered_p
 
                         if(!sd.exists(full_filepath)){
                             Serial.println("File not exist");
-                            create_txt_file("WiFi_connection_logs/",filename,content);
+                            create_txt_file("WiFi_connection_logs",filename,content);
                         }
                         else{
                             Serial.println("File exist");
-                            draw_select_update_log("WiFi_connection_logs/",filename,content);
+                            draw_select_update_log("WiFi_connection_logs",filename,content);
                         }
                         
 
@@ -305,10 +305,10 @@ void draw_after_attempt(byte returned_status,char* selected_SSID,char* entered_p
                         free(content);
                     }
                     if(returned_status == LOG_OUT_OF_DATE){
-                        size_t filename_size = strlen(selected_SSID) + strlen("_log.txt") + 1;
+                        size_t filename_size = strlen(selected_SSID) + strlen("_log") + 1;
                         char* filename = (char*)malloc(filename_size);
-                        sprintf(filename,"%s_log.txt",selected_SSID);
-                        draw_deleting_log("WiFi_connection_logs/",filename);
+                        sprintf(filename,"%s_log",selected_SSID);
+                        draw_deleting_log("WiFi_connection_logs",filename);
                         free(filename);
                     }
                     exit_loop = true; 

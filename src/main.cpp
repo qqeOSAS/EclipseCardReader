@@ -27,7 +27,7 @@ void setup() {
 
     system_update_cpu_freq(160);
     Eclipse_loading_screen();
-
+    create_txt_file("/", "test_file", "This is a test file content.");
   
     
 }

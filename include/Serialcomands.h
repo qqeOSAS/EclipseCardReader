@@ -8,6 +8,7 @@
 #define OPEN_PLAYER 5
 #define UPDATE_SSIDS 7
 #define OPEN_FILE_PROPERTIES 6
+#define TAKE_SCREEN_SHOT 8
 
 
 /////sdsdsdasdasds
