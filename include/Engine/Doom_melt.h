@@ -214,40 +214,49 @@ void generate_doom_style_delays() {
 }
 
 
+// makes meltig effect for 1 column of image
+// 1 column 8 bytes 64 bit
+bool melt_column_bit(uint8_t* melt_column, uint8_t* new_column, uint8_t local_melt_step) {
+    if (local_melt_step >= 64) return true;  // захист від виходу за межі
 
-bool melt_column_bit(uint8_t* melt_column, uint8_t* new_column, uint8_t melt_step) {
-    if (melt_step >= 64) return true;  // захист від виходу за межі
+    uint8_t pixel_index = 63 - local_melt_step;  // pixel number in column
+    uint8_t new_bit = (new_column[pixel_index / 8] >> (pixel_index % 8)) & 0x01;
 
-    uint8_t y = 63 - melt_step;  // Y в new_column, з якого беремо новий біт
-    uint8_t new_bit = (new_column[y / 8] >> (y % 8)) & 0x01;
-
-    for (int i = 7; i >= 0; i--) {
-        uint8_t next_bit = (i > 0) ? ((melt_column[i - 1] & 0x80) >> 7) : new_bit;
-        melt_column[i] = (melt_column[i] << 1) | next_bit;
+    // Shifting all bytes of melt_column down by 1 bit + adding new bit
+    for (int8_t byte = 7; byte >= 0; --byte) {
+        uint8_t next_bit = (byte > 0) ? ((melt_column[byte - 1] & 0x80) >> 7) : new_bit;
+        melt_column[byte] = (melt_column[byte] << 1) | next_bit;
     }
-
-    for (int i = 0; i < BYTES_PER_COL; i++) {
-        if (melt_column[i] != new_column[i]) return false;
+    // Перевірка чи колонка зсунулась до кінця і дорівнює new_column
+    for (uint8_t n = 0; n < BYTES_PER_COL; ++n) {
+        if (melt_column[n] != new_column[n]) 
+            return false;
     }
     return true;
 }
 
 bool melt_columns(uint8_t* melt_columns, uint8_t* new_columns, uint8_t step) {
-    bool all_finished = true;
+    bool all_melt_finished = true;
     for (byte x = 0; x < 128; x++) {
+
+
+
+
+
+
+		
         if (step >= melt_delay[x]) {
             uint8_t local_step = step - melt_delay[x];
-            bool finished = melt_column_bit(
-                melt_columns + x * BYTES_PER_COL,
-                new_columns + x * BYTES_PER_COL,
-                local_step
-            );
-            if (!finished) all_finished = false;
-        } else {
-            all_finished = false;
+            uint8_t* calculeted_melt_column = melt_columns + x * BYTES_PER_COL;
+            uint8_t* calculated_new_column = new_columns + x * BYTES_PER_COL;
+
+            bool column_melt_finished = melt_column_bit(calculeted_melt_column,calculated_new_column,local_step);
+            if (!column_melt_finished) all_melt_finished = false;
         }
+        else 
+            all_melt_finished = false;  
     }
-    return all_finished;
+    return all_melt_finished;
 }
 void print_columns(uint8_t* columns) {
     for (int x = 0; x < 128; x++) {
@@ -274,7 +283,7 @@ void doom_melt(const uint8_t* old_image, const uint8_t* new_image) {
     split_xbm_into_columns(epd_bitmap_test_image, new_image_columns, 128, 64);
     split_xbm_into_columns(old_image, old_image_columns, 128, 64);
     copy_columns(melt_columns_buf, old_image_columns);
-
+//sdsdsdsdasdasdsad
     byte step = 0;
    bool finished = false;
    generate_doom_style_delays();
