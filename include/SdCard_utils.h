@@ -459,6 +459,73 @@ bool save_xbm_screenshot(const char* filepath, const char* filename) {
     }
 
 }
+struct uint_8t_xbm_image {
+    uint16_t width;
+    uint16_t height;
+    uint8_t* image_buffer; // динамічний буфер
+};
+
+uint_8t_xbm_image extract_XBM_uint8_t(const char* filepath) {
+    begin_SD(); 
+    uint_8t_xbm_image uint8_t_Image = {0, 0, nullptr};
+    SdFile XBM_file;
+       if (!XBM_file.open(filepath, O_READ)) {
+        Serial.print("Failed to open file: ");
+		
+        Serial.println(filepath);
+        return uint8_t_Image; // Повертаємо порожню структуру
+    }
+
+    char line[128];
+    // 1. Зчитуємо ширину та висоту
+    while (XBM_file.available()) {
+        XBM_file.fgets(line, sizeof(line));
+        if (strncmp(line, "#define", 7) == 0) {
+            if (strstr(line, "_width") != NULL) {
+                char* number = strrchr(line, ' ');
+                if (number != NULL) uint8_t_Image.width = atoi(number);
+            } else if (strstr(line, "_height") != NULL) {
+                char* number = strrchr(line, ' ');
+                if (number != NULL) uint8_t_Image.height = atoi(number);
+            }
+        }
+        if (uint8_t_Image.width && uint8_t_Image.height) break;
+    }
+
+    // 2. Розраховуємо розмір буфера
+    size_t buf_size = ((uint8_t_Image.width + 7) / 8) * uint8_t_Image.height;
+    uint8_t_Image.image_buffer = (uint8_t*)calloc(buf_size,1);
+
+    if (!uint8_t_Image.image_buffer) {
+        Serial.println("Не вдалося виділити пам'ять!");
+        XBM_file.close();
+        return uint8_t_Image;
+    }
+
+    // 3. Знаходимо початок масиву даних
+    bool data_section = false;
+    int byte_index = 0;
+    XBM_file.seek(0); // rewind
+    while (XBM_file.available()) {
+        XBM_file.fgets(line, sizeof(line));
+        if (!data_section && strchr(line, '{')) 
+            data_section = true;
+        
+        if (data_section) {
+            char* token = strtok(line, ", \n{}");
+            while (token && byte_index < buf_size) {
+                if (strstr(token, "0x")) {
+                    uint8_t value = strtol(token, NULL, 16);
+                    uint8_t_Image.image_buffer[byte_index++] = value;
+                }
+                token = strtok(NULL, ", \n{}");
+            }
+            if (strchr(line, '}')) break;
+        }
+    }
+    XBM_file.close();
+    return uint8_t_Image;
+}
 
 
 bool clear_txt_file(char* filepath){

@@ -6,21 +6,29 @@
 #include <SdCard_utils.h>
 
 
-void save_screenshot_to_file( char* filename, uint8_t* buffer, size_t buffer_size) {
-    begin_SD();
-    SdFile file;
-    create_directory("/Screenshots");
-    create_bin_file("/Screenshots", filename, buffer, buffer_size);
-}
-void process_screenshot() {
-    if(!begin_SD()) {
+
+char* process_screenshot() {
+    if (!begin_SD()) {
         Serial.println("SD card initialization failed!");
-        return;
+        return NULL;
     }
-    char* filename = (char*)malloc(30); // Allocate memory for the filename
-    sprintf(filename, "screenshot_%4lu", millis()); // Create a unique filename based on current time
+
+    // Формуємо унікальне ім'я файлу
+    char filename[30];
+    sprintf(filename, "screenshot_%lu", millis());
+
+    // Зберігаємо скріншот
     save_xbm_screenshot("/Screenshots", filename);
-    free(filename); // Free the filename memory
+
+    // Формуємо повний шлях до файлу
+    char* full_filepath = (char*)malloc(strlen("/Screenshots/") + strlen(filename) + 5); // +5 для ".xbm" і '\0'
+    if (!full_filepath) return NULL;
+    sprintf(full_filepath, "/Screenshots/%s.xbm", filename);
+
+    Serial.print("Screenshot saved to: ");
+    Serial.println(full_filepath);
+
+    return full_filepath; // Пам'ять під цей рядок треба буде звільнити після використання!
 }
 
 

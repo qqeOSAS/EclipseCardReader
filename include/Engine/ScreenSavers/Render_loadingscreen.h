@@ -3,10 +3,12 @@
 
 #include <Arduino.h>
 #include <DisplayConfig.h>
-#include <3dEngine/engine.h>
+#include "Engine/engine.h"
 #include <Bitmaps_headers/Bitmaps.h>
 #include <drawAnimation.h>
 #include <UserInputs.h>
+#include <utils/ScreenShot.h>
+#include <Engine/Doom_melt.h>
 
 #define NUM_STARS 600
 #define ANALOG_SEED_PIN A0
@@ -163,7 +165,7 @@ void draw_Eclipse_logos(){
     static unsigned long animation1_start_time = start_time + 2000;
     static unsigned long animation2_start_time = animation1_start_time + 700;
     static unsigned long animation3_start_time = animation2_start_time + 500;
-    static unsigned  long animation4_start_time = animation3_start_time + 500; // Uncomment if you have a third animation
+    static unsigned long animation4_start_time = animation3_start_time + 500; // Uncomment if you have a third animation
     static bool animation1_started = false;
     static bool animation2_started = false;
     static bool animation3_started = false;
@@ -195,6 +197,7 @@ void draw_Eclipse_logos(){
     
     
 }
+
 void Eclipse_loading_screen() {
     randomSeed(analogRead(A0));
     allocateStars(NUM_STARS);
@@ -202,7 +205,8 @@ void Eclipse_loading_screen() {
     
     unsigned long start_time = millis();
     unsigned long current_time = start_time;
-    
+    uint_8t_xbm_image eclipse_logo = {0,0, nullptr};
+
     while (1) {
         ESP.wdtDisable(); // 10 seconds loading screen
         u8g2.clearBuffer();
@@ -211,14 +215,29 @@ void Eclipse_loading_screen() {
         drawStarfield();
         u8g2.sendBuffer();
         int serial_cmd = serial_command();
-        if (serial_cmd == BACK)  return; // Exit the loading screen if BACK command is received
-        ESP.wdtEnable(WDTO_8S); // Re-enable watchdog timer
+        
+        if (serial_cmd == BACK){
+            char* screenshot_filepath = process_screenshot();
+            if (screenshot_filepath != NULL) {
+                eclipse_logo = extract_XBM_uint8_t(screenshot_filepath);
+                free(screenshot_filepath); // Звільняємо пам'ять після використання
+            }
+            while(1){
+                ESP.wdtDisable();
+                u8g2.clearBuffer();
+                //doom_melt(eclipse_logo.image_buffer,epd_bitmap_test_image);
+                doom_melt(epd_bitmap_doom, epd_bitmap_test_image);
+                ESP.wdtEnable(WDTO_8S);
+            }
+        }
+        
+        Serial.println("WDT enabled");
+      
+        Serial.println("freeStars OK");
+        ESP.wdtEnable(WDTO_8S);
     }
-    
     freeStars(); // Clean up memory after use
 }
-
-
 
 
 #endif

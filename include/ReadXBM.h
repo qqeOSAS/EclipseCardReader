@@ -20,7 +20,7 @@ Draw_Image read_XBM_image(const char* filename) {
         Serial.println(filename);
         return xbmImage; 
     }
-      Serial.print("BIN READ START:");
+    Serial.print("BIN READ START:");
     Serial.println(startTime);
 
     char line[128];

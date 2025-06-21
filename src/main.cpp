@@ -5,10 +5,11 @@
 #include <MainScreenBrowser.h>
 #include <drawFileMenu.h>
 #include <WiFi/Beacon_flood_attack.h>
-#include <3dEngine/ScreenSavers/Render_loadingscreen.h>
+#include <Engine/ScreenSavers/Render_loadingscreen.h>
 #include <Apps/Timeclient/Time_client.h>
 //#include <WiFiManager.h> 
 
+float angleX = 0, angleY = 0, angleZ = 0;
 
 void setup() {
     int count;
@@ -31,9 +32,6 @@ void setup() {
   
     
 }
-float angleX = 0, angleY = 0, angleZ = 0;
-
-
 
 void loop() {
     //draw_file_properties("data.txt");
