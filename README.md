@@ -8,12 +8,12 @@
 
 ## Features
 
-- Browse text files (`.txt`, `.log`, `.csv`, `.ini`) with Cyrillic support and line breaks.
+- Browse text files with Cyrillic support and line breaks.
 - View binary files and images in `.xbm`, `.bin` formats. Experimental support for `.bmp`.
 - Play monochrome video in a special binary format directly on the device.
 - Change file attributes (visibility, read-only) directly from the device.
 - Delete or rename files using the on-screen keyboard.
-- Wi-Fi support: connection, auto-login, "Death attack" (experimental), beacon spam (fake network clones), future file transfer.
+- Wi-Fi support: connection, auto-login, "Death attack" (experimental), beacon spam (fake network clones), and file transfer.
 - Animations and smooth movement of graphics on the display.
 - Easily add your own mini-apps and demos!
 
@@ -30,7 +30,7 @@
 
 ## Supported File Formats
 
-- **Text**: `.txt`, `.log`, `.csv`, `.ini`
+- **Text**: `.txt`, `.log`, `.csv`, `.ini`, `.md`, `.json`, `.xml`, `.yaml`, `.yml`, `.cfg`, `.conf`, `.lst`, `.dat`, `.gcode`, `.h`, `.c`, `.py`, `.cpp`
 - **Binary**: `.bin`
 - **Images**: `.xbm`, `.bin` (binary image), partial `.bmp` (beta)
 
@@ -47,7 +47,12 @@
 - Connect to Wi-Fi, save login for future auto-connect
 - "Death Attack" (experimental, needs improvement)
 - Beacon spam (fake network clones)
-- Planned: send files over Wi-Fi
+- You can transfer files over Wi-Fi in two ways:
+
+- **Access Point Mode:** The device creates its own Wi-Fi network. Connect to this network and open the web interface in your browser to upload/download files.
+- **Client Mode (STA):** The device connects to your existing Wi-Fi network. Access the web interface via the device’s local IP address.
+
+> **Note:** File transfer may not work properly with specific file types.
 
 > **WARNING:** Wi-Fi features are for educational and research purposes only. Use responsibly and legally!
 
