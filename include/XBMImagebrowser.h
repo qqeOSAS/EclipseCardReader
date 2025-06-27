@@ -18,12 +18,13 @@ void browse_XBM_image(char* directory){
 
 
     while(serial_command() != BACK){
+        ESP.wdtDisable();
         currentMillis = millis();
         if(currentMillis - timer_1 >= 50){
             drawXBM_image(image.width,image.height,image.image_buffer);
             timer_1 = currentMillis;
         }
-        yield();
+        ESP.wdtEnable(WDTO_8S);
     }
     getParentDirectory(directory);
     system_update_cpu_freq(80);

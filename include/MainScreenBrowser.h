@@ -9,11 +9,11 @@
 
 
 
-void browse_main_screen(){
-    
-    draw_main_screen();
+//void browse_main_screen(){
+ //   
+ //   draw_main_screen();
 
-}
+//}
 
 
 

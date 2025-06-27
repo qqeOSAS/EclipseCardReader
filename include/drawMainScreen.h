@@ -12,6 +12,7 @@
 #include <WiFi/Wifi_config.h>
 #include <Apps/Timeclient/Time_client.h>
 #include <display_interface_utils.h>
+#include <Setings_draw/drawSetings_options.h>
 
 
 void draw_active_bar(int hours, int minutes){
@@ -48,38 +49,44 @@ void draw_main_screen_selecting_icon(int select_icon_num){
 
 
 
-void draw_main_screen(){
+void draw_main_screen(screenshoot_path* frame_buffer,bool extruct_buffer){
     ESP.wdtDisable();
-        int command = serial_command();
-        Selected_Icon_Info icon_info = get_select_icon(command);
-
-        if(WIFI_CONNECTION_STATUS)
-            getTime(); // Отримуємо час з NTP-сервера
-        Serial.printf("%d:%d date:%d\n", time_data.hours, time_data.minutes, time_data.day);
-
-        conection_checker();
-        Serial.printf("WIFI_CONNECTION_STATUS: %d\n", WIFI_CONNECTION_STATUS);
         
-        u8g2.clearBuffer();
-        draw_main_screen_frame();
-        draw_active_bar(time_data.hours, time_data.minutes);
-        draw_sd_card_icon_animation(icon_info.draw_anim1);
-        draw_WiFi_icon_animation(icon_info.draw_anim2);
-        draw_setings_icon_animation(icon_info.draw_anim3);
-        draw_main_screen_selecting_icon(icon_info.select_icon_num);
+    int command = serial_command();
+    Selected_Icon_Info icon_info = get_select_icon(command);
 
-        if(icon_info.selected_b){
-            switch(icon_info.select_icon_num){
-                case 0:
-                    displaySDFileSystem();  break;
-                case 1:
-                    displayWiFiOptions(); break;
-            }
+    if(WIFI_CONNECTION_STATUS)
+        getTime(); // Отримуємо час з NTP-сервера
+    Serial.printf("%d:%d date:%d\n", time_data.hours, time_data.minutes, time_data.day);
+
+    conection_checker();
+    Serial.printf("WIFI_CONNECTION_STATUS: %d\n", WIFI_CONNECTION_STATUS);
+        
+    u8g2.clearBuffer();
+    draw_main_screen_frame();
+    draw_active_bar(time_data.hours, time_data.minutes);
+    draw_sd_card_icon_animation(icon_info.draw_anim1);
+    draw_WiFi_icon_animation(icon_info.draw_anim2);
+    draw_setings_icon_animation(icon_info.draw_anim3);
+    draw_main_screen_selecting_icon(icon_info.select_icon_num);
+    if(extruct_buffer){
+        *frame_buffer = process_screenshot();
+        return;
+    }
+    if(icon_info.selected_b){
+        switch(icon_info.select_icon_num){
+            case 0:
+                displaySDFileSystem();  break;
+            case 1:
+                displayWiFiOptions(); break;
+            case 2:
+                display_setings_option(); break;
         }
+    }
 
 
         
-        u8g2.sendBuffer();
+    u8g2.sendBuffer();
     ESP.wdtEnable(WDTO_8S);
 }
 

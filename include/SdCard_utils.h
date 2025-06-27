@@ -32,9 +32,6 @@ void normalizePath(char* path);
 
 bool begin_SD() {
     ESP.wdtDisable(); // Вимкнути watchdog timer, щоб уникнути перезавантаження під час ініціалізації SD
-    Serial.println("Cheking your card");
-
- 
     if (sd.begin(SD_CS_PIN, SD_SCK_MHZ(4))) {
         Serial.println("SD-Card successfully initialized!");
         ESP.wdtEnable(WDTO_8S);
@@ -57,11 +54,10 @@ int return_card_size() {
 void print_SD_info() {
      Serial.println("Info about your SD-CARD");
   
-
-     Serial.print("Card Size: ");
+    Serial.print("Card Size: ");
     int cardSize = return_card_size();
-     Serial.print(cardSize);
-     Serial.println(" MB");
+    Serial.print(cardSize);
+    Serial.println(" MB");
     Serial.printf("Card Type: ");
      Serial.print("File System: ");
      switch (sd.card()->type()) {
@@ -81,17 +77,13 @@ void print_SD_info() {
 }
 bool isDirectory(const char* path) {
     SdFile file;
-
-    if (file.open(path)) {
-        bool isDir = file.isDir();  // Перевіряємо, чи це директорія
-        file.close();
-        return isDir;
-    } else {
-        Serial.print("Failed to open path: ");
-        Serial.println(path); // Виводимо шлях, який не вдалося відкрити
-    }
-
-    return false;  // Якщо шлях не існує або не є директорією
+//1
+    if (!file.open(path)) 
+        return false;  // Якщо шлях не існує, повертаємо false
+    
+    bool isDir = file.isDir();  // Перевіряємо, чи це директорія
+    file.close();
+    return isDir;
 }
 
 
@@ -107,7 +99,7 @@ int Files_list(const char* directory, char files_arr[][30]) {
         return 0;
     }
 
-    int file_count = 0;
+    byte file_count = 0;
 
 
     // Читаємо файли в директорії
@@ -128,12 +120,6 @@ int Files_list(const char* directory, char files_arr[][30]) {
             // Якщо це файл
                file.getName(files_arr[file_count], 30);
           }
-
-        // Логування імені файлу 
-          Serial.print("Файл: ");
-
-        Serial.println(files_arr[file_count]);
-
         file_count++;
         file.close();
     }
@@ -202,17 +188,7 @@ bool isHEADER_File(const char* filepath){
     return false;
 }
 
-bool deleteFile(const char* filepath) {
-    if (sd.remove(filepath)) {
-        Serial.print("Файл успішно видалено: ");
-        Serial.println(filepath);
-        return true;
-    } else {
-        Serial.print("Не вдалося видалити файл: ");
-        Serial.println(filepath);
-        return false;
-    }
-}
+
 
 struct FileProperties{
     unsigned long size;
@@ -340,24 +316,19 @@ bool rename_sd_file(const char* old_filepath, const char* new_filepath) {
 
 bool create_directory(const char* directory) {
     begin_SD();
-    if (!sd.exists(directory)) {
-        if (sd.mkdir(directory)) {
-            Serial.print("Папка успішно створена: ");
-            Serial.println(directory);
-            return true;
-        } else {
-            Serial.print("Помилка при створенні папки: ");
-            Serial.println(directory);
-            return false;
-        }
-    }
-    else{
-        Serial.print("Папка вже існує: ");
+    if(sd.exists(directory))
+        return false; // Якщо папка вже існує, повертаємо false
+    if (sd.mkdir(directory)) {
+        Serial.print("Папка успішно створена: ");
+        Serial.println(directory);
+        return true;
+    } 
+    else {
+        Serial.print("Помилка при створенні папки: ");
         Serial.println(directory);
         return false;
     }
-    
-    
+ 
 }
 bool create_txt_file(const char* filepath, char* filename, char* content) {
     begin_SD();
@@ -524,8 +495,26 @@ uint_8t_xbm_image extract_XBM_uint8_t(const char* filepath) {
         }
     }
     XBM_file.close();
+    
     return uint8_t_Image;
 }
+void print_uint8_array_chunks(const uint8_t* data, size_t size) {
+    const size_t chunk_size = 1024;
+
+    for (size_t i = 0; i < size; i += chunk_size) {
+        size_t remaining = size - i;
+        size_t current_chunk_size = remaining < chunk_size ? remaining : chunk_size;
+
+        Serial.printf("---- Chunk %u (%u bytes) ----\n", i / chunk_size, current_chunk_size);
+        for (size_t j = 0; j < current_chunk_size; ++j) {
+            Serial.printf("0x%02X", data[i + j]);
+            if (j < current_chunk_size - 1) Serial.print(", ");
+            if ((j + 1) % 16 == 0) Serial.println();  // Новий рядок кожні 16 байтів
+        }
+        Serial.println("\n");
+    }
+}
+
 
 
 bool clear_txt_file(char* filepath){

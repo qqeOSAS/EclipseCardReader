@@ -7,6 +7,7 @@
 
 #define SD_CS_PIN 15
 #define MAX_GLOBAL_DERICTORY_FILES 100
+bool SD_CARD_INITIALIZATION_STATUS = false;
 
 SdFat sd;
 

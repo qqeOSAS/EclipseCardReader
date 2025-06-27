@@ -205,9 +205,9 @@ void Eclipse_loading_screen() {
     
     unsigned long start_time = millis();
     unsigned long current_time = start_time;
-    uint_8t_xbm_image eclipse_logo = {0,0, nullptr};
+    SD_CARD_INITIALIZATION_STATUS = begin_SD();
 
-    while (1) {
+    while(1) {
         ESP.wdtDisable(); // 10 seconds loading screen
         u8g2.clearBuffer();
         current_time = millis();
@@ -215,29 +215,18 @@ void Eclipse_loading_screen() {
         drawStarfield();
         u8g2.sendBuffer();
         int serial_cmd = serial_command();
-        
-        if (serial_cmd == BACK){
-            char* screenshot_filepath = process_screenshot();
-            if (screenshot_filepath != NULL) {
-                eclipse_logo = extract_XBM_uint8_t(screenshot_filepath);
-                free(screenshot_filepath); // Звільняємо пам'ять після використання
-            }
-            while(1){
-                ESP.wdtDisable();
-                u8g2.clearBuffer();
-                //doom_melt(eclipse_logo.image_buffer,epd_bitmap_test_image);
-                doom_melt(epd_bitmap_doom, epd_bitmap_test_image);
-                ESP.wdtEnable(WDTO_8S);
-            }
+        if(serial_cmd == BACK && SD_CARD_INITIALIZATION_STATUS ){
+            draw_doom_frame_change();
+            break;
         }
-        
-        Serial.println("WDT enabled");
-      
-        Serial.println("freeStars OK");
+        else if (serial_cmd == BACK && !SD_CARD_INITIALIZATION_STATUS)
+            break;
         ESP.wdtEnable(WDTO_8S);
     }
     freeStars(); // Clean up memory after use
 }
+
+
 
 
 #endif
