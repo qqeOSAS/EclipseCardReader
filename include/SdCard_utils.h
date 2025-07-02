@@ -51,6 +51,27 @@ int return_card_size() {
     // 1 МБ = 1024 * 1024 байт = 2048 * 512 байт
     return cardSize / 2048;
 }
+byte return_directory_file_count(const char* directory) {
+    SdFile root;
+    SdFile file;
+    
+    // Відкриваємо вказану директорію
+    if (!root.open(directory)) 
+        return 0;
+    
+
+    byte file_count = 0;
+
+    // Читаємо файли в директорії
+    while (file.openNext(&root, O_RDONLY)) {
+        file_count++;
+        
+        file.close();
+    }
+    
+    root.close(); 
+    return file_count; 
+}
 void print_SD_info() {
      Serial.println("Info about your SD-CARD");
   
@@ -134,6 +155,47 @@ int Files_list(const char* directory, char files_arr[][30]) {
     root.close(); 
 
     return file_count; 
+}
+int Files_list_new(const char* directory, char** files_arr, int max_files) {
+    SdFile root;
+    SdFile file;
+
+    if (!root.open(directory)) {
+        Serial.print("Помилка відкриття директорії: ");
+        Serial.println(directory);
+        return 0;
+    }
+
+    int file_count = 0;
+    char temp_name[30];
+
+    Serial.print("Директорія: ");
+    Serial.println(directory);
+
+    while (file.openNext(&root, O_RDONLY)) {
+        if (file_count >= max_files) {
+            Serial.println("Досягнуто максимуму файлів.");
+            file.close();
+            break;
+        }
+
+        file.getName(temp_name, sizeof(temp_name));
+        strcpy(files_arr[file_count], temp_name);
+        file_count++;
+
+        file.close();
+    }
+
+    root.close();
+
+    if (file_count == 0) {
+        Serial.println("Файли не знайдені.");
+    } else {
+        Serial.print("Знайдено файлів: ");
+        Serial.println(file_count);
+    }
+
+    return file_count;
 }
 
 void copyToArray(char original[][30], int count, char destination[][30]) {
@@ -552,6 +614,34 @@ void write_upload_file(SdFile &file, const uint8_t* buf, size_t size) {
         Serial.println("[UPLOAD] File not open for writing!");
     }
 }
+void extractWiFiNameFromLogName(const char* log_filename, char* wifi_name_buffer, size_t buffer_size) {
+    const char* suffix = "_log.txt";
+    size_t len = strlen(log_filename);
+    size_t suffix_len = strlen(suffix);
+
+    if (len <= suffix_len || buffer_size == 0) {
+        wifi_name_buffer[0] = '\0';
+        return;
+    }
+
+    // Перевіряємо, чи закінчується на "_log.txt"
+    if (strcmp(log_filename + len - suffix_len, suffix) != 0) {
+        wifi_name_buffer[0] = '\0';  // формат неправильний
+        return;
+    }
+
+    // Довжина імені WiFi без суфікса
+    size_t wifi_name_len = len - suffix_len;
+
+    // , якщо буфер замалий
+    if (wifi_name_len >= buffer_size) {
+        wifi_name_len = buffer_size - 1;
+    }
+
+    strncpy(wifi_name_buffer, log_filename, wifi_name_len);
+    wifi_name_buffer[wifi_name_len] = '\0';
+}
+
 
 
 

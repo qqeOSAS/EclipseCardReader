@@ -68,6 +68,7 @@ struct Choise_info{
     bool next_page;
     bool exit;
     bool open_player;
+    bool doom_melt_effect;
 };
 Choise_info VievСhoise_image(int& currentPage, int image_pages) {
     Choise_info info = {0,0};
@@ -93,8 +94,10 @@ Choise_info VievСhoise_image(int& currentPage, int image_pages) {
         case BACK:
             info.exit = true;
             break;
-    }
-
+        case OPEN_PLAYER:
+            info.doom_melt_effect = true; // This could be used to trigger a special effect in the player
+          break;
+        }
     return info;
 }
 Choise_info VievChoise_video(int& currentPage, int image_pages){

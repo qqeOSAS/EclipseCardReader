@@ -197,6 +197,28 @@ void draw_Eclipse_logos(){
     
     
 }
+void draw_doom_frame_change(){
+    uint_8t_xbm_image eclipse_logo = {0,0, nullptr};
+    uint_8t_xbm_image next_frame_image = {0,0, nullptr};
+    screenshoot_path next_frame_filepath = {NULL};
+    screenshoot_path screenshot_filepath = process_screenshot();
+    draw_main_screen(&next_frame_filepath,1);
+
+    if (screenshot_filepath.full_filepath != NULL && next_frame_filepath.full_filepath != NULL) {
+        eclipse_logo = extract_XBM_uint8_t(screenshot_filepath.full_filepath);
+        next_frame_image = extract_XBM_uint8_t(next_frame_filepath.full_filepath);
+        delete_sd_file(screenshot_filepath.full_filepath);
+        delete_sd_file(next_frame_filepath.full_filepath);
+                
+        free(screenshot_filepath.full_filepath); // Звільняємо пам'ять після використання
+        free(next_frame_filepath.full_filepath);
+
+        doom_melt_frame_change(eclipse_logo.image_buffer, next_frame_image.image_buffer);
+        free(eclipse_logo.image_buffer);
+        free(next_frame_image.image_buffer);
+            
+    }
+}
 
 void Eclipse_loading_screen() {
     randomSeed(analogRead(A0));

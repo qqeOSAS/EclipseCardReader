@@ -10,10 +10,11 @@
 #include <WiFi Draw/draw_Wifi_deather.h>
 #include <WiFi Draw/draw_beacon_flood_attack.h>
 #include <WiFi Draw/draw_file_upload.h>
+#include <WiFi/WiFi_auto_connect.h>
 
 DrawOptionsState drawWiFiState;
 
-char wifi_options[][30] = {"Connect to WiFi", "Disconnect from WiFi", "File Upload", "WiFi Flood attack", "WiFi_deauther", "3D engine", "SDDSd"};
+char wifi_options[][30] = {"Connect to WiFi[manual]", "AutoConnect to WiFi", "File Upload", "WiFi Flood attack", "WiFi_deauther", "3D engine", "SDDSd"};
 
 void draw_wifi_selected_option(int selected_fileIndex){
     switch(selected_fileIndex){
@@ -22,7 +23,7 @@ void draw_wifi_selected_option(int selected_fileIndex){
             break;
         case 1:
             Serial.print("SELECTED: ");
-            Serial.println("Disconnect from WiFi");
+            auto_connect_to_wifi();
             break;
         case 2:
             Serial.print("SELECTED: ");

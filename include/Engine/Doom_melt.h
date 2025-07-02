@@ -82,11 +82,15 @@ void generate_doom_style_delays() {
 
 // makes meltig effect for 1 column of image
 // 1 column 8 bytes 64 bit
-bool melt_column_bit(uint8_t* melt_column, uint8_t* new_column, uint8_t local_melt_step) {
+bool melt_column_bit(uint8_t* melt_column, uint8_t* new_column, uint8_t local_melt_step,bool one_color = false) {
     if (local_melt_step >= 64) return true;  // захист від виходу за межі
 
-    uint8_t pixel_index = 63 - local_melt_step;  // pixel number in column
-    uint8_t new_bit = (new_column[pixel_index / 8] >> (pixel_index % 8)) & 0x01;
+    uint8_t pixel_index = 63 - local_melt_step; 
+    uint8_t new_bit;
+    if(!one_color) // pixel number in column
+        new_bit = (new_column[pixel_index / 8] >> (pixel_index % 8)) & 0x01;
+    else
+        new_bit = 0; // якщо один колір, то завжди 1
 
     // Shifting all bytes of melt_column down by 1 bit + adding new bit
     for (int8_t byte = 7; byte >= 0; --byte) {
@@ -101,7 +105,7 @@ bool melt_column_bit(uint8_t* melt_column, uint8_t* new_column, uint8_t local_me
     return true;
 }
 
-bool melt_columns(uint8_t* melt_columns, uint8_t* new_columns, uint8_t step) {
+bool melt_columns(uint8_t* melt_columns, uint8_t* new_columns, uint8_t step, bool one_color = false) {
     bool all_melt_finished = true;
     for (byte x = 0; x < 128; x++) {
 		
@@ -110,7 +114,7 @@ bool melt_columns(uint8_t* melt_columns, uint8_t* new_columns, uint8_t step) {
             uint8_t* calculeted_melt_column = melt_columns + x * BYTES_PER_COL;
             uint8_t* calculated_new_column = new_columns + x * BYTES_PER_COL;
 
-            bool column_melt_finished = melt_column_bit(calculeted_melt_column,calculated_new_column,local_step);
+            bool column_melt_finished = melt_column_bit(calculeted_melt_column,calculated_new_column,local_step,one_color);
             if (!column_melt_finished) all_melt_finished = false;
         }
         else 
@@ -165,28 +169,40 @@ void doom_melt_frame_change(const uint8_t* old_image, const uint8_t* new_image) 
     free(melt_delay);
     free(melt_order);
 }
-void draw_doom_frame_change(){
-    uint_8t_xbm_image eclipse_logo = {0,0, nullptr};
-    uint_8t_xbm_image next_frame_image = {0,0, nullptr};
-    screenshoot_path next_frame_filepath = {NULL};
-    screenshoot_path screenshot_filepath = process_screenshot();
-    draw_main_screen(&next_frame_filepath,1);
+void doom_melt_effect(const uint8_t* old_image, const uint8_t* new_image) {
+    uint8_t* old_image_columns = (uint8_t*)malloc(128 * 8);
+    uint8_t* new_image_columns = (uint8_t*)malloc(128 * 8);
+    uint8_t* melt_columns_buf = (uint8_t*)malloc(128 * 8);
+    melt_delay = (uint8_t*)malloc(128);
+    melt_order = (uint8_t*)malloc(128);
 
-    if (screenshot_filepath.full_filepath != NULL && next_frame_filepath.full_filepath != NULL) {
-        eclipse_logo = extract_XBM_uint8_t(screenshot_filepath.full_filepath);
-        next_frame_image = extract_XBM_uint8_t(next_frame_filepath.full_filepath);
-        delete_sd_file(screenshot_filepath.full_filepath);
-        delete_sd_file(next_frame_filepath.full_filepath);
-                
-        free(screenshot_filepath.full_filepath); // Звільняємо пам'ять після використання
-        free(next_frame_filepath.full_filepath);
+    if (!old_image_columns || !new_image_columns || !melt_columns_buf) return;
+    
+    split_xbm_into_columns(new_image, new_image_columns, 128, 64);
+    split_xbm_into_columns(old_image, old_image_columns, 128, 64);
+    copy_columns(melt_columns_buf, old_image_columns);
 
-        doom_melt_frame_change(eclipse_logo.image_buffer, next_frame_image.image_buffer);
-        free(eclipse_logo.image_buffer);
-        free(next_frame_image.image_buffer);
-            
+    byte step = 0;
+   	bool melt_finished = false;
+   	generate_doom_style_delays();
+    while (!melt_finished) {
+        ESP.wdtDisable();
+        melt_finished = melt_columns(melt_columns_buf, new_image_columns, step,1);
+        u8g2.clearBuffer();
+        draw_columns(melt_columns_buf);
+        u8g2.sendBuffer();
+		if(melt_finished)
+			delay(100);
+        ESP.wdtEnable(WDTO_8S);
+        step++;
     }
+    free(old_image_columns);
+    free(new_image_columns);
+    free(melt_columns_buf);
+    free(melt_delay);
+    free(melt_order);
 }
+
 
 
 #endif
