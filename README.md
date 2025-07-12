@@ -2,7 +2,7 @@
 
 **EclipseCardReader** is a pocket-sized ESP8266-based computer with a tiny OS for SD card file operations and display content output to an OLED display. The project is open-source and developer-friendly: you can build your own apps using ready-to-use libraries for display, SD card, buttons, and Wi-Fi.
 
-## Project Wiki [EclipseCardReader Wiki](https://github.com/qqeOSAS/EclipseCardReader/wiki)
+### Project Wiki [EclipseCardReader Wiki](https://github.com/qqeOSAS/EclipseCardReader/wiki)
 
 ![device photo](https://github.com/user-attachments/assets/b83e6f41-9c5b-4898-8949-2413b774c677)
 
