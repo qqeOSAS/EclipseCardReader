@@ -1,8 +1,6 @@
 # EclipseCardReader
-![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
-![C++](https://img.shields.io/badge/C%2B%2B-100%25-blue)
-![PlatformIO Library](https://img.shields.io/badge/library--manager-EclipseCardReader-brightgreen)
-![Version](https://img.shields.io/badge/version-0.1.8-brightgreen)
+![License: GNU](https://img.shields.io/badge/License-MIT-blue.svg)
+![C](https://img.shields.io/badge/C%2B%2B-100%25-blue)
 ![GitHub last commit](https://img.shields.io/github/last-commit/qqeOSAS/EclipseCardReader)
 
 
