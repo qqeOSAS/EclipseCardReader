@@ -1,6 +1,6 @@
 # EclipseCardReader
 ![License:](https://img.shields.io/badge/License-GNU-blue.svg)
-![C](https://img.shields.io/badge/C%2B%2B-100%25-blue)
+![C](https://img.shields.io/badge/C-100%25-blue)
 ![GitHub last commit](https://img.shields.io/github/last-commit/qqeOSAS/EclipseCardReader)
 
 
