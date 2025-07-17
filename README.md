@@ -3,7 +3,8 @@
 ![C++](https://img.shields.io/badge/C%2B%2B-100%25-blue)
 ![PlatformIO Library](https://img.shields.io/badge/library--manager-EclipseCardReader-brightgreen)
 ![Version](https://img.shields.io/badge/version-0.1.8-brightgreen)
-![Last Commit](https://img.shields.io/badge/last%20commit-august%202023-orange)
+![GitHub last commit](https://img.shields.io/github/last-commit/qqeOSAS/EclipseCardReader)
+
 
 
 **EclipseCardReader** is a pocket-sized ESP8266-based computer with a tiny OS for SD card file operations and display content output to an OLED display. The project is open-source and developer-friendly: you can build your own apps using ready-to-use libraries for display, SD card, buttons, and Wi-Fi.
