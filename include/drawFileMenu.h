@@ -292,6 +292,14 @@ void draw_insert_SD_screen(){
 
     u8g2.sendBuffer();
 }
+void draw_insert_SD_screen_6_sec(){
+    long start_time = millis();
+    while(millis() - start_time < 6000){
+        u8g2.clearBuffer();
+        draw_insert_SD_screen();
+        u8g2.sendBuffer();
+    }
+}
 
 
 #endif

@@ -22,35 +22,61 @@ void draw_wifi_upload_noWiFi(){
     }
 
 }
-void draw_upload_file_finished(unsigned long file_size){
+void draw_upload_file_finished_succesfully(unsigned long file_size){
 	u8g2.setColorIndex(1);
-	draw_directory_info("Upload finished");
+	draw_directory_info("Upload finished succesfully");
 	u8g2.setFont(u8g2_font_5x8_t_cyrillic);
 	u8g2.setCursor(1, 20); u8g2.printf("File:%s",uploadFileData.filename);
-	u8g2.setCursor(1, 30); u8g2.printf("Upload time:%lu sec",uploadFileData.upload_time_sec);
-	u8g2.setCursor(1, 40); u8g2.printf("Writing:%llu bytes",uploadFileData.bytes_alredy_written);
-    u8g2.setCursor(1, 50); u8g2.printf("Speed:%d bytes/sec",uploadFileData.bytes_per_second);
+	u8g2.setCursor(1, 30); u8g2.printf("Upload time:%.2f sec",uploadFileData.upload_time_sec);
+	u8g2.setCursor(1, 40); u8g2.printf("File size:%llu bytes",uploadFileData.bytes_alredy_written);
+    u8g2.setCursor(1, 50); u8g2.printf("Speed:%.2f KB/sec",uploadFileData.speed_Kbytes_per_second);
+}
+void draw_upload_file_finished_eror(unsigned long file_size){
+	u8g2.setColorIndex(1);
+	draw_directory_info("Upload eror");
+	u8g2.setFont(u8g2_font_5x8_t_cyrillic);
+	u8g2.setCursor(1, 20); u8g2.printf("File:%s",uploadFileData.filename);
+    u8g2.setCursor(1, 30); u8g2.printf("File have cyrylic name");
+    u8g2.setCursor(1, 40); u8g2.printf("Press SELECT to continue");
 }
 void draw_waiting_for_file(bool upload_mode){
     u8g2.setColorIndex(1);
-    draw_directory_info("Upload file");
+    draw_directory_info("   Upload file");
     u8g2.setFont(u8g2_font_5x8_t_cyrillic);
     return_IP_address(ECLIPSE_IP_SERVER);
     if(upload_mode){
         u8g2.setCursor(1, 20); u8g2.printf("AP mode active");
         u8g2.setCursor(1, 30); u8g2.printf("Device: %s", ECLIPSE_SSID);
+        u8g2.setCursor(1,40); u8g2.printf("Password: %s", ECLIPSE_PASSWORD);
     }
     else{
         u8g2.setCursor(1, 20); u8g2.printf("WiFi mode active");
         u8g2.setCursor(1, 30); u8g2.printf("Server IP: %s", ECLIPSE_IP_SERVER);
     }
-    u8g2.setCursor(1, 40);  u8g2.print("Awaitіng for file...");
+    u8g2.setCursor(1, 50);  u8g2.print("Awaitіng for file...");
 }
 
+void draw_upload_status(){
+    if(uploadFileData.upload_ended_succesfully){
+        u8g2.clearBuffer();
+        draw_upload_file_finished_succesfully(uploadedFileSize);
+        u8g2.sendBuffer();
+    }
+    if(uploadFileData.error_occurred){
+        u8g2.clearBuffer();
+        draw_upload_file_finished_eror(uploadedFileSize);
+        u8g2.sendBuffer();
+    }
+
+}
 void draw_WiFi_upload(){
-    uploadFileData.upload_ended = false;
+    uploadFileData.upload_ended_succesfully = false;
     if(!WIFI_CONNECTION_STATUS){
         draw_wifi_upload_noWiFi();
+        return;
+    }
+    if(!begin_SD()){
+        draw_insert_SD_screen_6_sec();
         return;
     }
     else{
@@ -64,21 +90,30 @@ void draw_WiFi_upload(){
         ESP.wdtDisable();
         server.handleClient();
 
-        if(uploadFileData.upload_ended){
-            u8g2.clearBuffer();
-            draw_upload_file_finished(uploadedFileSize);
-            u8g2.sendBuffer();
+        draw_upload_status();
+
+        switch(serial_command()){
+            case BACK:
+                server.close();
+                dnsServer.stop();
+                stop_Eclipse_AP();
+                system_update_cpu_freq(80);
+                return;
+            case SELECT:
+                uploadFileData.error_occurred = false;
+                u8g2.clearBuffer();
+                draw_waiting_for_file(true);
+                u8g2.sendBuffer();
+                break;
         }
         ESP.wdtEnable(WDTO_8S);
-
-        if (serial_command() == BACK) {
-            server.close();
-            system_update_cpu_freq(80);
-            break;
-        }
     }
 }
 void draw_AP_upload(){
+    if(!begin_SD()){
+        draw_insert_SD_screen_6_sec();
+        return;
+    }
     create_Eclipse_AP();
     start_dns();
     start_Eclipse_web_server();
@@ -93,20 +128,23 @@ void draw_AP_upload(){
         dnsServer.processNextRequest();
         server.handleClient();
 
-        if(uploadFileData.upload_ended){
-            u8g2.clearBuffer();
-            draw_upload_file_finished(uploadedFileSize);
-            u8g2.sendBuffer();
-        }
+        draw_upload_status();
 
-        if (serial_command() == BACK) {
-            server.close();
-            dnsServer.stop();
-            stop_Eclipse_AP();
-            system_update_cpu_freq(80);
-            break;
+        switch(serial_command()){
+            case BACK:
+                server.close();
+                dnsServer.stop();
+                stop_Eclipse_AP();
+                system_update_cpu_freq(80);
+                return;
+            case SELECT:
+                uploadFileData.error_occurred = false;
+                u8g2.clearBuffer();
+                draw_waiting_for_file(true);
+                u8g2.sendBuffer();
+                break;
         }
-
+ 
         ESP.wdtEnable(WDTO_8S);
     
     }

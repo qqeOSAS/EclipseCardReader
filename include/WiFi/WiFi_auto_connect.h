@@ -71,7 +71,7 @@ void auto_connect_to_wifi() {
     ESP.wdtDisable();
     draw_boot_one_line_message(" == WiFi auto-connect ==", 1000);
     
-    if (!SD_CARD_INITIALIZATION_STATUS){
+    if (!begin_SD()){
         draw_boot_one_line_message("[ERR] SD Card not initialized!", 1000);
         return;
     }
