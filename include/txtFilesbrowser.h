@@ -9,24 +9,27 @@ void browse_txt_file(char* directory);
 
 void browse_txt_file(char* directory) {
     char* text_file_page_buffer = (char*)malloc(130);
-    if(text_file_page_buffer == NULL){
-        Serial.println("Failed to allocate memory for text file buffer");
+
+    if(text_file_page_buffer == NULL)
         return;
-    }
+    
 
 
     int page = 0;  // Initialize the page number to 0
     int file_pages  = readTextFile(directory, page,text_file_page_buffer);  // Read the first page of the text file
 
     // Loop to handle user commands
-    while (drawState.result.command != BACK) {
+    while (1) {
+        if(serial_command() == BACK) {
+            getParentDirectory(directory);  // Go back to the parent directory
+            free(text_file_page_buffer);  // Free the memory allocated for the text file buffer
+            return;  // Exit the function
+        }
+
         ESP.wdtDisable();  // Disable the watchdog timer
         bool read_next_page = false; 
-        Serial.print("Free heap: ");
-        Serial.println(ESP.getFreeHeap()); // Flag to determine if the next page should be read
-
         // Handle user commands
-        switch (drawState.result.command) {
+        switch (serial_command()) {
             case LIST_DOWN_MENU:
                 page++;
                 if(page > file_pages){

@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <DisplayConfig.h>
-#include <SdCard_utils.h>
+//#include <SdCard_utils.h>
 
 #define WIDTH 128
 #define HEIGHT 64
@@ -90,7 +90,7 @@ bool melt_column_bit(uint8_t* melt_column, uint8_t* new_column, uint8_t local_me
     if(!one_color) // pixel number in column
         new_bit = (new_column[pixel_index / 8] >> (pixel_index % 8)) & 0x01;
     else
-        new_bit = 0; // якщо один колір, то завжди 1
+        new_bit = 0; // якщо один колір, то завжди 0
 
     // Shifting all bytes of melt_column down by 1 bit + adding new bit
     for (int8_t byte = 7; byte >= 0; --byte) {

@@ -113,7 +113,6 @@ Choise_info VievChoise_video(int& currentPage, int image_pages){
             break;
     }
 
-    unsigned long currentMillis = millis();
     if (currentPage <= image_pages) {
         currentPage++;
         info.next_page = true;

@@ -76,6 +76,7 @@ void draw_main_screen(screenshoot_path* frame_buffer,bool extruct_buffer){
     if(icon_info.selected_b){
         switch(icon_info.select_icon_num){
             case 0:
+                Serial.println("SELECTED: SD Card");
                 displaySDFileSystem();  break;
             case 1:
                 displayWiFiOptions(); break;

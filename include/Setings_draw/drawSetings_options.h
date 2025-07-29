@@ -34,6 +34,7 @@ void display_setings_option(){
         u8g2.clearBuffer();
          drawSettingsState.result = draw_selecting_icon(1);
         if(drawSettingsState.result.command == BACK) break;
+        
         if(drawSettingsState.selectedFileData.isSelected){
                 draw_settings_selected_option(drawSettingsState.selectedFileData.fileIndex);
         }

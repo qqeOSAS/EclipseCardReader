@@ -21,112 +21,83 @@
 
 
 
-bool DrawDirectoryStep(char* directory){
-    switch (drawState.step) {
-        case 0:  // Очистка буфера
-            u8g2.clearBuffer();
-            u8g2.setColorIndex(1);
-            drawState.step++;
-            break;
 
-        case 1:  // Getting files list
-            drawState.fileCount = Files_list(directory, drawState.availableFiles);
-            drawState.step++;
-            break;
 
-        case 2:  // Drawing selecting file icon
-            drawState.result = draw_selecting_icon(1);
-            drawState.step++;
-            break;
+void draw_directory_new(char* directory){
+    while(1){
+        ESP.wdtDisable();
+        u8g2.clearBuffer();
+        u8g2.setColorIndex(1);
 
-        case 3:  // drawing file names      
-            if(strcmp(directory,lastDirectory) != 0){
-                drawState.reset_page = true;
-                Serial.println("new DIR");
+        drawState.fileCount = Files_list(directory, drawState.availableFiles);
+
+        drawState.result = draw_selecting_icon(1);
+
+        if(strcmp(directory,lastDirectory) != 0){
+            drawState.reset_page = true;
+            Serial.println("new DIR");
+        }
+        else
+            drawState.reset_page = false;
+    
+        strcpy(lastDirectory,directory);
+        drawState.pageNum = draw_file_names(drawState.availableFiles, drawState.fileCount, drawState.result.status,drawState.reset_page,1,1,0,0);
+        draw_directory_info(directory);
+
+        drawState.selectedFileData = return_select_label(drawState.availableFiles, drawState.result.command, drawState.result.y, drawState.pageNum);
+
+        if (drawState.selectedFileData.isSelected) {
+
+            char* newDirectory = (char*)malloc(300);
+
+            if (isDirectory(directory)) {
+                Serial.print("Opening file: ");
+                Serial.println(directory);
+                snprintf(newDirectory, 300, "%s/%s", directory, drawState.selectedFileData.fileName);
+                strcpy(directory, newDirectory);
+                normalizePath(directory);
+                Serial.print("Entering directory: ");
+                Serial.println(directory);
             }
-            else
-                drawState.reset_page = false;
-            strcpy(lastDirectory,directory);
-            drawState.pageNum = draw_file_names(drawState.availableFiles, drawState.fileCount, drawState.result.status,drawState.reset_page,1,1,0,0);
-            drawState.step++;
-            break;
-
-        case 4:  // Directory info
-            draw_directory_info(directory);
-            drawState.step++;
-            break;
-
-        case 5:  // Processing file selecting
-            drawState.selectedFileData = return_select_label(drawState.availableFiles, drawState.result.command, drawState.result.y, drawState.pageNum);
-            if (drawState.selectedFileData.isSelected) {
-                char newDirectory[100];
-
-                if (isDirectory(directory)) {
-                    Serial.print("Opening file: ");
-                    Serial.println(directory);
-                    snprintf(newDirectory, sizeof(newDirectory), "%s/%s", directory, drawState.selectedFileData.fileName);
-                    strcpy(directory, newDirectory);
-                    normalizePath(directory);
-                    Serial.print("Entering directory: ");
-                    Serial.println(directory);
-                }
                 
-                if(isTextFile(directory))
-                    browse_txt_file(directory);
+            if(isTextFile(directory))
+                browse_txt_file(directory);
 
-                if(isXBMFile(directory))
-                    browse_XBM_image(directory);
+            if(isXBMFile(directory))
+                browse_XBM_image(directory);
 
                 //if(isHEADER_File(directory))
                    // browse_Header_image(directory);
-                if(isBinFile(directory))
-                    browse_bin_image(directory);
+            if(isBinFile(directory))
+                browse_bin_image(directory);
                     
-                if(isBMPfile(directory))
-                    browse_BMP_image(directory);
-                Serial.print("Directory: NAMEEEE");
-                Serial.println(directory);
-                
-                
-            }
+            if(isBMPfile(directory))
+                browse_BMP_image(directory);  
+
+            free(newDirectory);
+        }
         
-            if(drawState.selectedFileData.openProperties ){
-                //if(!isDirectory(drawState.selectedFileData.fileName))
-                    snprintf(Properties_directory, sizeof(Properties_directory), "%s/%s", directory, drawState.selectedFileData.fileName);
-                    draw_file_properties(Properties_directory);
-            }
+        if(drawState.selectedFileData.openProperties ){
+            //if(!isDirectory(drawState.selectedFileData.fileName))
+            snprintf(Properties_directory, sizeof(Properties_directory), "%s/%s", directory, drawState.selectedFileData.fileName);
+            draw_file_properties(Properties_directory);
+        }
 
-            if (drawState.result.command == BACK) {
-                getParentDirectory(directory);
-                drawState.step = 0; 
-                return false;      
-            }
-
-            drawState.step++;
-            break;
-        case 6: 
-        Serial.print("ФАЙЛ:");
-        Serial.print(drawState.selectedFileData.openProperties); // Send draw buffer to display
-            u8g2.sendBuffer();
-            drawState.step = 0; 
-            return false;     
-    }
-
-    yield(); 
-    return true; 
-}
-
-void draw_directory(){
-    static unsigned long timer_1 = 0;
-    unsigned long currentMillis = millis();
-
-    
-    DrawDirectoryStep(currentDirectory);
  
-
-    yield(); 
-
+        u8g2.sendBuffer();
+        if (drawState.result.command == BACK && strcmp(directory, "/") == 0) {
+            //getParentDirectory(directory);
+            break ;      
+        }
+        if (drawState.result.command == BACK){
+            getParentDirectory(directory);
+        }
+    
+    
+        ESP.wdtEnable(WDTO_8S);
+    }
 }
+
 
 void displaySDFileSystem(){
 ///////////////костиль!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -156,19 +127,8 @@ void displaySDFileSystem(){
         }
     }
 
-    if(begin_SD()){
-        while(1){
-            listDown_btn.tick();
-            if(listDown_btn.isHold()){
-                getParentDirectory(currentDirectory);
-                
-                break;
-            }
-            ESP.wdtDisable();
-            draw_directory();
-            ESP.wdtEnable(WDTO_8S);
-        }
-    }
+
+    draw_directory_new(currentDirectory);
 
 }
 
