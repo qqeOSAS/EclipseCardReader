@@ -124,5 +124,6 @@ GNU GENERAL PUBLIC LICENSE v3 — see [LICENSE](LICENSE)
 
 This project is open for collaboration! Fork, pull requests, and issues are welcome. Have an idea or found a bug? Let me know!
 
-For more details and guides, check out the [project Wiki](https://github.com/qqeOSAS/EclipseCardReader/wiki).
+For step-by-step setup and branch workflow instructions, see the [developer guide](docs/DEVELOPMENT.md).
 
+For more details and guides, check out the [project Wiki](https://github.com/qqeOSAS/EclipseCardReader/wiki).
