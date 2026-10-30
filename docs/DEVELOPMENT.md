@@ -132,3 +132,12 @@ git add шлях/до/виправленого-файлу
 git commit
 git push
 ```
+
+
+
+``` злиття гілки  від розробник до головнорї гілки
+cd "C:\Users\HomePC\Desktop\card reader"
+git switch main
+git pull origin main
+git merge kostya_dev
+git push origin main
