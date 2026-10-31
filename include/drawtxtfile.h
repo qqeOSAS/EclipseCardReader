@@ -19,6 +19,7 @@ int utf8CharLen(char c);
 
 void draw_text_file(char* directory, char* page_buffer);
 
+// Довжина UTF-8 символу в байтах
 int utf8CharLen(char c) {
     if ((c & 0x80) == 0) return 1;        // 1 
     else if ((c & 0xE0) == 0xC0) return 2; // 2 
@@ -33,54 +34,50 @@ void draw_text_file(char* directory, char* page_buffer) {
     static unsigned long timer_1 = 0;
 
     if (CurrentTime - timer_1 >= 50) { //timer
-        drawState.result = draw_selecting_icon(0);
+        timer_1 = CurrentTime;
+
+// Перевірити!!! може бути помилка тут, бо drawState.result не використовується далі
+        drawState.result = draw_selecting_icon(0); 
+
         u8g2.enableUTF8Print();
         u8g2.clearBuffer();
         draw_directory_info(directory);
         u8g2.setFont(u8g2_font_5x8_t_cyrillic);
 
-        byte x = 0;
-        byte y = 20;
-        int chars_in_row = 0; 
-        int rows_on_screen = 0; 
+        uint8_t x = 0;
+        uint8_t y = 20;
+
+        uint8_t rows_on_screen = 0; 
 
         while (*page_buffer != '\0') {
-            if (rows_on_screen >= 5) {
-                break;
-            }
+
+            if (rows_on_screen >= 5) break;
+            
         
-            // Перевірка на '\n'
-            if (chars_in_row < 25 && *page_buffer == '\n') {
+            if (*page_buffer == '\n') {
                 x = 0;
                 y += 10;
-                chars_in_row = 0;
                 rows_on_screen++;
                 page_buffer++;  // перейти до наступного символу
                 continue;
             }
-        
-            if (chars_in_row >= 25) {
-                x = 0;
-                y += 10;
-                chars_in_row = 0;
-                rows_on_screen++;
-                continue;
-            }
-        
+
             char current_char[5] = {0};
             int char_len = utf8CharLen(*page_buffer);
             strncpy(current_char, page_buffer, char_len);
+            int char_width = u8g2.getUTF8Width(current_char);
+
+            if (x > 0 && x + char_width > 128) {
+                x = 0;
+                y += 10;
+                rows_on_screen++;
+                if (rows_on_screen >= 5) break;
+            }
+
             u8g2.setCursor(x, y);
             u8g2.print(current_char);
-            chars_in_row++;
-        
             page_buffer += char_len;
-        
-            if ((unsigned char)current_char[0] <= 127) {
-                x += 5;
-            } else {
-                x += u8g2.getUTF8Width(current_char) + 1;
-            }
+            x += char_width + 1;
         }
         
         u8g2.sendBuffer();
