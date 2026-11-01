@@ -15,21 +15,23 @@ void browse_txt_file(char* directory) {
     
 
 
-    int page = 0;  // Initialize the page number to 0
+    int page = 0;  // Initialize the page number to 1
     int file_pages  = readTextFile(directory, page,text_file_page_buffer);  // Read the first page of the text file
 
     // Loop to handle user commands
     while (1) {
-        if(serial_command() == BACK) {
-            getParentDirectory(directory);  // Go back to the parent directory
-            free(text_file_page_buffer);  // Free the memory allocated for the text file buffer
-            return;  // Exit the function
-        }
 
         ESP.wdtDisable();  // Disable the watchdog timer
+        uint8_t command = serial_command();  // Get the user command from the serial input
+
+       
         bool read_next_page = false; 
         // Handle user commands
-        switch (serial_command()) {
+        switch (command) {
+            case BACK:
+                getParentDirectory(directory);  // Go back to the parent directory
+                free(text_file_page_buffer);  // Free the memory allocated for the text file buffer
+                return;  // Exit the function
             case LIST_DOWN_MENU:
                 page++;
                 if(page > file_pages){
@@ -57,11 +59,6 @@ void browse_txt_file(char* directory) {
         ESP.wdtEnable(WDTO_8S);  // Enable the watchdog timer with an 8-second timeout
     }
 
-    // Clear the text file buffer after exiting the loop
-    //for (int i = 0; i < sizeof(text_file_page_buffer); i++) {
-    //    text_file_page_buffer[i] = '\0';
-    //}
-    free(text_file_page_buffer);  // Free the memory allocated for the text file buffer
 }
 
 #endif

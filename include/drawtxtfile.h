@@ -36,12 +36,12 @@ void draw_text_file(char* directory, char* page_buffer) {
     if (CurrentTime - timer_1 >= 50) { //timer
         timer_1 = CurrentTime;
 
-// Перевірити!!! може бути помилка тут, бо drawState.result не використовується далі
-        drawState.result = draw_selecting_icon(0); 
+
 
         u8g2.enableUTF8Print();
         u8g2.clearBuffer();
         draw_directory_info(directory);
+        
         u8g2.setFont(u8g2_font_5x8_t_cyrillic);
 
         uint8_t x = 0;

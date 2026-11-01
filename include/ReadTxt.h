@@ -30,7 +30,7 @@ bool isTextFile(const char* filepath) {
     return false; 
 }
 
-
+// page З нуля передавати
 int readTextFile(char* filename, byte page, char* text_file_page_buffer) {
     SdFile file;
 
@@ -49,7 +49,7 @@ int readTextFile(char* filename, byte page, char* text_file_page_buffer) {
         Serial.println(filename);
         return -1;
     }
-    uint32_t fileSize = file.fileSize();
+    uint64_t fileSize = file.fileSize();
     int file_pages = (fileSize + 129) / 130;
 
 
