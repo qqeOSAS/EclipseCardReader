@@ -11,8 +11,8 @@
 ///sdsdsadadadasdasdasdasd
 #define WIFI_ICONS 1
 
-
-
+//ytyytyytyyty
+//terggefre
 CommandData draw_selecting_icon(bool draw_icon);
 
 SelectedFile return_select_label(char files_arr[][30], int command, int y, int page_num);
