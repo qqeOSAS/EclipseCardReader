@@ -17,8 +17,8 @@ void browse_txt_file(char* directory) {
         return;
 
 
-    uint32_t page = 0; // current page number, zero-based
-    uint32_t file_pages = readTextFile(directory, page, text_file_page_buffer);
+    uint32_t page = 0; // current page number, 
+    uint32_t file_pages = readTextFile(directory, page, text_file_page_buffer, 131);
     if (file_pages < 0) {
         free(text_file_page_buffer);
         return;
@@ -34,8 +34,8 @@ void browse_txt_file(char* directory) {
         // Handle user commands
         switch (command) {
             case BACK:
-                getParentDirectory(directory);  // Go back to the parent directory
-                free(text_file_page_buffer);  // Free the memory allocated for the text file buffer
+                getParentDirectory(directory);  
+                free(text_file_page_buffer);  
                 return;  
             case LIST_DOWN_MENU: // move to the next page
                 if (page + 1 >= file_pages) {
@@ -55,7 +55,7 @@ void browse_txt_file(char* directory) {
 
         // Read the next page of the text file if the flag is set
         if (read_next_page) {
-            readTextFile(directory, page,text_file_page_buffer);  // Read the text file at the current page
+            readTextFile(directory, page,text_file_page_buffer, 131);  // Read the text file at the current page
             read_next_page = false;  
         }
 

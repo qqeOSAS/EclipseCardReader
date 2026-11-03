@@ -11,7 +11,6 @@
 #include <SDCardConfig.h>
 
 bool isTextFile(const char* filepath);
-int readTextFile(char* filename, uint32_t page, char* text_file_page_buffer);
 
 const char* TEXT_FILE_EXTENSIONS[] = {
     ".txt", ".log", ".csv", ".ini", ".md", ".json", ".xml", ".yaml", ".yml", ".cfg", ".conf", ".lst", ".dat", ".gcode", ".h",".c",".py",".cpp",
@@ -31,7 +30,7 @@ bool isTextFile(const char* filepath) {
 }
 
 // page З нуля передавати
-int readTextFile(char* filename, uint32_t page, char* text_file_page_buffer) {
+int readTextFile(char* filename, uint32_t page, char* text_file_page_buffer,uint32_t buffer_size) {
     SdFile file;
 
     text_file_page_buffer[0] = '\0';
@@ -49,21 +48,25 @@ int readTextFile(char* filename, uint32_t page, char* text_file_page_buffer) {
     }
 
     uint64_t fileSize = file.fileSize();
-    uint32_t file_pages = (fileSize + 129) / 130;
+    uint32_t file_pages = (fileSize + buffer_size -1) / buffer_size;
 
     uint16_t array_index = 0;
-    
-    file.seekSet(page * 130UL);
-    while (file.available() && array_index < 130) {
+
+    uint64_t seek_poss = page * buffer_size;
+    file.seekSet(seek_poss);
+
+    // Reading file
+    while (file.available() && array_index < buffer_size) {
         int c = file.read();
         if (c != -1) { 
             char character = (char)c;
             text_file_page_buffer[array_index] = character;
             array_index++; 
             Serial.print(character);
-        } else {
+        } 
+        else 
             break;  
-        }
+        
     }
 
    
