@@ -69,10 +69,12 @@ void draw_main_screen(screenshoot_path* frame_buffer,bool extruct_buffer){
     draw_WiFi_icon_animation(icon_info.draw_anim2);
     draw_setings_icon_animation(icon_info.draw_anim3);
     draw_main_screen_selecting_icon(icon_info.select_icon_num);
+
     if(extruct_buffer){
         *frame_buffer = process_screenshot();
         return;
     }
+    
     if(icon_info.selected_b){
         switch(icon_info.select_icon_num){
             case 0:

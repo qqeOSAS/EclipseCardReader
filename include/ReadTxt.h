@@ -11,7 +11,7 @@
 #include <SDCardConfig.h>
 
 bool isTextFile(const char* filepath);
-int readTextFile(char* filename, byte page,char* text_file_page_buffer);
+int readTextFile(char* filename, uint32_t page, char* text_file_page_buffer);
 
 const char* TEXT_FILE_EXTENSIONS[] = {
     ".txt", ".log", ".csv", ".ini", ".md", ".json", ".xml", ".yaml", ".yml", ".cfg", ".conf", ".lst", ".dat", ".gcode", ".h",".c",".py",".cpp",
@@ -30,13 +30,11 @@ bool isTextFile(const char* filepath) {
     return false; 
 }
 
-
-int readTextFile(char* filename, byte page, char* text_file_page_buffer) {
+// page З нуля передавати
+int readTextFile(char* filename, uint32_t page, char* text_file_page_buffer) {
     SdFile file;
 
-
-    int position = (page - 1) * 130;
-    
+    text_file_page_buffer[0] = '\0';
 
     if (!sd.exists(filename)) {
         Serial.print("File does not exist: ");
@@ -49,19 +47,19 @@ int readTextFile(char* filename, byte page, char* text_file_page_buffer) {
         Serial.println(filename);
         return -1;
     }
-    uint32_t fileSize = file.fileSize();
-    int file_pages = (fileSize + 129) / 130;
 
+    uint64_t fileSize = file.fileSize();
+    uint32_t file_pages = (fileSize + 129) / 130;
 
-    byte array_index = 0;
+    uint16_t array_index = 0;
     
-    file.seekSet(position);  
+    file.seekSet(page * 130UL);
     while (file.available() && array_index < 130) {
         int c = file.read();
         if (c != -1) { 
             char character = (char)c;
             text_file_page_buffer[array_index] = character;
-            array_index++;
+            array_index++; 
             Serial.print(character);
         } else {
             break;  
@@ -69,11 +67,7 @@ int readTextFile(char* filename, byte page, char* text_file_page_buffer) {
     }
 
    
-    if (array_index < 130) {
-        for (int i = array_index; i < 130; i++) 
-            text_file_page_buffer[i] = '\0';  
-        
-    }
+    text_file_page_buffer[array_index] = '\0';
 
     file.close();
     Serial.println("\nFile read complete.");
