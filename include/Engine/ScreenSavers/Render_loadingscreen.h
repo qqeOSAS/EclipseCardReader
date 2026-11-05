@@ -238,8 +238,15 @@ void Eclipse_loading_screen() {
         u8g2.sendBuffer();
         int serial_cmd = serial_command();
         if(serial_cmd == BACK && SD_CARD_INITIALIZATION_STATUS ){
+            freeStars();
             draw_doom_frame_change();
             break;
+        }
+        if(serial_cmd == TAKE_SCREEN_SHOT){
+            process_screenshot();
+            freeStars();
+            break;
+
         }
         else if (serial_cmd == BACK && !SD_CARD_INITIALIZATION_STATUS)
             break;

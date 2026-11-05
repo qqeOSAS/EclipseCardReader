@@ -464,6 +464,12 @@ bool save_xbm_screenshot(const char* filepath, const char* filename) {
     begin_SD();
     SdFile file;
 
+    if(!isDirectory(filepath)) { // Перевіряємо, чи існує директорія
+        Serial.println("Directory does not exist!");
+        create_directory(filepath); // Створюємо директорію, якщо вона не існує
+        return false;
+    }
+
     size_t full_filepath_size = strlen(filepath) + strlen(filename) + 2 + 4; // +1 for '/', +4 for ".xbm"
     char* full_filepath = (char*)malloc(full_filepath_size);
 
