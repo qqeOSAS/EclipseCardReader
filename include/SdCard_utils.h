@@ -460,6 +460,38 @@ bool create_bin_file(const char* filepath, char* filename, uint8_t* content_data
 
 
 }
+bool create_xbm_file(const char* filepath, const char* filename, const char* xbm_data) {
+    begin_SD();
+    SdFile file;
+
+
+    size_t full_filepath_size = strlen(filepath) + strlen(filename) + 2 + 4; // +1 for '/', +4 for ".xbm"
+    char* full_filepath = (char*)malloc(full_filepath_size);
+
+    if (full_filepath == NULL) return false; 
+    snprintf(full_filepath, full_filepath_size, "%s/%s.xbm", filepath, filename);
+
+    if(file.exists(full_filepath)){
+        Serial.println("File already exists!");
+        free(full_filepath);
+        return false;
+    }
+    
+    if(file.open(full_filepath, O_CREAT | O_WRITE)) {
+        file.println(xbm_data);
+        file.close();
+        Serial.println("Файл XBM успішно створено!");
+        free(full_filepath);  // Звільнення пам'яті
+        return true;
+    } 
+    else {
+        Serial.println("Не вдалося створити файл XBM!");
+        free(full_filepath);  // Звільнення пам'яті
+        return false;
+    }
+
+}
+
 bool save_xbm_screenshot(const char* filepath, const char* filename) {
     begin_SD();
     SdFile file;
@@ -479,7 +511,7 @@ bool save_xbm_screenshot(const char* filepath, const char* filename) {
 
     if (file.exists(full_filepath)) {
         Serial.println("File already exists!");
-        free(full_filepath);  // Не забувайте звільнити пам'ять
+        free(full_filepath);  
         return false;
     }
 
